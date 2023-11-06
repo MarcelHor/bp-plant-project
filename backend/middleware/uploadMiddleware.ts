@@ -1,17 +1,19 @@
 import multer from 'multer';
 
-const ORIGINAL_IMG_PATH = './static/images';
-const THUMBNAIL_IMG_PATH = './static/thumbnails';
+const storage = multer.memoryStorage();
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, ORIGINAL_IMG_PATH);
+const fileFilter = (req: any, file: any, cb: any) => {
+    if (file.mimetype === 'image/jpeg') {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+};
+
+export const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 5
     },
-    filename: function (req, file, cb) {
-        cb(null, file.originalname);
-    },
+    fileFilter: fileFilter
 });
-
-const upload = multer({ storage: storage }).single('image');
-
-export default upload;
