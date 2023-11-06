@@ -1,14 +1,15 @@
 import express from 'express';
-import imageRoutes from './routes/imageRoutes';
+import {imageRoutes} from './routes/imageRoutes';
+import {sensorRoutes} from "./routes/sensorRoutes";
 
 const app = express();
 const PORT = 3000;
 
-app.use('/images', imageRoutes);
+app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.send('Hello world!');
-});
+
+app.use('/images', imageRoutes);
+app.use('/sensors', sensorRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);

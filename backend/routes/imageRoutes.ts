@@ -1,17 +1,20 @@
 import express from 'express';
 import uploadMiddleware from '../middleware/uploadMiddleware';
-import { processImage } from '../utils/imageProcessor';
+import {processImage} from '../utils/imageProcessor';
 
 const router = express.Router();
 
-router.post('/upload', uploadMiddleware, async (req, res) => {
+router.post('/', async (req, res) => {
     try {
-        if (!req.file) throw new Error("No file provided!");
+        const image = req.file;
+        if (!image) {
+            res.status(400).json({error: 'No image file'});
+        }
 
-        await processImage(req.file.path, `./uploads/thumbnail-${req.file.filename}`);
-        res.send('Obrázek byl úspěšně nahrán a náhled byl vytvořen.');
-    } catch (error : Error | any) {
-        res.status(400).send({ error: error.message });
+        //check if image is valid
+
+    } catch (error: Error | any) {
+        res.status(400).send({error: error.message});
     }
 });
 
