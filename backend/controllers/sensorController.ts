@@ -29,7 +29,7 @@ const createSensorsValues = async (req: Request, res: Response) => {
     try {
         const {temperature, humidity, soilMoisture} = req.body;
         if (!temperature || !humidity || !soilMoisture) {
-            return res.status(400).json({error: "Missing parameters"});
+            return res.status(400).json({error: 'No sensor data provided'});
         }
 
         const parsedTemperature = parseFloat(temperature);
@@ -37,7 +37,7 @@ const createSensorsValues = async (req: Request, res: Response) => {
         const parsedSoilMoisture = parseFloat(soilMoisture);
 
         if (isNaN(parsedTemperature) || isNaN(parsedHumidity) || isNaN(parsedSoilMoisture)) {
-            return res.status(400).json({error: "Invalid parameters"});
+            return res.status(400).json({error: "Invalid sensor parameters"});
         }
 
         await PrismaClient.sensorData.create({

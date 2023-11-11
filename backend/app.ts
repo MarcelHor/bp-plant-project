@@ -1,16 +1,19 @@
 import express from 'express';
 import {imageRoutes} from './routes/imageRoutes';
 import {sensorRoutes} from "./routes/sensorRoutes";
+import {uploadRoute} from "./routes/uploadRoute";
 import cors from 'cors';
 
 const app = express();
 const PORT = 3000;
+const HOST = 'localhost';
 
 app.use(express.json());
 app.use(cors());
 app.use('/images', imageRoutes);
 app.use('/sensors', sensorRoutes);
+app.use('/upload', uploadRoute);
 
-app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
+app.listen(PORT, HOST, () => {
+    console.log(`Server is running at http://${HOST}:${PORT}`);
 });

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nahrání obrázku</title>
+</head>
+<body>
+<h2>Nahrání obrázku</h2>
+<!-- Formulář s nastavením enctype na multipart/form-data -->
+<form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="image" required>
+    <input type="submit" value="Nahrát obrázek">
+</form>
+
+<script>
+    document.getElementById('uploadForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // Vytvoření FormData objektu z formuláře
+        const formData = new FormData(this);
+        // Odeslání FormData objektu pomocí fetch API
+        fetch('http://localhost:3000/images', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Úspěch:', data);
+            })
+            .catch((error) => {
+                console.error('Chyba:', error);
+            });
+    });
+</script>
+</body>
+</html>
