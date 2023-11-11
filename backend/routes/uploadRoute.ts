@@ -6,4 +6,4 @@ const uploadRoute = Router();
 
 uploadRoute.post('/', upload.single('image'), processImageAndSensorData);
 
-export {uploadRoute}
+export default uploadRoute;

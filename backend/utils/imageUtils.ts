@@ -38,3 +38,39 @@ export const extractSensorIdFromFileName = (filePath: string) => {
     const match = fileName.match(/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/);
     return match ? match[1] : null;
 };
+
+export const getImageById = async (id: string) => {
+    try {
+        const files = await fs.readdir('./static/images');
+        const imageFileName = files.find(file => file.includes(id));
+        if (!imageFileName) {
+            throw new Error('Image not found');
+        }
+        const imagePath = path.join('./static/images', imageFileName);
+        await fs.access(imagePath);
+        return imageFileName;
+    } catch (error: any) {
+        if (error.message.includes('no such file or directory')) {
+            throw new Error('Image not found');
+        }
+        throw error;
+    }
+}
+
+export const getThumbnailById = async (id: string) => {
+    try {
+        const files = await fs.readdir('./static/thumbnails');
+        const thumbnailFileName = files.find(file => file.includes(id));
+        if (!thumbnailFileName) {
+            throw new Error('Thumbnail not found');
+        }
+        const thumbnailPath = path.join('./static/thumbnails', thumbnailFileName);
+        await fs.access(thumbnailPath);
+        return thumbnailFileName;
+    } catch (error: any) {
+        if (error.message.includes('no such file or directory')) {
+            throw new Error('Thumbnail not found');
+        }
+        throw error;
+    }
+}
