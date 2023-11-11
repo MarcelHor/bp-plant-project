@@ -33,3 +33,8 @@ export async function saveImage(file: any, fileName: string) {
     }
 }
 
+export const extractSensorIdFromFileName = (filePath: string) => {
+    const fileName = path.basename(filePath);
+    const match = fileName.match(/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/);
+    return match ? match[1] : null;
+};

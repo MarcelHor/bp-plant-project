@@ -1,6 +1,5 @@
 import express from 'express';
-import {imageRoutes} from './routes/imageRoutes';
-import {sensorRoutes} from "./routes/sensorRoutes";
+
 import {uploadRoute} from "./routes/uploadRoute";
 import cors from 'cors';
 
@@ -10,8 +9,6 @@ const HOST = 'localhost';
 
 app.use(express.json());
 app.use(cors());
-app.use('/images', imageRoutes);
-app.use('/sensors', sensorRoutes);
 app.use('/upload', uploadRoute);
 
 app.listen(PORT, HOST, () => {

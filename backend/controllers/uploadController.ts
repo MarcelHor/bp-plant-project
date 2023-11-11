@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {PrismaClient} from "@prisma/client";
-import checkAndCleanStorage from "../utils/imageClean";
-import {createThumbnail, saveImage} from "../utils/imageProcessor";
+import checkAndCleanStorage from "../utils/cleanStorage";
+import {createThumbnail, saveImage} from "../utils/imageUtils";
 import {randomUUID} from "crypto";
 
 const prisma = new PrismaClient();
@@ -30,7 +30,6 @@ export const processImageAndSensorData = async (req: Request, res: Response) => 
         }
 
         const sensorId = randomUUID();
-        // const fileDate = parsedCreatedAt.toString().replace(/:/g, '-');
         const fileName = `${sensorId}-${parsedCreatedAt}.jpeg`;
 
         await prisma.sensorData.create({
