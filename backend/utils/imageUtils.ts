@@ -2,6 +2,13 @@ import sharp from 'sharp';
 import fs from 'fs/promises';
 import path from 'path';
 
+/**
+ * Create thumbnail from image
+ * @throws Error if thumbnail already exists
+ * @returns void
+ * @param file image file
+ * @param fileName desired file name
+ */
 export async function createThumbnail(file: any, fileName: string) {
     const thumbnailPath = path.join('./static/thumbnails', `thumbnail-${fileName}`);
     try {
@@ -19,7 +26,13 @@ export async function createThumbnail(file: any, fileName: string) {
     }
 }
 
-
+/**
+ * Save image to static/images folder
+ * @param file image file
+ * @param fileName desired file name
+ * @throws Error if image already exists
+ * @returns void
+ */
 export async function saveImage(file: any, fileName: string) {
     const imagePath = path.join('./static/images', `image-${fileName}`);
     try {
@@ -39,6 +52,13 @@ export const extractSensorIdFromFileName = (filePath: string) => {
     return match ? match[1] : null;
 };
 
+
+/**
+ * Get image by id
+ * @returns full image file name
+ * @param id
+ * @throws Error if image not found or is not accessible
+ */
 export const getImageById = async (id: string) => {
     try {
         const files = await fs.readdir('./static/images');
@@ -57,6 +77,12 @@ export const getImageById = async (id: string) => {
     }
 }
 
+/**
+ * Get thumbnail by id
+ * @returns full thumbnail file name
+ * @param id
+ * @throws Error if thumbnail not found or is not accessible
+ */
 export const getThumbnailById = async (id: string) => {
     try {
         const files = await fs.readdir('./static/thumbnails');

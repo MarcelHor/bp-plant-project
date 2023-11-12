@@ -1,8 +1,8 @@
 import requests
 from mimetypes import MimeTypes
 from datetime import datetime
-import time
-url = 'http://localhost:3000/upload'
+
+url = 'http://192.168.137.1:3000/upload'
 image_path = '92269810.jpeg'
 
 sensors = {

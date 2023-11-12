@@ -5,8 +5,8 @@ import cors from 'cors';
 
 const app = express();
 const PORT = 3000;
+// const HOST = '192.168.137.1';
 const HOST = 'localhost';
-
 app.use(express.json());
 app.use(cors());
 app.use('/upload', uploadRoute);
