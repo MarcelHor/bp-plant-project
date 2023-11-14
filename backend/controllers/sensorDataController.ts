@@ -92,6 +92,45 @@ export const getThumbnails = async (req: Request, res: Response) => {
     }
 };
 
+export const getChartData = async (req: Request, res: Response) => {
+    const {from, to} = req.query;
+
+    try {
+        const data = await prisma.sensorData.findMany({
+            where: {
+                createdAt: {
+                    gte: new Date(from as string),
+                    lte: new Date(to as string)
+                }
+            },
+            orderBy: {
+                createdAt: 'asc'
+            }
+        });
+
+        if (data.length === 0) {
+            return res.status(404).json({message: 'No data found'});
+        }
+
+        const temperatureData = data.map(d => d.temperature);
+        const humidityData = data.map(d => d.humidity);
+        const soilMoistureData = data.map(d => d.soilMoisture);
+        const labels = data.map(d => d.createdAt);
+
+        const chartData = {
+            labels,
+            temperatureData,
+            humidityData,
+            soilMoistureData
+        };
+
+        return res.status(200).json(chartData);
+    } catch (error: any) {
+        console.log(error);
+        return res.status(500).json({message: 'Something went wrong'});
+    }
+}
+
 // export const getClosestThumbnail = async (req: Request, res: Response) => {
 //     const { dateTime } = req.query;
 //

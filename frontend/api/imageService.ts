@@ -33,3 +33,18 @@ export const getByID = async (id: string) => {
         throw error;
     }
 }
+
+export const getChartData = async (from: string, to: string) => {
+    try {
+        const response = await axios.get(`${API_URL}/sensor-data/chart`, {
+            params: {
+                from,
+                to
+            }
+        });
+        console.log(response.data);
+        return response.data;
+    } catch (error: any) {
+        throw error;
+    }
+}
