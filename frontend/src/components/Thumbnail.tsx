@@ -1,24 +1,7 @@
-interface thumbnail {
-    id: string;
-    thumbnailUri: string;
-    createdAt: string;
-}
+import {thumbnailProps} from "../../types/image-types";
+import {formatDate} from "../../utils/utils.ts";
 
-interface ThumbnailProps {
-    thumbnail: thumbnail;
-    setMainImage: (thumbnail: thumbnail) => void;
-}
-
-export default function Thumbnail({thumbnail, setMainImage}: ThumbnailProps) {
-
-    const formatDate = (date: string | undefined) => {
-        if (!date) {
-            return '';
-        }
-        const dateObject = new Date(date);
-        return [dateObject.toLocaleTimeString() , dateObject.toLocaleDateString()];
-    }
-
+export default function Thumbnail({thumbnail, setMainImage}: thumbnailProps) {
     const [time, date] = formatDate(thumbnail.createdAt);
 
     return (

@@ -17,7 +17,6 @@ const ThemeModeSwitcher = () => {
 
     const toggleTheme = () => {
         const newTheme = appTheme.theme === 'emerald' ? 'forest' : 'emerald';
-        console.log(newTheme);
         setAppTheme({theme: newTheme});
         localStorage.setItem('theme', newTheme);
         document.querySelector('html')?.setAttribute('data-theme', newTheme);

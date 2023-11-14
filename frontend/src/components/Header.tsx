@@ -1,7 +1,6 @@
 import {useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBars, faPlantWilt} from "@fortawesome/free-solid-svg-icons";
-import ThemeModeSwitcher from "./ThemeModeSwitcher.tsx";
 
 export default function Header() {
     const [currentTime, setCurrentTime] = useState(new Date());

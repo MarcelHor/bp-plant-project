@@ -28,7 +28,6 @@ export const getLatest = async (req: Request, res: Response) => {
 
 export const getById = async (req: Request, res: Response) => {
     const {id} = req.params;
-    console.log(id);
     try {
         const data = await prisma.sensorData.findUnique({
             where: {
@@ -56,7 +55,6 @@ export const getThumbnails = async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const offset = (page - 1) * limit;
-    console.log(page, limit, offset);
 
     try {
         const sensorData = await prisma.sensorData.findMany({
@@ -76,8 +74,8 @@ export const getThumbnails = async (req: Request, res: Response) => {
             sensorData.map(async (data) => {
                 const thumbnail = await getThumbnailById(data.id);
                 return {
-                    thumbnailId: data.id,
-                    thumbnailCreatedAt: data.createdAt,
+                    id: data.id,
+                    createdAt: data.createdAt,
                     thumbnailUri: `${req.protocol}://${req.get('host')}/thumbnails/${thumbnail}`
                 };
             })
