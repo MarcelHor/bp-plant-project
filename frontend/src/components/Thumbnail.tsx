@@ -1,7 +1,7 @@
-import {thumbnailProps} from "../../types/image-types";
+import {thumbnail} from "../../types/image-types";
 import {formatDate} from "../../utils/utils.ts";
 
-export default function Thumbnail({thumbnail, setMainImage}: thumbnailProps) {
+export default function Thumbnail({thumbnail, setMainImage}: { thumbnail: thumbnail, setMainImage: Function }) {
     const [time, date] = formatDate(thumbnail.createdAt);
 
     return (

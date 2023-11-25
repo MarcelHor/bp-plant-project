@@ -42,7 +42,6 @@ export const getChartData = async (from: string, to: string) => {
                 to
             }
         });
-        console.log(response.data);
         return response.data;
     } catch (error: any) {
         throw error;

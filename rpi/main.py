@@ -1,4 +1,5 @@
-from sensors import GroveLedBar, GroveMoistureSensor
+from sensors import GroveMoistureSensor, LightSensor
+from display import Display
 from picamera2 import Picamera2
 import seeed_dht
 import schedule
@@ -9,8 +10,9 @@ from datetime import datetime
 from mimetypes import MimeTypes
 
 # Inicializace senzorů a LED baru
+display = Display()
+light_sensor = LightSensor(2)
 sensor_moisture = GroveMoistureSensor(0)
-ledbar = GroveLedBar(16)
 dht = seeed_dht.DHT("11", 5)
 url = 'http://192.168.137.1:3000/upload'
 
@@ -18,10 +20,11 @@ def readSensors():
     try:
         moist = sensor_moisture.read()
         humi, temp = dht.read()
-        return moist, humi, temp
+        light = light_sensor.read()
+        return moist, humi, temp, light
     except Exception as e:
         print("Chyba při čtení senzorů:", str(e))
-        return None, None, None
+        return None
 
 def setup_camera():
     try:
@@ -58,13 +61,11 @@ def capture_and_send_image(camera, img_path, sensors):
         print("Chyba při odesílání dat nebo mazání souboru:", str(e))
 
 def job_read_and_update_led():
-    vlhkost, humi, temp = readSensors()
+    vlhkost, humi, temp, light = readSensors()
     if vlhkost is not None:
-        pocet_led = int(vlhkost // 10)
-        if vlhkost >= 0 and pocet_led == 0:
-            pocet_led = 1
-        ledbar.level(pocet_led)
-        print("Vlhkost půdy: {}%, Teplota: {}°C, Vlhkost vzduchu: {}%".format(round(vlhkost, 2), temp, humi))
+            display_data = "T:{}C H:{}%\nM:{}% L:{}".format(temp, humi, round(vlhkost, 1), round(light,1))
+            display.setText_norefresh(display_data)
+            print(display_data)
 
 def job_capture_and_send(camera, img_path):
     vlhkost, humi, temp = readSensors()
@@ -87,6 +88,8 @@ def main():
         return
 
     camera.start()
+
+    display.clear()
 
     # Plánování úloh
     schedule.every(0.1).minutes.do(job_read_and_update_led)

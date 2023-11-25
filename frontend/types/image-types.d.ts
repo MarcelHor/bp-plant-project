@@ -8,7 +8,7 @@ interface imageData {
 }
 
 
-interface thumbnailData {
+interface thumbnailsData {
     thumbnails: thumbnail[];
     page: number;
     limit: number;
@@ -25,4 +25,11 @@ interface thumbnailProps {
     setMainImage: (thumbnail: thumbnail) => void;
 }
 
-export type { imageData, thumbnailData, thumbnail, thumbnailProps };
+interface chartData {
+    labels: string[],
+    temperatureData: number[],
+    humidityData: number[],
+    soilMoistureData: number[],
+}
+
+export type { imageData, thumbnailsData, thumbnail, thumbnailProps, chartData };
