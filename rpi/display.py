@@ -4,9 +4,12 @@ import RPi.GPIO as GPIO
 
 
 class Display:
-    DISPLAY_TEXT_ADDR = 0x3e
+    DISPLAY_TEXT_ADDR = 0x3e  # i2c address of text display
 
     def __init__(self):
+        '''
+        Initialize display
+        '''
         rev = GPIO.RPI_REVISION
         if rev == 2 or rev == 3:
             self.bus = smbus.SMBus(1)
@@ -14,13 +17,23 @@ class Display:
             self.bus = smbus.SMBus(0)
 
     def textCommand(self, cmd):
+        '''
+        Send text command to display
+        :param cmd: command to send
+        '''
         self.bus.write_byte_data(self.DISPLAY_TEXT_ADDR, 0x80, cmd)
 
     def clear(self):
+        '''
+        Clear display and set cursor to home position
+        '''
         self.textCommand(0x01)
 
-    # set display text \n for second line(or auto wrap)
     def setText(self, text):
+        '''
+        Set text to display and clear the display first
+        :param text: text to display
+        '''
         self.textCommand(0x01)  # clear display
         time.sleep(.05)
         self.textCommand(0x08 | 0x04)  # display on, no cursor
@@ -40,8 +53,11 @@ class Display:
             count += 1
             self.bus.write_byte_data(self.DISPLAY_TEXT_ADDR, 0x40, ord(c))
 
-    # Update the display without erasing the display
     def setText_norefresh(self, text):
+        '''
+        Set text without clearing the display
+        :param text: text to display
+        '''
         self.textCommand(0x02)  # return home
         time.sleep(.05)
         self.textCommand(0x08 | 0x04)  # display on, no cursor
@@ -63,7 +79,6 @@ class Display:
             count += 1
             self.bus.write_byte_data(self.DISPLAY_TEXT_ADDR, 0x40, ord(c))
 
-    # Create a custom character (from array of row patterns)
     def create_char(self, location, pattern):
         """
            Writes a bit pattern to LCD CGRAM
@@ -76,15 +91,3 @@ class Display:
         location &= 0x07  # Make sure location is 0-7
         self.textCommand(0x40 | (location << 3))
         self.bus.write_i2c_block_data(self.DISPLAY_TEXT_ADDR, 0x40, pattern)
-
-
-# Hlavní funkce
-def main():
-    display = Display()
-    display.setText("Hello World!")
-    time.sleep(3)
-    display.setText("Goodbye World!")
-
-
-if __name__ == '__main__':
-    main()

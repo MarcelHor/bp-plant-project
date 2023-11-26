@@ -115,12 +115,14 @@ export const getChartData = async (req: Request, res: Response) => {
         const temperatureData = data.map(d => d.temperature);
         const humidityData = data.map(d => d.humidity);
         const soilMoistureData = data.map(d => d.soilMoisture);
+        const lightData = data.map(d => d.light);
         const labels = data.map(d => d.createdAt);
 
         const chartData = {
             labels,
             temperatureData,
             humidityData,
+            lightData,
             soilMoistureData
         };
 

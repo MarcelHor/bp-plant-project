@@ -1,20 +1,21 @@
+from camera import Camera
 from sensors import GroveMoistureSensor, LightSensor
 from display import Display
-from picamera2 import Picamera2
+from datetime import datetime
 import seeed_dht
 import schedule
 import time
 import os
-import requests
-from datetime import datetime
-from mimetypes import MimeTypes
 
 # Inicializace senzorů a LED baru
 display = Display()
 light_sensor = LightSensor(2)
 sensor_moisture = GroveMoistureSensor(0)
 dht = seeed_dht.DHT("11", 5)
+img_path = os.path.join(os.getcwd(), "images")
 url = 'http://192.168.137.1:3000/upload'
+camera = Camera(img_path, url)
+
 
 def readSensors():
     try:
@@ -26,74 +27,37 @@ def readSensors():
         print("Chyba při čtení senzorů:", str(e))
         return None
 
-def setup_camera():
-    try:
-        picam2 = Picamera2()
-        picam2.set_logging(Picamera2.ERROR)
-        camera_config = picam2.create_still_configuration(main={"size": (1920, 1080)}, lores={"size": (640, 480)}, display="lores")
-        picam2.configure(camera_config)
-        time.sleep(2)
-        return picam2
-    except Exception as e:
-        print("Chyba při nastavování kamery:", str(e))
-        return None
 
-def capture_and_send_image(camera, img_path, sensors):
-    try:
-        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        filename = f"image_{current_time}.jpg"
-        file_path = os.path.join(img_path, filename)
-        camera.capture_file(file_path)
+def job_read_and_update_display():
+    moist, humi, temp, light = readSensors()
+    if None not in [moist, humi, temp, light]:
+        display_data = "T:{}C H:{}%\nM:{}% L:{}".format(temp, humi, round(moist, 1), round(light, 1))
+        display.setText_norefresh(display_data)
+    else:
+        display.setText_norefresh("Chyba při čtení\nsenzorů")
 
-        mime = MimeTypes()
-        mime_type = mime.guess_type(file_path)[0]
-        with open(file_path, 'rb') as file:
-            files = {'image': (filename, file, mime_type)}
-            response = requests.post(url, files=files, data=sensors)
 
-        if response.status_code == 200:
-            print("Úspěšně odesláno")
-            # Smazání obrázku po úspěšném odeslání
-            os.remove(file_path)
-        else:
-            print("Chyba při odesílání:", response.text)
-    except Exception as e:
-        print("Chyba při odesílání dat nebo mazání souboru:", str(e))
-
-def job_read_and_update_led():
-    vlhkost, humi, temp, light = readSensors()
-    if vlhkost is not None:
-            display_data = "T:{}C H:{}%\nM:{}% L:{}".format(temp, humi, round(vlhkost, 1), round(light,1))
-            display.setText_norefresh(display_data)
-            print(display_data)
-
-def job_capture_and_send(camera, img_path):
-    vlhkost, humi, temp = readSensors()
-    if None not in [vlhkost, humi, temp]:
+def job_capture_and_send():
+    moist, humi, temp, light = readSensors()
+    if None not in [moist, humi, temp, light]:
         sensors = {
             "temperature": temp,
             "humidity": humi,
-            "soilMoisture": vlhkost,
-            "createdAt": datetime.now().isoformat()
+            "soilMoisture": moist,
+            "light": light,
         }
-        capture_and_send_image(camera, img_path, sensors)
+        camera.capture_and_send_image(sensors)
+
 
 def main():
-    img_path = os.path.join(os.getcwd(), "images")
     if not os.path.exists(img_path):
         os.makedirs(img_path)
-
-    camera = setup_camera()
-    if camera is None:
-        return
-
-    camera.start()
-
+    camera.setup_camera()
     display.clear()
 
-    # Plánování úloh
-    schedule.every(0.1).minutes.do(job_read_and_update_led)
-    schedule.every(1).minutes.do(job_capture_and_send, camera, img_path)
+    schedule.every(0.1).minutes.do(job_read_and_update_display)
+    schedule.every(1).minutes.do(job_capture_and_send)
+
     try:
         while True:
             schedule.run_pending()
@@ -101,10 +65,11 @@ def main():
     except KeyboardInterrupt:
         print("Program ukončen uživatelem")
     finally:
-        if ledbar:
-            ledbar.level(0)
+        if display:
+            display.clear()
         if camera:
-            camera.stop()
+            camera.stop_camera()
+
 
 if __name__ == '__main__':
     main()

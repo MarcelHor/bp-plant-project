@@ -15,5 +15,6 @@ model SensorData {
   soilMoisture Float
   temperature  Float
   humidity     Float
+  light        Float
   createdAt    DateTime @default(now())
 }
