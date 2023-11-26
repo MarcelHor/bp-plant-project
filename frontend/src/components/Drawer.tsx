@@ -6,7 +6,7 @@ export default function Drawer({thumbnailData, setMainImage}: { thumbnailData: t
     return (
         <div className="drawer-side h-full md:h-[calc(100vh-64px)] border-r-2">
             <label htmlFor="my-drawer-2" className="drawer-overlay "></label>
-            <div className="w-96 min-h-full bg-base-200 flex flex-col">
+            <div className="w-3/4 md:w-96 min-h-full bg-base-200 flex flex-col">
                 <div className="sticky top-0 z-10 p-4 bg-base-200 w-full shadow-lg">
                     <form>
                         <input type="text" placeholder="Search..."

@@ -7,7 +7,7 @@ export default function ImageDisplay({mainImageData}: { mainImageData: imageData
     const [time, date] = formatDate(mainImageData?.createdAt);
 
     return (
-        <div className="flex-col md:flex-row flex items-center justify-around rounded shadow-lg border-2">
+        <div className="flex-col lg:flex-row flex items-center justify-around rounded shadow-lg border-2">
             <figure>
                 <img src={mainImageData?.imageUri} className={"md:rounded"} alt="Image"/>
             </figure>
