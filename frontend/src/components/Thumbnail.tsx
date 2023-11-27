@@ -5,7 +5,8 @@ export default function Thumbnail({thumbnail, setMainImage}: { thumbnail: thumbn
     const [time, date] = formatDate(thumbnail.createdAt);
 
     return (
-        <li className={"flex items-center justify-center px-12 md:px-4 space-x-4"} onClick={() => setMainImage(thumbnail)}>
+        <li className={"flex items-center justify-center px-12 md:px-4 space-x-4"}
+            onClick={() => setMainImage(thumbnail.id)}>
             <div className={"flex flex-col text-sm md:text-md"}>
                 <span>{time}</span>
                 <div>{date}</div>

@@ -52,7 +52,7 @@ export default function Drawer({thumbnailData, setMainImage, setThumbnailData}: 
     }
 
     return (
-        <div className="drawer-side h-full md:h-[calc(100vh-64px)] border-r-2 border-base-300">
+        <div className="drawer-side h-full md:h-[calc(100vh-64px)] border-r-2 border-base-300 z-50">
             <label htmlFor="my-drawer-2" className="drawer-overlay "></label>
             <div className="w-3/4 md:w-96 min-h-full bg-base-200 flex flex-col">
                 <div

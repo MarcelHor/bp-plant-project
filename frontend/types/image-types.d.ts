@@ -27,6 +27,7 @@ interface thumbnailProps {
 }
 
 interface chartData {
+    ids: string[],
     labels: string[],
     temperatureData: number[],
     humidityData: number[],

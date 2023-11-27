@@ -102,6 +102,10 @@ export const getThumbnails = async (req: Request, res: Response) => {
 export const getChartData = async (req: Request, res: Response) => {
     const {from, to} = req.query;
 
+    if (!from || !to) {
+        return res.status(400).json({message: 'Missing from or to parameter'});
+    }
+
     try {
         const data = await prisma.sensorData.findMany({
             where: {
@@ -119,21 +123,21 @@ export const getChartData = async (req: Request, res: Response) => {
             return res.status(404).json({message: 'No data found'});
         }
 
-        const temperatureData = data.map(d => d.temperature);
-        const humidityData = data.map(d => d.humidity);
-        const soilMoistureData = data.map(d => d.soilMoisture);
-        const lightData = data.map(d => d.light);
-        const labels = data.map(d => d.createdAt);
+        const ids = data.map((data) => data.id);
+        const labels = data.map((data) => data.createdAt.toISOString());
+        const temperatureData = data.map((data) => data.temperature);
+        const humidityData = data.map((data) => data.humidity);
+        const soilMoistureData = data.map((data) => data.soilMoisture);
+        const lightData = data.map((data) => data.light);
 
-        const chartData = {
+        return res.status(200).json({
+            ids,
             labels,
             temperatureData,
             humidityData,
-            lightData,
-            soilMoistureData
-        };
-
-        return res.status(200).json(chartData);
+            soilMoistureData,
+            lightData
+        });
     } catch (error: any) {
         console.log(error);
         return res.status(500).json({message: 'Something went wrong'});
