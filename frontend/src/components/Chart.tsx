@@ -72,18 +72,18 @@ export default function Chart() {
         }
     };
 
-    useEffect(() => {
-
-        getChartData(fromDateTime, toDateTime).then((response: any) => {
-            setFetchedChartData(response);
-        }).catch((error: any) => {
-            console.log(error);
-        });
-    }), [fromDateTime, toDateTime]
+    // useEffect(() => {
+    //
+    //     getChartData(fromDateTime, toDateTime).then((response: any) => {
+    //         setFetchedChartData(response);
+    //     }).catch((error: any) => {
+    //         console.log(error);
+    //     });
+    // }), [fromDateTime, toDateTime]
 
     return (
-        <div className="w-full rounded shadow-lg border-2 p-4 h-80">
-            {fetchedChartData && <Line data={chartData} options={options}/>}
+        <div className="w-full rounded shadow-lg border-2 border-base-300 p-4 h-80">
+            {/*{fetchedChartData && <Line data={chartData} options={options}/>}*/}
         </div>
     );
 }

@@ -1,6 +1,8 @@
 import {useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBars, faPlantWilt} from "@fortawesome/free-solid-svg-icons";
+import {Link} from "react-router-dom";
+import ThemeModeSwitcher from "./ThemeModeSwitcher.tsx";
 
 export default function Header() {
     const [currentTime, setCurrentTime] = useState(new Date());
@@ -25,13 +27,13 @@ export default function Header() {
                     <ul tabIndex={0}
                         className="menu menu-sm dropdown-content mt-2 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                         <li><a>About</a></li>
-                        <li><a>Timelapse</a></li>
+                        <li><Link to={"/timelapses"}>Timelapses</Link></li>
                     </ul>
                 </div>
-                <a className="btn btn-ghost normal-case text-xl">
+                <Link className="btn btn-ghost normal-case text-xl" to={"/"}>
                     <FontAwesomeIcon icon={faPlantWilt} className="text-primary mr-2"/>
-                    <span className={"hidden md:flex"}>Plant Project</span>
-                </a>
+                    <span className={"hidden md:flex"} >Plant Project</span>
+                </Link>
             </div>
             <div
                 className="flex flex-col justify-center items-end md:items-center pr-4 navbar-end md:navbar-center text-center">
@@ -40,7 +42,8 @@ export default function Header() {
             </div>
             <div className="navbar-end md:flex hidden">
                 <button className="btn btn-ghost">About</button>
-                <button className="btn btn-ghost">Timelapse</button>
+                <Link className="btn btn-ghost" to={"timelapses"}>Timelapses</Link>
+                <ThemeModeSwitcher/>
             </div>
         </header>
     );

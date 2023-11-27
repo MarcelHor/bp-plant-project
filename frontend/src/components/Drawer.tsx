@@ -1,23 +1,101 @@
 import Thumbnail from "./Thumbnail.tsx";
+import {getThumbnails, getClosestData} from "../../api/imageService.ts";
 import {thumbnailsData} from "../../types/image-types";
+import {useState} from "react";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faChevronLeft, faChevronRight, faSearch, faXmark} from "@fortawesome/free-solid-svg-icons";
 
-export default function Drawer({thumbnailData, setMainImage}: { thumbnailData: thumbnailsData | undefined, setMainImage: Function }) {
+export default function Drawer({thumbnailData, setMainImage, setThumbnailData}: {
+    thumbnailData: thumbnailsData | undefined,
+    setMainImage: Function,
+    setThumbnailData: Function
+}) {
+    const [page, setPage] = useState<number>(1);
+    const [searchDate, setSearchDate] = useState("");
+    const limit = 10;
+
+    const getThumbnailData = async (page: number) => {
+        if (page < 1) {
+            setPage(1);
+            return;
+        }
+        if (thumbnailData && page > thumbnailData.totalPages) {
+            setPage(thumbnailData.totalPages);
+            return;
+        }
+        try {
+            const response = await getThumbnails(page, limit);
+            setThumbnailData(response);
+        } catch (error: any) {
+            console.log(error);
+        }
+    }
+
+    const handleSearch = async () => {
+        try {
+            const data = await getClosestData(searchDate);
+            setThumbnailData(data);
+            setPage(1);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const resetSearch = async () => {
+        try {
+            const data = await getThumbnails(1, limit);
+            setThumbnailData(data);
+            setPage(1);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     return (
-        <div className="drawer-side h-full md:h-[calc(100vh-64px)] border-r-2">
+        <div className="drawer-side h-full md:h-[calc(100vh-64px)] border-r-2 border-base-300">
             <label htmlFor="my-drawer-2" className="drawer-overlay "></label>
             <div className="w-3/4 md:w-96 min-h-full bg-base-200 flex flex-col">
-                <div className="sticky top-0 z-10 p-4 bg-base-200 w-full shadow-lg">
-                    <form>
-                        <input type="text" placeholder="Search..."
-                               className="input input-bordered w-full"/>
+                <div
+                    className="sticky top-0 z-10 p-2 bg-base-200 w-full shadow-lg flex flex-col items-center justify-center space-y-2">
+                    <form className="form-control w-full flex flex-row space-x-2 items-center justify-center">
+                        <input type="datetime-local" placeholder="Search..."
+                               className="input input-bordered w-2/3" value={searchDate} onChange={(e) => {
+                            setSearchDate(e.target.value);
+                        }}/>
+                        <button type="button" className="btn btn-primary w-14" onClick={handleSearch}>
+                            <FontAwesomeIcon icon={faSearch}/>
+                        </button>
+                        <button type="button" className="btn btn-primary w-14" onClick={resetSearch}>
+                            <FontAwesomeIcon icon={faXmark}/>
+                        </button>
                     </form>
+                    <div className="flex space-x-4 items-center">
+                        <button
+                            className="btn btn-square btn-ghost btn-sm"
+                            onClick={() => {
+                                if (page > 1) {
+                                    setPage(page - 1);
+                                    getThumbnailData(page - 1);
+                                }
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faChevronLeft}/>
+                        </button>
+                        <span>{thumbnailData?.currentPage}/{thumbnailData?.totalPages}</span>
+                        <button
+                            className="btn btn-square btn-ghost btn-sm"
+                            onClick={() => {
+                                setPage(page + 1);
+                                getThumbnailData(page + 1);
+                            }}><FontAwesomeIcon icon={faChevronRight}/>
+                        </button>
+                    </div>
                 </div>
                 <div>
                     {thumbnailData &&
                         <ul className="overflow-y-auto space-y-4 flex flex-col items-center justify-center">
                             {thumbnailData.thumbnails.map((thumbnail) => (
-                                <div key={thumbnail.id} className={"w-full border-b-2 p-4"}>
+                                <div key={thumbnail.id} className={"w-full border-b-2 border-base-300 p-4"}>
                                     <Thumbnail thumbnail={thumbnail} setMainImage={setMainImage}/>
                                 </div>
                             ))}

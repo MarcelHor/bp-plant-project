@@ -4,14 +4,15 @@ interface imageData {
     soilMoisture: number;
     temperature: number;
     humidity: number;
+    light: number;
     createdAt: string;
 }
 
 
 interface thumbnailsData {
     thumbnails: thumbnail[];
-    page: number;
-    limit: number;
+    totalPages: number;
+    currentPage: number;
 }
 
 interface thumbnail {
@@ -30,6 +31,7 @@ interface chartData {
     temperatureData: number[],
     humidityData: number[],
     soilMoistureData: number[],
+    lightData: number[]
 }
 
 export type { imageData, thumbnailsData, thumbnail, thumbnailProps, chartData };

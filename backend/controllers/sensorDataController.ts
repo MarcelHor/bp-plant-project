@@ -65,10 +65,17 @@ export const getThumbnails = async (req: Request, res: Response) => {
             }
         });
 
+        const totalThumbnails = await prisma.sensorData.count();
+        const totalPages = Math.ceil(totalThumbnails / limit);
 
         if (sensorData.length === 0) {
             return res.status(404).json({message: 'No thumbnails found'});
         }
+
+        if (page > totalPages) {
+            return res.status(404).json({message: 'Page not found'});
+        }
+
 
         const thumbnails = await Promise.all(
             sensorData.map(async (data) => {
@@ -82,8 +89,8 @@ export const getThumbnails = async (req: Request, res: Response) => {
         );
 
         return res.status(200).json({
-            page,
-            limit,
+            totalPages,
+            currentPage: page,
             thumbnails
         });
     } catch (error: any) {
@@ -133,29 +140,61 @@ export const getChartData = async (req: Request, res: Response) => {
     }
 }
 
-// export const getClosestThumbnail = async (req: Request, res: Response) => {
-//     const { dateTime } = req.query;
-//
-//     try {
-//         const closestData = await prisma.sensorData.findFirst({
-//             where: {
-//                 createdAt: {
-//                     lte: new Date(dateTime as string)
-//                 }
-//             },
-//             orderBy: {
-//                 createdAt: 'desc'
-//             }
-//         });
-//
-//         if (!closestData) {
-//             return res.status(404).json({ message: 'Thumbnail not found' });
-//         }
-//
-//
-//         return res.status(200).json({ thumbnailUri, ...closestData });
-//     } catch (error: any) {
-//         console.log(error);
-//         return res.status(500).json({ message: 'Something went wrong' });
-//     }
-// };
+export const getClosestThumbnails = async (req: Request, res: Response) => {
+    const {dateTime} = req.query;
+
+    if (!dateTime) {
+        return res.status(400).json({message: 'Missing dateTime parameter'});
+    }
+
+    try {
+        const closestData = await prisma.sensorData.findFirst({
+            where: {
+                createdAt: {
+                    lte: new Date(dateTime as string)
+                }
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        if (!closestData) {
+            return res.status(404).json({message: 'Thumbnail not found'});
+        }
+
+        const additionalData = await prisma.sensorData.findMany({
+            where: {
+                createdAt: {
+                    lt: closestData.createdAt
+                }
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        const combinedData = [closestData, ...additionalData];
+
+        const thumbnails = await Promise.all(
+            combinedData.map(async (data) => {
+                const thumbnail = await getThumbnailById(data.id);
+                return {
+                    id: data.id,
+                    createdAt: data.createdAt,
+                    thumbnailUri: `${req.protocol}://${req.get('host')}/thumbnails/${thumbnail}`
+                };
+            })
+        );
+
+        return res.status(200).json({
+            thumbnails,
+            currentPage: 1,
+            totalPages: 1
+        });
+    } catch (error: any) {
+        console.log(error);
+        return res.status(500).json({message: 'Something went wrong'});
+    }
+};
+

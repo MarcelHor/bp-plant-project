@@ -47,3 +47,14 @@ export const getChartData = async (from: string, to: string) => {
         throw error;
     }
 }
+
+export const getClosestData = async (dateTime: string) => {
+    try {
+        const response = await axios.get(`${API_URL}/sensor-data/closest`, {
+            params: { dateTime }
+        });
+        return response.data;
+    } catch (error: any) {
+        throw error;
+    }
+}
