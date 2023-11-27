@@ -45,17 +45,22 @@ export default function Home() {
                     {/* Main Content */}
                     <div
                         className="drawer-content flex flex-col items-center bg-base-200 overflow-y-auto h-full">
-                        <div className="flex items-center p-4 w-full space-x-4">
+                        <div className="flex items-center p-4 w-full space-x-4 lg:hidden">
                             <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">Open
                                 drawer</label>
                         </div>
                         <div className="flex flex-col items-center justify-center max-w-7xl space-y-8 py-8 px-4">
-                            <ImageDisplay mainImageData={mainImageData}/>
-                            <Chart setMainImage={setMainImage}/>
+                            {mainImageData &&
+                                <>
+                                    <ImageDisplay mainImageData={mainImageData}/>
+                                    <Chart setMainImage={setMainImage} latestDate={mainImageData?.createdAt}/>
+                                </>
+                            }
                         </div>
                     </div>
-                    {/* Drawer */}
-                    <Drawer thumbnailData={thumbnailData} setMainImage={setMainImage} setThumbnailData={setThumbnailData}/>
+                    {/* Sidebar */}
+                    <Drawer thumbnailData={thumbnailData} setMainImage={setMainImage}
+                            setThumbnailData={setThumbnailData}/>
                 </div>
             </main>
         </div>

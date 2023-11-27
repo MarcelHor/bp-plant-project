@@ -52,22 +52,26 @@ export default function Drawer({thumbnailData, setMainImage, setThumbnailData}: 
     }
 
     return (
-        <div className="drawer-side h-full md:h-[calc(100vh-64px)] border-r-2 border-base-300 z-50">
+        <div className="drawer-side h-full md:h-[calc(100vh-64px)] border-r-2 border-base-300 z-20">
             <label htmlFor="my-drawer-2" className="drawer-overlay "></label>
             <div className="w-3/4 md:w-96 min-h-full bg-base-200 flex flex-col">
                 <div
                     className="sticky top-0 z-10 p-2 bg-base-200 w-full shadow-lg flex flex-col items-center justify-center space-y-2">
                     <form className="form-control w-full flex flex-row space-x-2 items-center justify-center">
-                        <input type="datetime-local" placeholder="Search..."
+                        <input type="datetime-local"
                                className="input input-bordered w-2/3" value={searchDate} onChange={(e) => {
                             setSearchDate(e.target.value);
                         }}/>
-                        <button type="button" className="btn btn-primary w-14" onClick={handleSearch}>
-                            <FontAwesomeIcon icon={faSearch}/>
-                        </button>
-                        <button type="button" className="btn btn-primary w-14" onClick={resetSearch}>
-                            <FontAwesomeIcon icon={faXmark}/>
-                        </button>
+                        <div className="tooltip tooltip-bottom" data-tip="Search">
+                            <button type="button" className="btn btn-primary w-14" onClick={handleSearch}>
+                                <FontAwesomeIcon icon={faSearch}/>
+                            </button>
+                        </div>
+                        <div className="tooltip tooltip-bottom" data-tip="Reset">
+                            <button type="button" className="btn btn-primary w-14" onClick={resetSearch}>
+                                <FontAwesomeIcon icon={faXmark}/>
+                            </button>
+                        </div>
                     </form>
                     <div className="flex space-x-4 items-center">
                         <button
@@ -93,9 +97,10 @@ export default function Drawer({thumbnailData, setMainImage, setThumbnailData}: 
                 </div>
                 <div>
                     {thumbnailData &&
-                        <ul className="overflow-y-auto space-y-4 flex flex-col items-center justify-center">
+                        <ul className="overflow-y-auto flex flex-col items-center justify-center">
                             {thumbnailData.thumbnails.map((thumbnail) => (
-                                <div key={thumbnail.id} className={"w-full border-b-2 border-base-300 p-4"}>
+                                <div key={thumbnail.id}
+                                     className={"w-full border-b-2 border-base-300 p-4 hover:bg-neutral-200 cursor-pointer"}>
                                     <Thumbnail thumbnail={thumbnail} setMainImage={setMainImage}/>
                                 </div>
                             ))}

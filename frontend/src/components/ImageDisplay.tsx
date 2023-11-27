@@ -4,7 +4,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faDroplet, faTemperatureThreeQuarters, faWind, faClock, faLightbulb} from "@fortawesome/free-solid-svg-icons";
 import {faFaceSmileBeam} from "@fortawesome/free-regular-svg-icons/faFaceSmileBeam";
 
-export default function ImageDisplay({mainImageData}: { mainImageData: imageData | undefined }) {
+export default function ImageDisplay({mainImageData     }: { mainImageData: imageData | undefined }) {
     const [time, date] = formatDate(mainImageData?.createdAt);
 
     const thresholdValues = {
@@ -74,7 +74,7 @@ export default function ImageDisplay({mainImageData}: { mainImageData: imageData
                     <div className="p-2 rounded flex flex-col justify-center items-center mb-4">
                         {/*@ts-ignore*/}
                         <FontAwesomeIcon icon={faFaceSmileBeam} size={"6x"}/>
-                        <span className={"text-lg font-semibold mt-2"}>Everything is fine</span>
+                        <span className={"text-lg font-semibold mt-2"}>Everything is fine and healthy</span>
                     </div>
                 )}
             </div>

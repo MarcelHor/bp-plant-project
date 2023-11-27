@@ -25,10 +25,10 @@ ChartJS.register(
     Legend
 );
 
-export default function Chart({setMainImage}: { setMainImage: any }) {
-    const now = new Date();
+export default function Chart({setMainImage, latestDate}: { setMainImage: Function, latestDate: string }) {
+    const now = new Date(latestDate)
     const yesterday = new Date(now);
-    yesterday.setHours(now.getHours() - 12);
+    yesterday.setHours(now.getHours() - 1);
     const nowISO = now.toISOString().slice(0, 16);
     const yesterdayISO = yesterday.toISOString().slice(0, 16);
 
@@ -100,12 +100,9 @@ export default function Chart({setMainImage}: { setMainImage: any }) {
         onClick: handleChartClick,
     };
 
-
     useEffect(() => {
-
         getChartData(fromDateTime, toDateTime).then((response: any) => {
             setFetchedChartData(response);
-            console.log(response);
             setNotFound(false);
         }).catch((error: any) => {
             console.log(error);
