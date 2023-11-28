@@ -101,7 +101,6 @@ export const getThumbnails = async (req: Request, res: Response) => {
 
 export const getChartData = async (req: Request, res: Response) => {
     const {from, to} = req.query;
-
     if (!from || !to) {
         return res.status(400).json({message: 'Missing from or to parameter'});
     }
