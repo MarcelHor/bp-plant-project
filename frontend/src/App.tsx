@@ -1,7 +1,7 @@
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Home from "./pages/Home";
 import NoPage from "./pages/NoPage.tsx";
-import Timelapses from "./pages/Timelapses.tsx";
+import Timelapses from "./pages/TimelapsesPage.tsx";
 
 export default function App() {
     return (<Router>

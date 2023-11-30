@@ -97,7 +97,7 @@ export default function Drawer({thumbnailData, setMainImage, setThumbnailData}: 
                 </div>
                 <div>
                     {thumbnailData &&
-                        <ul className="overflow-y-auto flex flex-col items-center justify-center">
+                        <ul className=" flex flex-col items-center justify-center">
                             {thumbnailData.thumbnails.map((thumbnail) => (
                                 <div key={thumbnail.id}
                                      className={"w-full border-b-2 border-base-300 p-4 hover:bg-neutral-200 cursor-pointer"}>

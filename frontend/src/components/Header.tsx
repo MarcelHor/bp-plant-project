@@ -1,10 +1,11 @@
 import {useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBars, faPlantWilt} from "@fortawesome/free-solid-svg-icons";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import ThemeModeSwitcher from "./ThemeModeSwitcher.tsx";
 
 export default function Header() {
+    const location = useLocation();
     const [currentTime, setCurrentTime] = useState(new Date());
 
     useEffect(() => {
@@ -27,12 +28,16 @@ export default function Header() {
                     <ul tabIndex={0}
                         className="menu menu-sm dropdown-content mt-2 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                         <li><a>About</a></li>
-                        <li><Link to={"/timelapses"}>Timelapses</Link></li>
+                        {location.pathname !== "/timelapses" ? (
+                            <li><Link to={"/timelapses"}>Timelapses</Link></li>
+                        ) : (
+                            <li><Link to={"/"}>Home</Link></li>
+                        )}
                     </ul>
                 </div>
                 <Link className="btn btn-ghost normal-case text-xl" to={"/"}>
                     <FontAwesomeIcon icon={faPlantWilt} className="text-primary mr-2"/>
-                    <span className={"hidden md:flex"} >Plant Project</span>
+                    <span className={"hidden md:flex"}>Plant Project</span>
                 </Link>
             </div>
             <div
@@ -42,7 +47,11 @@ export default function Header() {
             </div>
             <div className="navbar-end md:flex hidden">
                 <button className="btn btn-ghost">About</button>
-                <Link className="btn btn-ghost" to={"timelapses"}>Timelapses</Link>
+                {location.pathname !== "/timelapses" ? (
+                    <Link className="btn btn-ghost" to={"/timelapses"}>Timelapses</Link>
+                ) : (
+                    <Link className="btn btn-ghost" to={"/"}>Home</Link>
+                )}
                 <ThemeModeSwitcher/>
             </div>
         </header>

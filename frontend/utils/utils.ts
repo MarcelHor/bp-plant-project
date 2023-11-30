@@ -3,5 +3,5 @@ export const formatDate = (date: string | undefined) => {
         return '';
     }
     const dateObject = new Date(date);
-    return [dateObject.toLocaleTimeString() , dateObject.toLocaleDateString()];
+    return [dateObject.toLocaleTimeString(), dateObject.toLocaleDateString()];
 };

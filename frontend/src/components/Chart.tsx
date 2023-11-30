@@ -26,15 +26,17 @@ ChartJS.register(
 );
 
 export default function Chart({setMainImage, latestDate}: { setMainImage: Function, latestDate: string }) {
-    const now = new Date(latestDate)
+    //do not ask me why this is needed, but it is copilot's fault
+    const now = new Date(latestDate);
     const yesterday = new Date(now);
     yesterday.setHours(now.getHours() - 1);
-    const nowISO = now.toISOString().slice(0, 16);
-    const yesterdayISO = yesterday.toISOString().slice(0, 16);
+    const timezoneOffset = now.getTimezoneOffset() * 60000;
+    const nowLocalISO = new Date(now.getTime() - timezoneOffset).toISOString().slice(0, 16);
+    const yesterdayLocalISO = new Date(yesterday.getTime() - timezoneOffset).toISOString().slice(0, 16);
 
     const [fetchedChartData, setFetchedChartData] = useState<chartData | null>(null);
-    const [fromDateTime, setFromDateTime] = useState<string>(yesterdayISO);
-    const [toDateTime, setToDateTime] = useState<string>(nowISO);
+    const [fromDateTime, setFromDateTime] = useState<string>(yesterdayLocalISO);
+    const [toDateTime, setToDateTime] = useState<string>(nowLocalISO);
     const [notFound, setNotFound] = useState<boolean>(false);
 
     //@ts-ignore
