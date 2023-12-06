@@ -18,3 +18,9 @@ model SensorData {
   light        Float
   createdAt    DateTime @default(now())
 }
+
+model TimelapseData {
+  id        String   @id @default(uuid())
+  thumbnail String
+  createdAt DateTime @default(now())
+}

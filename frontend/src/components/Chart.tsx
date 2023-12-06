@@ -14,6 +14,7 @@ import {
     Tooltip,
     Legend
 } from 'chart.js';
+import {getInitialDates} from "../../utils/utils.ts";
 
 ChartJS.register(
     CategoryScale,
@@ -26,14 +27,7 @@ ChartJS.register(
 );
 
 export default function Chart({setMainImage, latestDate}: { setMainImage: Function, latestDate: string }) {
-    //do not ask me why this is needed, but it is copilot's fault
-    const now = new Date(latestDate);
-    const yesterday = new Date(now);
-    yesterday.setHours(now.getHours() - 1);
-    const timezoneOffset = now.getTimezoneOffset() * 60000;
-    const nowLocalISO = new Date(now.getTime() - timezoneOffset).toISOString().slice(0, 16);
-    const yesterdayLocalISO = new Date(yesterday.getTime() - timezoneOffset).toISOString().slice(0, 16);
-
+    const {nowLocalISO, yesterdayLocalISO} = getInitialDates(latestDate, 8);
     const [fetchedChartData, setFetchedChartData] = useState<chartData | null>(null);
     const [fromDateTime, setFromDateTime] = useState<string>(yesterdayLocalISO);
     const [toDateTime, setToDateTime] = useState<string>(nowLocalISO);

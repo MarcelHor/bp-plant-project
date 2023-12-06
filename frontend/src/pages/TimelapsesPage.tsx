@@ -1,9 +1,20 @@
 import Header from "../components/Header.tsx";
 import TimelapsesDrawer from "../components/TimelapsesDrawer.tsx";
 import Timelapses from "../components/Timelapses.tsx";
+import {useEffect, useState} from "react";
+import {imageData} from "../../types/image-types";
+import {getLatest} from "../../api/imageService.ts";
 
 export default function Home() {
+    const [latestData, setLatestData] = useState<imageData>();
 
+    useEffect(() => {
+        getLatest().then((response: any) => {
+            setLatestData(response);
+        }).catch((error: any) => {
+            console.log(error);
+        });
+    }, []);
 
     return (
         <div className={"flex flex-col h-screen"}>
@@ -18,12 +29,12 @@ export default function Home() {
                             <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">Open
                                 drawer</label>
                         </div>
-                        <div className="flex flex-col items-center justify-center max-w-7xl space-y-8 py-8 px-4">
+                        <div className="flex flex-col items-center justify-center max-w-7xl w-full h-full space-y-8 py-8 px-4">
                             <Timelapses/>
                         </div>
                     </div>
                     {/* Sidebar */}
-                    <TimelapsesDrawer/>
+                    {latestData && <TimelapsesDrawer latestDate={latestData.createdAt}/>}
                 </div>
             </main>
         </div>
