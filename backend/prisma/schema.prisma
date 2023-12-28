@@ -24,3 +24,9 @@ model TimelapseData {
   thumbnail String
   createdAt DateTime @default(now())
 }
+
+model emailSettings {
+  id        String @id @default(uuid())
+  subject   String
+  recipient String
+}
