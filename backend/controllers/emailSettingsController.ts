@@ -2,6 +2,20 @@ import {Request, Response} from 'express';
 import prisma from "../utils/db";
 import {runCron} from "../utils/cronjobs/notifications";
 
+export const getEmailSettings = async (req: Request, res: Response) => {
+    try {
+        const emailSettings = await prisma.emailSettings.findFirst();
+        if (!emailSettings) {
+            return res.status(404).json({message: 'Email settings not found'});
+        }
+
+        return res.status(200).json(emailSettings);
+    } catch (error: any) {
+        console.log(error);
+        return res.status(500).json({message: 'Something went wrong'});
+    }
+}
+
 export const setEmailSettings = async (req: Request, res: Response) => {
     const {subject, recipient, cronTime} = req.body;
 
