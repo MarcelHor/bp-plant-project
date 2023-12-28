@@ -4,6 +4,7 @@ import {getChartData} from "../../api/imageService.ts";
 import {Line} from 'react-chartjs-2';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons/faExclamationTriangle";
+import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons/faQuestionCircle";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -27,15 +28,18 @@ ChartJS.register(
 );
 
 export default function Chart({setMainImage, latestDate}: { setMainImage: Function, latestDate: string }) {
-    const {nowLocalISO, yesterdayLocalISO} = getInitialDates(latestDate, 8);
+    const {nowLocalISO, yesterdayLocalISO} = getInitialDates(latestDate, 24);
     const [fetchedChartData, setFetchedChartData] = useState<chartData | null>(null);
     const [fromDateTime, setFromDateTime] = useState<string>(yesterdayLocalISO);
     const [toDateTime, setToDateTime] = useState<string>(nowLocalISO);
     const [notFound, setNotFound] = useState<boolean>(false);
 
-    //@ts-ignore
     const handleChartClick = (event: any, elements: any) => {
+        if (event && typeof event.preventDefault === 'function') {
+            event.preventDefault();
+        }
         if (elements.length === 0 || !fetchedChartData) return;
+
         const elementIndex = elements[0].index;
         const clickedDataId = fetchedChartData.ids[elementIndex];
         setMainImage(clickedDataId);
@@ -108,7 +112,7 @@ export default function Chart({setMainImage, latestDate}: { setMainImage: Functi
 
     return (
         <div className="rounded shadow-lg border-2 border-base-300 w-full p-4 h-96 flex flex-col justify-between">
-            <form className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
+            <form className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 items-center mx-4">
                 <div className="flex flex-col space-y-1">
                     <label htmlFor="fromDateTime">From</label>
                     <input type="datetime-local" id="fromDateTime" name="fromDateTime"
@@ -124,6 +128,11 @@ export default function Chart({setMainImage, latestDate}: { setMainImage: Functi
                            value={toDateTime}
                            onChange={(e) => setToDateTime(e.target.value)}
                     />
+                </div>
+                <div className={"flex flex-1"}/>
+                <div className="tooltip"
+                     data-tip="The chart shows data from the selected time period. If the dates are more than 24 hours apart, the chart will be clustered">
+                    <FontAwesomeIcon icon={faQuestionCircle} size={"lg"} className={" tooltip"}/>
                 </div>
             </form>
             <div className="w-full h-64">

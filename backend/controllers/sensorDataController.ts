@@ -122,6 +122,12 @@ export const getChartData = async (req: Request, res: Response) => {
             return res.status(404).json({message: 'No data found'});
         }
 
+        if (Math.abs(new Date(from as string).getTime() - new Date(to as string).getTime()) > 259200000) {
+            const filteredData = data.filter((data, index) => index % 10 === 0);
+            data.length = 0;
+            data.push(...filteredData);
+        }
+
         const ids = data.map((data) => data.id);
         const labels = data.map((data) => data.createdAt.toISOString());
         const temperatureData = data.map((data) => data.temperature);

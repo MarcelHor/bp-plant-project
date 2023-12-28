@@ -8,7 +8,7 @@ const resolutions = [
     {width: 640, height: 480},
 ]
 
-export default function TimelapsesDrawer({latestDate}: { latestDate: string }) {
+export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPage}: { latestDate: string, fetchTimelapses: Function, currentPage: number }) {
     const {nowLocalISO, yesterdayLocalISO} = getInitialDates(latestDate, 1)
     const [from, setFrom] = useState<string>(yesterdayLocalISO)
     const [to, setTo] = useState<string>(nowLocalISO)
@@ -23,6 +23,7 @@ export default function TimelapsesDrawer({latestDate}: { latestDate: string }) {
         try {
             setLoading(true)
             await createTimeLapse(from, to, fps.toString(), `${resolution.width}x${resolution.height}`)
+            await fetchTimelapses(currentPage)
             setLoading(false)
             setSuccess(true)
         } catch (error: any) {

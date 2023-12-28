@@ -4,9 +4,43 @@ import Timelapses from "../components/Timelapses.tsx";
 import {useEffect, useState} from "react";
 import {imageData} from "../../types/image-types";
 import {getLatest} from "../../api/imageService.ts";
+import {getTimelapses} from "../../api/timelapseService.ts";
+
+interface timelapse {
+    id: string;
+    createdAt: string;
+    thumbnail: string;
+}
+
+interface timelapseResponse {
+    timelapses: timelapse[];
+    totalPages: number;
+}
+
 
 export default function Home() {
     const [latestData, setLatestData] = useState<imageData>();
+    const [timelapses, setTimelapses] = useState<timelapseResponse>();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+
+    const fetchTimelapses = async (page: number = 1, limit: number = 8) => {
+        try {
+            const data = await getTimelapses(page, limit);
+            setTotalPages(data.totalPages);
+            setTimelapses(data);
+        } catch (error: any) {
+            console.error("Failed to fetch timelapses:", error.message);
+        }
+    };
+
+    const handlePageChange = (newPage: number) => {
+        if (newPage < 1 || newPage > totalPages) {
+            return;
+        }
+        setCurrentPage(newPage);
+        fetchTimelapses(newPage);
+    };
 
     useEffect(() => {
         getLatest().then((response: any) => {
@@ -14,6 +48,8 @@ export default function Home() {
         }).catch((error: any) => {
             console.log(error);
         });
+
+        fetchTimelapses(currentPage);
     }, []);
 
     return (
@@ -29,12 +65,14 @@ export default function Home() {
                             <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">Open
                                 drawer</label>
                         </div>
-                        <div className="flex flex-col items-center justify-center max-w-7xl w-full h-full space-y-8 py-8 px-4">
-                            <Timelapses/>
+                        <div
+                            className="flex flex-col items-center justify-center max-w-7xl w-full h-full space-y-8 py-8 px-4">
+                            <Timelapses timelapses={timelapses} currentPage={currentPage} totalPages={totalPages}
+                                        handlePageChange={handlePageChange} fetchTimelapses={fetchTimelapses}/>
                         </div>
                     </div>
                     {/* Sidebar */}
-                    {latestData && <TimelapsesDrawer latestDate={latestData.createdAt}/>}
+                    {latestData && <TimelapsesDrawer latestDate={latestData.createdAt} fetchTimelapses={fetchTimelapses} currentPage={currentPage}/>}
                 </div>
             </main>
         </div>

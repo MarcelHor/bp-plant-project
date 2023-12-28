@@ -9,7 +9,7 @@ interface Timelapse {
     thumbnail: string;
 }
 
-export default function Timelapse(timelapse: Timelapse) {
+export default function Timelapse({timelapse, fetchTimelapses, currentPage}: any) {
     const [time, date] = formatDate(timelapse.createdAt);
 
     const handlePlay = () => {
@@ -22,6 +22,7 @@ export default function Timelapse(timelapse: Timelapse) {
         if (!confirm) return;
         try {
             await deleteTimelapse(timelapse.id);
+            await fetchTimelapses(currentPage);
         } catch (error: any) {
             console.error("Failed to delete timelapse:", error.message);
         }

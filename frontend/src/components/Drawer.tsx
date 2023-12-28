@@ -5,10 +5,11 @@ import {useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft, faChevronRight, faSearch, faXmark} from "@fortawesome/free-solid-svg-icons";
 
-export default function Drawer({thumbnailData, setMainImage, setThumbnailData}: {
+export default function Drawer({thumbnailData, setMainImage, setThumbnailData, selectedThumbnailId}: {
     thumbnailData: thumbnailsData | undefined,
     setMainImage: Function,
-    setThumbnailData: Function
+    setThumbnailData: Function,
+    selectedThumbnailId: string
 }) {
     const [page, setPage] = useState<number>(1);
     const [searchDate, setSearchDate] = useState("");
@@ -23,6 +24,7 @@ export default function Drawer({thumbnailData, setMainImage, setThumbnailData}: 
             setPage(thumbnailData.totalPages);
             return;
         }
+
         try {
             const response = await getThumbnails(page, limit);
             setThumbnailData(response);
@@ -42,13 +44,9 @@ export default function Drawer({thumbnailData, setMainImage, setThumbnailData}: 
     }
 
     const resetSearch = async () => {
-        try {
-            const data = await getThumbnails(1, limit);
-            setThumbnailData(data);
-            setPage(1);
-        } catch (error) {
-            console.error(error);
-        }
+        setSearchDate("");
+        setPage(1);
+        await getThumbnailData(1);
     }
 
     return (
@@ -76,10 +74,10 @@ export default function Drawer({thumbnailData, setMainImage, setThumbnailData}: 
                     <div className="flex space-x-4 items-center">
                         <button
                             className="btn btn-square btn-ghost btn-sm"
-                            onClick={() => {
+                            onClick={async () => {
                                 if (page > 1) {
                                     setPage(page - 1);
-                                    getThumbnailData(page - 1);
+                                    await getThumbnailData(page - 1);
                                 }
                             }}
                         >
@@ -88,9 +86,9 @@ export default function Drawer({thumbnailData, setMainImage, setThumbnailData}: 
                         <span>{thumbnailData?.currentPage}/{thumbnailData?.totalPages}</span>
                         <button
                             className="btn btn-square btn-ghost btn-sm"
-                            onClick={() => {
+                            onClick={async () => {
                                 setPage(page + 1);
-                                getThumbnailData(page + 1);
+                                await getThumbnailData(page + 1);
                             }}><FontAwesomeIcon icon={faChevronRight}/>
                         </button>
                     </div>
@@ -99,10 +97,8 @@ export default function Drawer({thumbnailData, setMainImage, setThumbnailData}: 
                     {thumbnailData &&
                         <ul className=" flex flex-col items-center justify-center">
                             {thumbnailData.thumbnails.map((thumbnail) => (
-                                <div key={thumbnail.id}
-                                     className={"w-full border-b-2 border-base-300 p-4 hover:bg-neutral-200 cursor-pointer"}>
-                                    <Thumbnail thumbnail={thumbnail} setMainImage={setMainImage}/>
-                                </div>
+                                <Thumbnail thumbnail={thumbnail} setMainImage={setMainImage}
+                                           isSelected={thumbnail.id === selectedThumbnailId} key={thumbnail.id}/>
                             ))}
                         </ul>}
                 </div>

@@ -19,6 +19,12 @@ export const streamTimelapseEndpoint = async (req: Request, res: Response) => {
         const start = parseInt(parts[0], 10);
         const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
 
+        if (start >= fileSize || end >= fileSize) {
+            return res.status(416).send('Requested range not satisfiable\n' + start + ' >= ' + fileSize);
+        } else if (start < 0 || end < 0) {
+            return res.status(416).send('Requested range not satisfiable\n' + start + ' < 0');
+        }
+
         const chunksize = (end - start) + 1;
         const file = fs.createReadStream(videoPath, {start, end});
         const head = {

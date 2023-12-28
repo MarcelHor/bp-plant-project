@@ -4,7 +4,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faDroplet, faTemperatureThreeQuarters, faWind, faClock, faLightbulb} from "@fortawesome/free-solid-svg-icons";
 import {faFaceSmileBeam} from "@fortawesome/free-regular-svg-icons/faFaceSmileBeam";
 
-export default function ImageDisplay({mainImageData     }: { mainImageData: imageData | undefined }) {
+export default function ImageDisplay({mainImageData}: { mainImageData: imageData | undefined }) {
     const [time, date] = formatDate(mainImageData?.createdAt);
 
     const thresholdValues = {
