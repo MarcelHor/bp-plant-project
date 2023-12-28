@@ -2,11 +2,39 @@ import cron from 'node-cron';
 import nodemailer from 'nodemailer';
 import prisma from "../db";
 
-export const runCron = () => {
-    cron.schedule('* * * * *', async () => {
-        await sendMail();
+let cronJob: cron.ScheduledTask | null = null;
+
+export const runCron = async () => {
+    if (cronJob) {
+        cronJob.stop();
+    }
+
+    const emailSettings = await prisma.emailSettings.findFirst();
+    const emailText = await prisma.sensorData.findFirst({
+        orderBy: {
+            createdAt: 'desc'
+        }
+    });
+
+    if(!emailSettings || !emailText) {
+        console.log('No email settings or no email text');
+        return;
+    }
+
+    const options = {
+        from: 'marcel.stinbank@gmail.com',
+        to: emailSettings.recipient,
+        subject: emailSettings.subject,
+        text: `Your daily plant report.\n\n last report: ${emailText.createdAt}\n humidity: ${emailText.humidity.toFixed(2)}\n temperature: ${emailText.temperature.toFixed(2)}\n soil moisture: ${emailText.soilMoisture.toFixed(2)}\n light: ${emailText.light.toFixed(2)}`
+    };
+
+    const cronTime = convertToCronTime(emailSettings.cronTime);
+
+    cronJob = cron.schedule(cronTime, async () => {
+        await sendMail(options);
     });
 }
+
 
 const Transport = nodemailer.createTransport({
     service: 'gmail',
@@ -20,26 +48,8 @@ const Transport = nodemailer.createTransport({
 });
 
 
-const sendMail = async () => {
+const sendMail = async (options: nodemailer.SendMailOptions) => {
     try {
-        const emailSettings = await prisma.emailSettings.findFirst();
-        const emailText = await prisma.sensorData.findFirst({
-            orderBy: {
-                createdAt: 'desc'
-            }
-        });
-        const options = {
-            from: 'marcel.stinbank@gmail.com',
-            to: emailSettings?.recipient,
-            subject: emailSettings?.subject,
-            text: `Your daily plant report.\n\n last report: ${emailText?.createdAt}\n humidity: ${emailText?.humidity.toFixed(2)}\n temperature: ${emailText?.temperature.toFixed(2)}\n soil moisture: ${emailText?.soilMoisture.toFixed(2)}\n light: ${emailText?.light.toFixed(2)}`
-        };
-
-        if (!emailSettings || !emailText) {
-            console.log('Could not send email!');
-            return;
-        }
-
         Transport.sendMail(options, (error, info) => {
             if (error) {
                 console.log(error);
@@ -52,4 +62,7 @@ const sendMail = async () => {
     }
 }
 
-
+const convertToCronTime = (time: string) => {
+    const [hours, minutes] = time.split(':');
+    return `${minutes} ${hours} * * *`;
+}

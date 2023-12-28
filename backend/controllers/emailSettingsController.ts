@@ -1,11 +1,18 @@
 import {Request, Response} from 'express';
 import prisma from "../utils/db";
+import {runCron} from "../utils/cronjobs/notifications";
 
 export const setEmailSettings = async (req: Request, res: Response) => {
-    const {subject, recipient} = req.body;
+    const {subject, recipient, cronTime} = req.body;
 
-    if (!subject || !recipient) {
-        return res.status(400).json({message: 'Missing subject or recipient'});
+    if (!subject || !recipient || !cronTime) {
+        return res.status(400).json({message: 'Missing subject, recipient or cronTime'});
+    }
+
+    //cron time must be in format 00:00
+    const regex = new RegExp('^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$');
+    if (!regex.test(cronTime)) {
+        return res.status(400).json({message: 'Cron time must be in format 00:00'});
     }
 
     try {
@@ -17,18 +24,21 @@ export const setEmailSettings = async (req: Request, res: Response) => {
                 },
                 data: {
                     subject,
-                    recipient
+                    recipient,
+                    cronTime
                 }
             });
         } else {
             await prisma.emailSettings.create({
                 data: {
                     subject,
-                    recipient
+                    recipient,
+                    cronTime
                 }
             });
         }
 
+        await runCron();
         return res.status(200).json({message: 'Email settings updated'});
     } catch (error: any) {
         console.log(error);

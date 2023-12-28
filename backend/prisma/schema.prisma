@@ -27,6 +27,7 @@ model TimelapseData {
 
 model emailSettings {
   id        String @id @default(uuid())
+  cronTime  String
   subject   String
   recipient String
 }
