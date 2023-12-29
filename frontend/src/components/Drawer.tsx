@@ -1,9 +1,10 @@
 import Thumbnail from "./Thumbnail.tsx";
 import {getThumbnails, getClosestData} from "../../api/imageService.ts";
 import {thumbnailsData} from "../../types/image-types";
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft, faChevronRight, faSearch, faXmark} from "@fortawesome/free-solid-svg-icons";
+import {useWebSocket} from "../../context/WebSocketContext.tsx";
 
 export default function Drawer({thumbnailData, setMainImage, setThumbnailData, selectedThumbnailId}: {
     thumbnailData: thumbnailsData | undefined,
@@ -13,6 +14,8 @@ export default function Drawer({thumbnailData, setMainImage, setThumbnailData, s
 }) {
     const [page, setPage] = useState<number>(1);
     const [searchDate, setSearchDate] = useState("");
+    const pageRef = useRef(page);
+    const socket = useWebSocket();
     const limit = 10;
 
     const getThumbnailData = async (page: number) => {
@@ -48,6 +51,31 @@ export default function Drawer({thumbnailData, setMainImage, setThumbnailData, s
         setPage(1);
         await getThumbnailData(1);
     }
+
+    useEffect(() => {
+        pageRef.current = page;
+    }, [page]);
+
+    useEffect(() => {
+        const handleNewData = () => {
+            if (pageRef.current === 1) {
+                console.log("New data uploaded, fetching new data page: " + pageRef.current);
+                getThumbnails(1, 10).then((response) => {
+                    setThumbnailData(response);
+                }).catch((error) => {
+                    console.log(error);
+                });
+            }
+        };
+        if (socket) {
+            socket.on('new-data-uploaded', handleNewData);
+
+            return () => {
+                socket.off('new-data-uploaded', handleNewData);
+            };
+        }
+    }, [socket]);
+
 
     return (
         <div className="drawer-side h-full md:h-[calc(100vh-64px)] border-r-2 border-base-300 z-20">

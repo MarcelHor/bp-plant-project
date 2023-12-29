@@ -18,6 +18,5 @@ export function getInitialDates(latestDate: string, backValue: number) {
     const timezoneOffset = now.getTimezoneOffset() * 60000;
     const nowLocalISO = new Date(now.getTime() - timezoneOffset).toISOString().slice(0, 16);
     const yesterdayLocalISO = new Date(yesterday.getTime() - timezoneOffset).toISOString().slice(0, 16);
-
     return {nowLocalISO, yesterdayLocalISO};
 }

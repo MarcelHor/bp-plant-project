@@ -11,6 +11,15 @@ export const getLatest = async () => {
     }
 }
 
+export const getLatestDate = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/sensor-data/latestDate`);
+        return response.data;
+    } catch (error: any) {
+        throw error;
+    }
+}
+
 export const getThumbnails = async (page: number, limit: number) => {
     try{
         const response = await axios.get('http://localhost:3000/sensor-data/thumbnails', {

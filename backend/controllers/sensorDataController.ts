@@ -26,6 +26,25 @@ export const getLatest = async (req: Request, res: Response) => {
     }
 }
 
+export const getLatestDate = async (req: Request, res: Response) => {
+    try {
+        const latestData = await prisma.sensorData.findFirst({
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        if (!latestData) {
+            return res.status(404).json({message: 'No data found'});
+        }
+
+        return res.status(200).json({createdAt: latestData.createdAt});
+    } catch (error: any) {
+        console.log(error);
+        return res.status(500).json({message: 'Something went wrong'});
+    }
+}
+
 export const getById = async (req: Request, res: Response) => {
     const {id} = req.params;
     try {
@@ -105,12 +124,19 @@ export const getChartData = async (req: Request, res: Response) => {
         return res.status(400).json({message: 'Missing from or to parameter'});
     }
 
+    const fromDate = new Date(from as string);
+    const toDate = new Date(to as string);
+
+    //! This is a hack to fix the timezone issue
+    toDate.setHours(toDate.getHours() + 1);
+    fromDate.setHours(fromDate.getHours() + 1);
+
     try {
         const data = await prisma.sensorData.findMany({
             where: {
                 createdAt: {
-                    gte: new Date(from as string),
-                    lte: new Date(to as string)
+                    gte: fromDate,
+                    lte: toDate
                 }
             },
             orderBy: {

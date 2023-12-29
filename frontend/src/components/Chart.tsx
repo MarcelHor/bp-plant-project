@@ -15,7 +15,9 @@ import {
     Tooltip,
     Legend
 } from 'chart.js';
+import {getLatestDate} from "../../api/imageService.ts";
 import {getInitialDates} from "../../utils/utils.ts";
+import {useWebSocket} from "../../context/WebSocketContext.tsx";
 
 ChartJS.register(
     CategoryScale,
@@ -27,12 +29,13 @@ ChartJS.register(
     Legend
 );
 
-export default function Chart({setMainImage, latestDate}: { setMainImage: Function, latestDate: string }) {
-    const {nowLocalISO, yesterdayLocalISO} = getInitialDates(latestDate, 24);
+export default function Chart({setMainImage}: { setMainImage: Function }) {
     const [fetchedChartData, setFetchedChartData] = useState<chartData | null>(null);
-    const [fromDateTime, setFromDateTime] = useState<string>(yesterdayLocalISO);
-    const [toDateTime, setToDateTime] = useState<string>(nowLocalISO);
+    const [fromDateTime, setFromDateTime] = useState<string>("");
+    const [toDateTime, setToDateTime] = useState<string>("");
     const [notFound, setNotFound] = useState<boolean>(false);
+    const [autoUpdate, setAutoUpdate] = useState<boolean>(true);
+    const socket = useWebSocket();
 
     const handleChartClick = (event: any, elements: any) => {
         if (event && typeof event.preventDefault === 'function') {
@@ -43,6 +46,37 @@ export default function Chart({setMainImage, latestDate}: { setMainImage: Functi
         const elementIndex = elements[0].index;
         const clickedDataId = fetchedChartData.ids[elementIndex];
         setMainImage(clickedDataId);
+    };
+
+    const fetchChartData = (from: string, to: string) => {
+        getChartData(from, to).then((response: any) => {
+            setFetchedChartData(response);
+            setNotFound(false);
+        }).catch((error: any) => {
+            console.log(error);
+            setNotFound(true);
+        });
+    };
+
+    const updateChartData = () => {
+        getLatestDate().then((response: any) => {
+            const {nowLocalISO, yesterdayLocalISO} = getInitialDates(response.createdAt, 24);
+            setFromDateTime(yesterdayLocalISO);
+            setToDateTime(nowLocalISO);
+            fetchChartData(yesterdayLocalISO, nowLocalISO);
+        }).catch((error: any) => {
+            console.log(error);
+        });
+    };
+
+    const handleDateTimeChange = (e: any) => {
+        const {name, value} = e.target;
+        if (name === "fromDateTime") {
+            setFromDateTime(value);
+        } else {
+            setToDateTime(value);
+        }
+        setAutoUpdate(false);
     };
 
     const chartData = {
@@ -101,14 +135,23 @@ export default function Chart({setMainImage, latestDate}: { setMainImage: Functi
     };
 
     useEffect(() => {
-        getChartData(fromDateTime, toDateTime).then((response: any) => {
-            setFetchedChartData(response);
-            setNotFound(false);
-        }).catch((error: any) => {
-            console.log(error);
-            setNotFound(true);
-        });
+        updateChartData();
+    }, []);
+
+    useEffect(() => {
+        if (fromDateTime && toDateTime) {
+            fetchChartData(fromDateTime, toDateTime);
+        }
     }, [fromDateTime, toDateTime]);
+
+    useEffect(() => {
+        if (socket && autoUpdate) {
+            socket.on('new-data-uploaded', updateChartData);
+            return () => {
+                socket.off('new-data-uploaded', updateChartData);
+            };
+        }
+    }, [socket, autoUpdate]);
 
     return (
         <div className="rounded shadow-lg border-2 border-base-300 w-full p-4 h-96 flex flex-col justify-between">
@@ -118,7 +161,7 @@ export default function Chart({setMainImage, latestDate}: { setMainImage: Functi
                     <input type="datetime-local" id="fromDateTime" name="fromDateTime"
                            className={"input input-bordered"}
                            value={fromDateTime}
-                           onChange={(e) => setFromDateTime(e.target.value)}
+                           onChange={handleDateTimeChange}
                     />
                 </div>
                 <div className="flex flex-col space-y-1">
@@ -126,12 +169,23 @@ export default function Chart({setMainImage, latestDate}: { setMainImage: Functi
                     <input type="datetime-local" id="toDateTime" name="toDateTime"
                            className={"input input-bordered"}
                            value={toDateTime}
-                           onChange={(e) => setToDateTime(e.target.value)}
+                           onChange={handleDateTimeChange}
                     />
                 </div>
                 <div className={"flex flex-1"}/>
+                <div className="form-control">
+                    <label className="label cursor-pointer space-x-2">
+                        <span className="label-text">Auto-update</span>
+                        <input
+                            type="checkbox"
+                            className="toggle toggle-primary"
+                            checked={autoUpdate}
+                            onChange={(e) => setAutoUpdate(e.target.checked)}
+                        />
+                    </label>
+                </div>
                 <div className="tooltip"
-                     data-tip="The chart shows data from the selected time period. If the dates are more than 24 hours apart, the chart will be clustered">
+                     data-tip="The chart shows data from the selected time period. If the dates are more than 24 hours apart, the chart will be clustered. Auto-update will update the chart when new data is uploaded.">
                     <FontAwesomeIcon icon={faQuestionCircle} size={"lg"} className={" tooltip"}/>
                 </div>
             </form>

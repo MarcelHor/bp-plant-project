@@ -3,6 +3,7 @@ import prisma from "../utils/db";
 import checkAndCleanStorage from "../utils/cleanStorage";
 import {createThumbnail, saveImage} from "../utils/imageUtils";
 import {randomUUID} from "crypto";
+import {io} from "../app";
 
 const validateSensorData = (data: any) => {
     const {temperature, humidity, createdAt, light, soilMoisture} = data;
@@ -46,6 +47,7 @@ export const processImageAndSensorData = async (req: Request, res: Response) => 
             }
         });
 
+        io.emit('new-data-uploaded');
 
         res.status(200).json({message: 'Image and sensor data processed'});
     } catch (error: Error | any) {

@@ -54,7 +54,7 @@ export default function Home() {
                             {mainImageData &&
                                 <>
                                     <ImageDisplay mainImageData={mainImageData}/>
-                                    <Chart setMainImage={setMainImage} latestDate={mainImageData?.createdAt}/>
+                                    <Chart setMainImage={setMainImage}/>
                                 </>
                             }
                         </div>
