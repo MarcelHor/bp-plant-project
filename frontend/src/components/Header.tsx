@@ -27,7 +27,8 @@ export default function Header() {
                     </label>
                     <ul tabIndex={0}
                         className="menu menu-sm dropdown-content mt-2 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                        <li><a>About</a></li>
+                        {location.pathname !== "/settings" && (
+                            <li><Link to={"/settings"}>Settings</Link></li>)}
                         {location.pathname !== "/timelapses" ? (
                             <li><Link to={"/timelapses"}>Timelapses</Link></li>
                         ) : (
@@ -46,7 +47,8 @@ export default function Header() {
                 <div className="text-xs md:text-sm">{currentTime.toLocaleDateString()}</div>
             </div>
             <div className="navbar-end md:flex hidden">
-                <button className="btn btn-ghost">About</button>
+                {location.pathname !== "/settings" && (
+                    <Link to={"/settings"} className="btn btn-ghost">Settings</Link>)}
                 {location.pathname !== "/timelapses" ? (
                     <Link className="btn btn-ghost" to={"/timelapses"}>Timelapses</Link>
                 ) : (
