@@ -5,14 +5,14 @@ import ImageDisplay from "../components/ImageDisplay.tsx";
 import Header from "../components/Header";
 import Chart from "../components/Chart.tsx";
 import Drawer from "../components/Drawer.tsx";
-import {useWebSocket} from "../../context/WebSocketContext.tsx";
+import {useSSE} from "../../context/SSEContext.tsx";
 
 
 export default function Home() {
     const [mainImageData, setMainImageData] = useState<imageData>();
     const [thumbnailData, setThumbnailData] = useState<thumbnailsData>();
     const [selectedThumbnailId, setSelectedThumbnailId] = useState<string>("");
-    const socket = useWebSocket();
+    const sseData = useSSE();
 
     // initial fetch
     useEffect(() => {
@@ -40,20 +40,14 @@ export default function Home() {
     }
 
     useEffect(() => {
-        if (socket && selectedThumbnailId.length === 0) {
-            const handleNewData = () => {
+        if (sseData && sseData.message === 'new-data-uploaded' && selectedThumbnailId.length === 0) {
                 getLatest().then((response: any) => {
                     setMainImageData(response);
                 }).catch((error: any) => {
                     console.log(error);
                 });
-            }
-            socket.on('new-data-uploaded', handleNewData);
-            return () => {
-                socket.off('new-data-uploaded', handleNewData);
-            };
         }
-    }, [socket, selectedThumbnailId]);
+    }, [sseData, selectedThumbnailId]);
 
     return (
         <div className={"flex flex-col h-screen"}>

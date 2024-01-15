@@ -4,7 +4,7 @@ import {thumbnailsData} from "../../types/image-types";
 import {useEffect, useRef, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft, faChevronRight, faSearch, faXmark} from "@fortawesome/free-solid-svg-icons";
-import {useWebSocket} from "../../context/WebSocketContext.tsx";
+import {useSSE} from "../../context/SSEContext.tsx";
 
 export default function Drawer({thumbnailData, setMainImage, setThumbnailData, selectedThumbnailId}: {
     thumbnailData: thumbnailsData | undefined,
@@ -15,7 +15,7 @@ export default function Drawer({thumbnailData, setMainImage, setThumbnailData, s
     const [page, setPage] = useState<number>(1);
     const [searchDate, setSearchDate] = useState("");
     const pageRef = useRef(page);
-    const socket = useWebSocket();
+    const sseData = useSSE();
     const limit = 10;
 
     const getThumbnailData = async (page: number) => {
@@ -57,7 +57,7 @@ export default function Drawer({thumbnailData, setMainImage, setThumbnailData, s
     }, [page]);
 
     useEffect(() => {
-        const handleNewData = () => {
+        if (sseData && sseData.message === 'new-data-uploaded') {
             if (pageRef.current === 1) {
                 console.log("New data uploaded, fetching new data page: " + pageRef.current);
                 getThumbnails(1, 10).then((response) => {
@@ -66,15 +66,8 @@ export default function Drawer({thumbnailData, setMainImage, setThumbnailData, s
                     console.log(error);
                 });
             }
-        };
-        if (socket) {
-            socket.on('new-data-uploaded', handleNewData);
-
-            return () => {
-                socket.off('new-data-uploaded', handleNewData);
-            };
         }
-    }, [socket]);
+    }, [sseData]);
 
 
     return (

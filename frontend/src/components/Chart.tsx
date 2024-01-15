@@ -17,7 +17,7 @@ import {
 } from 'chart.js';
 import {getLatestDate} from "../../api/imageService.ts";
 import {getInitialDates} from "../../utils/utils.ts";
-import {useWebSocket} from "../../context/WebSocketContext.tsx";
+import {useSSE} from "../../context/SSEContext.tsx";
 
 ChartJS.register(
     CategoryScale,
@@ -35,7 +35,7 @@ export default function Chart({setMainImage}: { setMainImage: Function }) {
     const [toDateTime, setToDateTime] = useState<string>("");
     const [notFound, setNotFound] = useState<boolean>(false);
     const [autoUpdate, setAutoUpdate] = useState<boolean>(true);
-    const socket = useWebSocket();
+    const sseData = useSSE();
 
     const handleChartClick = (event: any, elements: any) => {
         if (event && typeof event.preventDefault === 'function') {
@@ -145,13 +145,10 @@ export default function Chart({setMainImage}: { setMainImage: Function }) {
     }, [fromDateTime, toDateTime]);
 
     useEffect(() => {
-        if (socket && autoUpdate) {
-            socket.on('new-data-uploaded', updateChartData);
-            return () => {
-                socket.off('new-data-uploaded', updateChartData);
-            };
+        if (sseData && sseData.message === 'new-data-uploaded' && autoUpdate) {
+            updateChartData();
         }
-    }, [socket, autoUpdate]);
+    }, [sseData, autoUpdate]);
 
     return (
         <div className="rounded shadow-lg border-2 border-base-300 w-full p-4 h-96 flex flex-col justify-between">
