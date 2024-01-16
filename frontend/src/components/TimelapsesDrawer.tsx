@@ -82,8 +82,11 @@ export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPa
                             </div>
                             <div className="flex flex-col">
                                 <label htmlFor="fps" className="text-lg font-bold">FPS</label>
-                                <input type="number" id="fps" name="fps" className="input input-bordered"
-                                       value={fps} onChange={(e) => setFps(parseInt(e.target.value))}/>
+                                <select id="fps" name="fps" className="select select-bordered" value={fps}
+                                        onChange={(e) => setFps(parseInt(e.target.value))}>
+                                    <option value={24}>24</option>
+                                    <option value={30}>30</option>
+                                </select>
                             </div>
                         </div>
 
