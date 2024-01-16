@@ -11,8 +11,8 @@ export default function LayoutComponent({mainContent, sidebar}: { mainContent: R
                     {/* Main Content */}
                     <div
                         className="drawer-content flex flex-col items-center bg-base-200 overflow-y-auto p-4">
-                        <div className="flex items-center p-4 w-full space-x-4 lg:hidden">
-                            <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">Open
+                        <div className="flex items-center p-4 w-full space-x-4 md:hidden">
+                            <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button md:hidden">Open
                                 drawer</label>
                         </div>
                         <div

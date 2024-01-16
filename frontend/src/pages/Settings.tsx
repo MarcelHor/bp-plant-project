@@ -9,6 +9,7 @@ export default function Settings() {
         cronTime: '',
     });
     const [emailSettingsSaved, setEmailSettingsSaved] = useState(false);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         getEmailSettings().then((response) => {
@@ -32,6 +33,11 @@ export default function Settings() {
             }, 3000);
         } catch (error: unknown) {
             console.log(error);
+            setError(true);
+            setTimeout(() => {
+                setEmailSettingsSaved(false)
+                setError(false);
+            }, 3000);
         }
     };
 
@@ -50,12 +56,19 @@ export default function Settings() {
                             </div>
                         </div>
                         }
+                        {error && <div className="alert alert-error my-4">
+                            <div className="flex-1">
+                                <label className="mx-2">Nastavení se nepodařilo uložit</label>
+                            </div>
+                        </div>
+                        }
                         <div className="mb-4">
                             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="recipient">
                                 Příjemce E-mailu
                             </label>
                             <input
                                 className="input input-bordered w-full"
+                                required
                                 id="recipient" type="text" placeholder="Příjemce" name="recipient"
                                 value={emailSettings.recipient} onChange={handleChange}/>
                         </div>
@@ -65,6 +78,7 @@ export default function Settings() {
                             </label>
                             <input
                                 className="input input-bordered w-full"
+                                required
                                 id="subject" type="text" placeholder="Předmět" name="subject"
                                 value={emailSettings.subject}
                                 onChange={handleChange}/>
@@ -75,8 +89,9 @@ export default function Settings() {
                             </label>
                             <input
                                 className="input input-bordered w-full"
-                                id="cronTime" type="text" placeholder="00:00" name="cronTime"
+                                id="cronTime" placeholder="00:00" name="cronTime"
                                 value={emailSettings.cronTime}
+                                type="time"
                                 onChange={handleChange}/>
                         </div>
                         <div className="flex items-center justify-between">
