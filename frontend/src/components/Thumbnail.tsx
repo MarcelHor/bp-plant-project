@@ -3,7 +3,7 @@ import {formatDate} from "../../utils/utils.ts";
 
 export default function Thumbnail({thumbnail, setMainImage, isSelected}: {
     thumbnail: thumbnail,
-    setMainImage: Function,
+    setMainImage: (id: string) => void,
     isSelected: boolean
 }) {
     const [time, date] = formatDate(thumbnail.createdAt);

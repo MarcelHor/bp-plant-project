@@ -1,21 +1,21 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft, faChevronRight} from "@fortawesome/free-solid-svg-icons";
 import Timelapse from "./Timelapse.tsx";
+import {timelapse, timelapseResponse} from "../../types/image-types";
 
-interface timelapse {
-    id: string;
-    createdAt: string;
-    thumbnail: string;
-}
-
-export default function Timelapses({timelapses, currentPage, totalPages, handlePageChange, fetchTimelapses}: any) {
-
+export default function Timelapses({timelapsesData, currentPage, totalPages, handlePageChange, fetchTimelapses}: {
+    timelapsesData: timelapseResponse | undefined,
+    currentPage: number,
+    totalPages: number,
+    handlePageChange: (newPage: number) => void,
+    fetchTimelapses: (page: number, limit?: number) => void
+}) {
     return (
         <div className="w-full h-full flex flex-col justify-between items-center ">
             <div className={"w-full"}>
                 <h1 className="text-2xl font-bold mb-8">Timelapses</h1>
                 <ul className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
-                    {timelapses?.timelapses.map((timelapse: timelapse) => (
+                    {timelapsesData?.timelapses.map((timelapse: timelapse) => (
                         <Timelapse key={timelapse.id} timelapse={timelapse} fetchTimelapses={fetchTimelapses} currentPage={currentPage}/>
                     ))}
                 </ul>

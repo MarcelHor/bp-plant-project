@@ -27,13 +27,14 @@ export default function Header() {
                     </label>
                     <ul tabIndex={0}
                         className="menu menu-sm dropdown-content mt-2 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                        {location.pathname !== "/settings" && (
-                            <li><Link to={"/settings"}>Settings</Link></li>)}
-                        {location.pathname !== "/timelapses" ? (
-                            <li><Link to={"/timelapses"}>Timelapses</Link></li>
-                        ) : (
+                        {location.pathname !== "/" && (
                             <li><Link to={"/"}>Home</Link></li>
                         )}
+                        {location.pathname !== "/timelapses" && (
+                            <li><Link to={"/timelapses"}>Timelapses</Link></li>
+                        )}
+                        {location.pathname !== "/settings" && (
+                            <li><Link to={"/settings"}>Settings</Link></li>)}
                     </ul>
                 </div>
                 <Link className="btn btn-ghost normal-case text-xl" to={"/"}>
@@ -47,13 +48,17 @@ export default function Header() {
                 <div className="text-xs md:text-sm">{currentTime.toLocaleDateString()}</div>
             </div>
             <div className="navbar-end md:flex hidden">
-                {location.pathname !== "/settings" && (
-                    <Link to={"/settings"} className="btn btn-ghost">Settings</Link>)}
-                {location.pathname !== "/timelapses" ? (
-                    <Link className="btn btn-ghost" to={"/timelapses"}>Timelapses</Link>
-                ) : (
-                    <Link className="btn btn-ghost" to={"/"}>Home</Link>
-                )}
+                <>
+                    {location.pathname !== "/" && (
+                        <Link to={"/"} className="btn btn-ghost">Home</Link>
+                    )}
+                    {location.pathname !== "/timelapses" && (
+                        <Link to={"/timelapses"} className="btn btn-ghost">Timelapses</Link>
+                    )}
+                    {location.pathname !== "/settings" && (
+                        <Link to={"/settings"} className="btn btn-ghost">Settings</Link>
+                    )}
+                </>
                 <ThemeModeSwitcher/>
             </div>
         </header>

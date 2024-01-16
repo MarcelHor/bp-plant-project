@@ -5,7 +5,7 @@ import {createThumbnail, saveImage} from "../utils/imageUtils";
 import {randomUUID} from "crypto";
 import {sendEventMessage} from "./eventController";
 
-const validateSensorData = (data: any) => {
+const validateSensorData = (data: { temperature: string, humidity: string, createdAt: string, light: string, soilMoisture: string }) => {
     const {temperature, humidity, createdAt, light, soilMoisture} = data;
 
     if (!temperature || !humidity || !light || !soilMoisture) {

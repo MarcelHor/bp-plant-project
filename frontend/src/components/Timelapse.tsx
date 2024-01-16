@@ -3,12 +3,6 @@ import {faPlay, faDownload, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {formatDate} from "../../utils/utils.ts";
 import {deleteTimelapse} from "../../api/timelapseService.ts";
 
-interface Timelapse {
-    id: string;
-    createdAt: string;
-    thumbnail: string;
-}
-
 export default function Timelapse({timelapse, fetchTimelapses, currentPage}: any) {
     const [time, date] = formatDate(timelapse.createdAt);
 

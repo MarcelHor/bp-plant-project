@@ -6,12 +6,11 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft, faChevronRight, faSearch, faXmark} from "@fortawesome/free-solid-svg-icons";
 import {useSSE} from "../../context/SSEContext.tsx";
 
-export default function Drawer({thumbnailData, setMainImage, setThumbnailData, selectedThumbnailId}: {
-    thumbnailData: thumbnailsData | undefined,
-    setMainImage: Function,
-    setThumbnailData: Function,
+export default function Drawer({setMainImage, selectedThumbnailId}: {
+    setMainImage: (id: string) => void,
     selectedThumbnailId: string
 }) {
+    const [thumbnailData, setThumbnailData] = useState<thumbnailsData>();
     const [page, setPage] = useState<number>(1);
     const [searchDate, setSearchDate] = useState("");
     const pageRef = useRef(page);
@@ -31,7 +30,7 @@ export default function Drawer({thumbnailData, setMainImage, setThumbnailData, s
         try {
             const response = await getThumbnails(page, limit);
             setThumbnailData(response);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.log(error);
         }
     }
@@ -53,6 +52,14 @@ export default function Drawer({thumbnailData, setMainImage, setThumbnailData, s
     }
 
     useEffect(() => {
+        getThumbnails(1, 10).then((response) => {
+            setThumbnailData(response);
+        }).catch((error: unknown) => {
+            console.log(error);
+        });
+    }, []);
+
+    useEffect(() => {
         pageRef.current = page;
     }, [page]);
 
@@ -68,7 +75,6 @@ export default function Drawer({thumbnailData, setMainImage, setThumbnailData, s
             }
         }
     }, [sseData]);
-
 
     return (
         <div className="drawer-side h-full md:h-[calc(100vh-64px)] border-r-2 border-base-300 z-20">

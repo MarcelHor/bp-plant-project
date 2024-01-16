@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState, ChangeEvent, FormEvent} from "react";
 import Header from "../components/Header.tsx";
 import {PostEmailSettings, getEmailSettings} from "../../api/settingsService.ts";
 
@@ -11,18 +11,18 @@ export default function Settings() {
     const [emailSettingsSaved, setEmailSettingsSaved] = useState(false);
 
     useEffect(() => {
-        getEmailSettings().then((response: any) => {
+        getEmailSettings().then((response) => {
             setEmailSettings(response);
-        }).catch((error: any) => {
+        }).catch((error: unknown) => {
             console.log(error);
         });
     }, []);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setEmailSettings({...emailSettings, [e.target.name]: e.target.value});
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             await PostEmailSettings(emailSettings.subject, emailSettings.recipient, emailSettings.cronTime);
@@ -30,7 +30,7 @@ export default function Settings() {
             setTimeout(() => {
                 setEmailSettingsSaved(false);
             }, 3000);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.log(error);
         }
     };

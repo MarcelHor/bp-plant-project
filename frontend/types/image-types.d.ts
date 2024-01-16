@@ -35,4 +35,14 @@ interface chartData {
     lightData: number[]
 }
 
-export type { imageData, thumbnailsData, thumbnail, thumbnailProps, chartData };
+interface timelapse {
+    id: string;
+    createdAt: string;
+    thumbnail: string;
+}
+
+interface timelapseResponse {
+    timelapses: timelapse[];
+    totalPages: number;
+}
+export type { imageData, thumbnailsData, thumbnail, thumbnailProps, chartData, timelapse, timelapseResponse };

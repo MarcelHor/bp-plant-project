@@ -72,7 +72,6 @@ export default function ImageDisplay({mainImageData}: { mainImageData: imageData
                     </div>
                 ) : (
                     <div className="p-2 rounded flex flex-col justify-center items-center mb-4">
-                        {/*@ts-ignore*/}
                         <FontAwesomeIcon icon={faFaceSmileBeam} size={"6x"}/>
                         <span className={"text-lg font-semibold mt-2"}>Everything is fine and healthy</span>
                     </div>

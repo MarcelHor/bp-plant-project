@@ -29,7 +29,7 @@ ChartJS.register(
     Legend
 );
 
-export default function Chart({setMainImage}: { setMainImage: Function }) {
+export default function Chart({setMainImage}: { setMainImage: (id: string) => void }) {
     const [fetchedChartData, setFetchedChartData] = useState<chartData | null>(null);
     const [fromDateTime, setFromDateTime] = useState<string>("");
     const [toDateTime, setToDateTime] = useState<string>("");
@@ -49,22 +49,22 @@ export default function Chart({setMainImage}: { setMainImage: Function }) {
     };
 
     const fetchChartData = (from: string, to: string) => {
-        getChartData(from, to).then((response: any) => {
+        getChartData(from, to).then((response) => {
             setFetchedChartData(response);
             setNotFound(false);
-        }).catch((error: any) => {
+        }).catch((error: unknown) => {
             console.log(error);
             setNotFound(true);
         });
     };
 
     const updateChartData = () => {
-        getLatestDate().then((response: any) => {
+        getLatestDate().then((response) => {
             const {nowLocalISO, yesterdayLocalISO} = getInitialDates(response.createdAt, 24);
             setFromDateTime(yesterdayLocalISO);
             setToDateTime(nowLocalISO);
             fetchChartData(yesterdayLocalISO, nowLocalISO);
-        }).catch((error: any) => {
+        }).catch((error: unknown) => {
             console.log(error);
         });
     };
@@ -151,8 +151,8 @@ export default function Chart({setMainImage}: { setMainImage: Function }) {
     }, [sseData, autoUpdate]);
 
     return (
-        <div className="rounded shadow-lg border-2 border-base-300 w-full p-4 h-96 flex flex-col justify-between">
-            <form className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 items-center mx-4">
+        <div className="rounded shadow-lg border-2 border-base-300 w-full p-4 flex flex-col justify-between">
+            <form className="flex gap-4 flex-wrap items-center mx-4">
                 <div className="flex flex-col space-y-1">
                     <label htmlFor="fromDateTime">From</label>
                     <input type="datetime-local" id="fromDateTime" name="fromDateTime"
