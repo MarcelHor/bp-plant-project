@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {createTimeLapse} from "../../api/timelapseService.ts";
 import {getInitialDates} from "../../utils/utils.ts";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons/faQuestionCircle";
 
 const resolutions = [
     {width: 1920, height: 1080},
@@ -8,12 +10,13 @@ const resolutions = [
     {width: 640, height: 480},
 ]
 
-export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPage}: { latestDate: string, fetchTimelapses: Function, currentPage: number }) {
+export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPage}: { latestDate: string, fetchTimelapses: (page: number) => void, currentPage: number }) {
     const {nowLocalISO, yesterdayLocalISO} = getInitialDates(latestDate, 1)
     const [from, setFrom] = useState<string>(yesterdayLocalISO)
     const [to, setTo] = useState<string>(nowLocalISO)
     const [fps, setFps] = useState<number>(24)
     const [resolution, setResolution] = useState<{ width: number, height: number }>(resolutions[0])
+    const [createChart, setCreateChart] = useState<boolean>(false)
     const [success, setSuccess] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<string>("")
@@ -22,7 +25,7 @@ export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPa
         e.preventDefault()
         try {
             setLoading(true)
-            await createTimeLapse(from, to, fps.toString(), `${resolution.width}x${resolution.height}`)
+            await createTimeLapse(from, to, fps.toString(), `${resolution.width}x${resolution.height}`, createChart)
             await fetchTimelapses(currentPage)
             setLoading(false)
             setSuccess(true)
@@ -87,6 +90,16 @@ export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPa
                                     <option value={24}>24</option>
                                     <option value={30}>30</option>
                                 </select>
+                            </div>
+                            <div className="flex flex-row space-x-4 items-center">
+                                <label htmlFor="createChart" className="text-lg font-bold">Create chart</label>
+                                <input type="checkbox" id="createChart" name="createChart"
+                                       className="checkbox" checked={createChart}
+                                       onChange={(e) => setCreateChart(e.target.checked)}/>
+                                <div className="tooltip"
+                                     data-tip="Adds a chart overlay to the timelapse video. Might take a while to generate.">
+                                    <FontAwesomeIcon icon={faQuestionCircle} size={"lg"} className={" tooltip"}/>
+                                </div>
                             </div>
                         </div>
 

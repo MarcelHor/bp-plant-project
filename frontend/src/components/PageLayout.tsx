@@ -10,7 +10,7 @@ export default function LayoutComponent({mainContent, sidebar}: { mainContent: R
                     <input id="my-drawer-2" type="checkbox" className="drawer-toggle "/>
                     {/* Main Content */}
                     <div
-                        className="drawer-content flex flex-col items-center bg-base-200 overflow-y-auto p-4">
+                        className="drawer-content flex flex-col items-center bg-base-200  h-full overflow-y-auto p-4">
                         <div className="flex items-center p-4 w-full space-x-4 md:hidden">
                             <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button md:hidden">Open
                                 drawer</label>
