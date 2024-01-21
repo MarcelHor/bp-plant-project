@@ -1,18 +1,16 @@
 import {Request, Response} from 'express';
 import prisma from "../utils/db";
-import {getImageById, getThumbnailById} from "../utils/imageUtils";
+import {getThumbnailById} from "../utils/imageUtils";
 import path from "path";
-import ffmpeg from "fluent-ffmpeg";
 import {randomUUID} from "crypto";
 import fs from "fs";
-import {ChartConfiguration} from "chart.js";
-import {ChartJSNodeCanvas} from 'chartjs-node-canvas';
-
-const width = 800;
-const height = 400;
-const backgroundColour = '#ffffff';
-const chartJSNodeCanvas = new ChartJSNodeCanvas({width, height, backgroundColour});
-
+import {
+    addGraphVideoToTimelapse,
+    createChartImage,
+    createGraphVideo,
+    createTimelapse,
+    deleteTempFiles
+} from "../utils/timelapseUtils";
 
 export const streamTimelapseEndpoint = async (req: Request, res: Response) => {
     const videoPath = path.join(__dirname, '../static/timelapses', req.params.name);
@@ -22,7 +20,6 @@ export const streamTimelapseEndpoint = async (req: Request, res: Response) => {
     const isDownload = req.query.download === 'true';
 
     if (range && !isDownload) {
-        console.log("streaming");
         const parts = range.replace(/bytes=/, "").split("-");
         const start = parseInt(parts[0], 10);
         const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
@@ -120,6 +117,8 @@ export const createTimelapseEndpoint = async (req: Request, res: Response) => {
     }
 
     try {
+        await deleteTempFiles();
+
         const sensorData = await prisma.sensorData.findMany({
             where: {
                 createdAt: {
@@ -135,21 +134,23 @@ export const createTimelapseEndpoint = async (req: Request, res: Response) => {
         const ids = sensorData.map((data: any) => data.id);
         const id = randomUUID();
 
+        const timelapseFilePath = createChart ? path.join(__dirname, '../static/temp-videos', `${id}_%d.mp4`) : path.join(__dirname, '../static/timelapses', `${id}.mp4`);
+        const outputVideoPath = path.join(__dirname, '../static/timelapses', `${id}.mp4`);
+        const graphImagesPath = path.join(__dirname, '../static/chart', `${id}_%d.png`);
+        const graphVideoPath = path.join(__dirname, '../static/graph-videos', `${id}.mp4`);
+
         if (createChart) {
             await Promise.all(sensorData.map((data, index) => {
                 return createChartImage(sensorData, index, `${id}_${index}`);
             }));
         }
 
-        await createTimelapse(ids, fps as string, resolution as string, id);
-
+        await createTimelapse(ids, fps as string, resolution as string, id, timelapseFilePath);
 
         if (createChart) {
-            const graphVideoPath = await createGraphVideo(id, fps);
-            const timelapseFilePath = path.join(__dirname, '../static/timelapses', `${id}.mp4`);
-            const outputVideoPath = path.join(__dirname, '../static/final-videos', `${id}.mp4`);
+            await createGraphVideo(id, fps, graphVideoPath, graphImagesPath);
             await addGraphVideoToTimelapse(graphVideoPath, timelapseFilePath, outputVideoPath);
-            await deleteGraphImages();
+            await deleteTempFiles();
         }
 
         const thumbnail = await getThumbnailById(ids[0]);
@@ -165,152 +166,3 @@ export const createTimelapseEndpoint = async (req: Request, res: Response) => {
         return res.status(500).json({message: 'Something went wrong'});
     }
 };
-
-const createTimelapse = async (ids: string[], fps: string, resolution: string, id: string) => {
-    let fileListStream: fs.WriteStream;
-
-    try {
-
-        const imagePaths = (await Promise.all(ids.map(id => getImageById(id))))
-            .map(name => path.join('./static/images', name));
-
-        const fileListPath = path.join('./', 'imageList.txt');
-        fileListStream = fs.createWriteStream(fileListPath);
-
-        imagePaths.forEach(imagePath => {
-            fileListStream.write(`file '${imagePath}'\n`);
-            fileListStream.write(`duration ${1 / parseFloat(fps)}\n`);
-        });
-        fileListStream.end();
-
-        const timelapseFileName = `${id}.mp4`;
-        const timelapseFilePath = path.join('./static/timelapses', timelapseFileName);
-
-        return new Promise((resolve, reject) => {
-            ffmpeg(fileListPath)
-                .inputOptions(['-f concat', '-safe 0'])
-                .outputOptions(['-r ' + fps, '-s ' + resolution])
-                .on('end', () => {
-                    fs.unlink(fileListPath, () => {
-                        resolve(timelapseFileName);
-                    });
-                })
-                .on('error', (error) => {
-                    reject(error);
-                })
-                .save(timelapseFilePath);
-        });
-    } catch (error: any) {
-        return Promise.reject(error);
-    }
-};
-
-const createChartImage = async (allData: any[], currentIndex: number, imageName: string) => {
-
-    const filteredData = allData.slice(0, currentIndex + 1);
-    const labels = filteredData.map(data => data.createdAt);
-    const temperature = filteredData.map(data => data.temperature);
-    const humidity = filteredData.map(data => data.humidity);
-    const soilMoisture = filteredData.map(data => data.soilMoisture);
-    const light = filteredData.map(data => data.light);
-
-    const configuration: ChartConfiguration = {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: 'Temperature',
-                    data: temperature,
-                    fill: false,
-                    borderColor: 'rgb(234,165,0)',
-                },
-                {
-                    label: 'Humidity',
-                    data: humidity,
-                    fill: false,
-                    borderColor: 'rgb(79,159,240)',
-                },
-                {
-                    label: 'Soil Moisture',
-                    data: soilMoisture,
-                    fill: false,
-                    borderColor: 'rgb(0,126,0)',
-                },
-                {
-                    label: 'Light',
-                    data: light,
-                    fill: false,
-                    borderColor: 'rgb(255,255,0)',
-                }
-            ]
-        },
-        options: {
-            responsive: false,
-            scales: {
-                y: {
-                    display: true,
-                },
-                x: {
-                    display: true,
-                    title: {
-                        display: true,
-                        text: 'Time'
-                    },
-                    ticks: {
-                        display: false,
-                    }
-                }
-            },
-        }
-    };
-
-    const image = await chartJSNodeCanvas.renderToBuffer(configuration);
-    const chartPath = path.join(__dirname, '../static/chart', imageName + '.png');
-    fs.writeFileSync(chartPath, image);
-}
-
-const createGraphVideo = async (id: string, fps: string): Promise<string> => {
-    const graphImagesPath = path.join(__dirname, '../static/chart', `${id}_%d.png`);
-    const graphVideoPath = path.join(__dirname, '../static/graph-videos', `${id}.mp4`);
-
-    return new Promise((resolve, reject) => {
-        ffmpeg()
-            .input(graphImagesPath)
-            .inputFPS(parseFloat(fps))
-            .outputOptions(['-c:v libx264', '-r ' + fps, '-pix_fmt yuv420p'])
-            .on('end', () => resolve(graphVideoPath))
-            .on('error', (error) => reject(error))
-            .save(graphVideoPath);
-    });
-};
-
-const addGraphVideoToTimelapse = async (graphVideoPath: string, timelapseVideoPath: string, outputVideoPath: string) => {
-    return new Promise((resolve, reject) => {
-        ffmpeg()
-            .input(timelapseVideoPath)
-            .input(graphVideoPath)
-            .complexFilter([
-                '[0:v][1:v] overlay=10:10' // Přidání grafického videa do levého rohu
-            ])
-            .outputOptions(['-c:v libx264', '-pix_fmt yuv420p'])
-            .on('end', () => resolve(outputVideoPath))
-            .on('error', (error) => reject(error))
-            .save(outputVideoPath);
-    });
-};
-
-const deleteGraphImages = async () => {
-    const graphImagesPath = path.join(__dirname, '../static/chart');
-    fs.readdir(graphImagesPath, (err, files) => {
-        if (err) throw err;
-
-        for (const file of files) {
-            fs.unlink(path.join(graphImagesPath, file), err => {
-                if (err) throw err;
-            });
-        }
-    });
-}
-
-

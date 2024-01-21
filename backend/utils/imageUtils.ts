@@ -20,7 +20,7 @@ export async function createThumbnail(file: any, fileName: string) {
         }
         const image = await jimp.read(file.buffer);
         await image.resize(200, jimp.AUTO)
-            .quality(80)
+            .quality(90)
             .writeAsync(thumbnailPath);
     }
 }
