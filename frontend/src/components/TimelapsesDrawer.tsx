@@ -10,7 +10,11 @@ const resolutions = [
     {width: 640, height: 480},
 ]
 
-export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPage}: { latestDate: string, fetchTimelapses: (page: number) => void, currentPage: number }) {
+export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPage}: {
+    latestDate: string,
+    fetchTimelapses: (page: number) => void,
+    currentPage: number
+}) {
     const {nowLocalISO, yesterdayLocalISO} = getInitialDates(latestDate, 1)
     const [from, setFrom] = useState<string>(yesterdayLocalISO)
     const [to, setTo] = useState<string>(nowLocalISO)
@@ -87,8 +91,11 @@ export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPa
                                 <label htmlFor="fps" className="text-lg font-bold">FPS</label>
                                 <select id="fps" name="fps" className="select select-bordered" value={fps}
                                         onChange={(e) => setFps(parseInt(e.target.value))}>
+                                    <option value={1}>1</option>
+                                    <option value={10}>10</option>
                                     <option value={24}>24</option>
                                     <option value={30}>30</option>
+                                    <option value={60}>60</option>
                                 </select>
                             </div>
                             <div className="flex flex-row space-x-4 items-center">

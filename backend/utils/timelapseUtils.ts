@@ -11,36 +11,39 @@ const backgroundColour = '#ffffff';
 const chartJSNodeCanvas = new ChartJSNodeCanvas({width, height, backgroundColour});
 
 export const createTimelapse = async (ids: string[], fps: string, resolution: string, id: string, outputPath: string) => {
-    let fileListStream: fs.WriteStream;
-
     try {
         const imagePaths = (await Promise.all(ids.map(id => getImageById(id))))
-            .map(name => path.join('./static/images', name));
+            .map(name => path.join('./static/images', name).replace(/\\/g, '/'));
 
-        const fileListPath = path.join('./', 'imageList.txt');
-        fileListStream = fs.createWriteStream(fileListPath);
+        const fileListPath = path.join('./', 'imageList.txt').replace(/\\/g, '/');
+        const fileListStream = fs.createWriteStream(fileListPath);
 
         imagePaths.forEach(imagePath => {
             fileListStream.write(`file '${imagePath}'\n`);
-            fileListStream.write(`duration ${1 / parseFloat(fps)}\n`);
         });
         fileListStream.end();
 
         return new Promise((resolve, reject) => {
-            ffmpeg(fileListPath)
-                .inputOptions(['-f concat', '-safe 0'])
-                .outputOptions(['-r ' + fps, '-s ' + resolution])
-                .on('end', () => {
-                    fs.unlink(fileListPath, () => {
-                        resolve(outputPath);
-                    });
-                })
-                .on('error', (error) => {
-                    reject(error);
-                })
-                .save(outputPath);
+            fileListStream.on('finish', () => {
+                ffmpeg(fileListPath)
+                    .inputOptions(['-f concat', '-safe 0'])
+                    .inputFPS(parseFloat(fps))
+                    .outputOptions(['-c:v libx264', '-r ' + fps, '-pix_fmt yuv420p', '-s ' + resolution])
+                    .size(resolution)
+                    .on('end', () => {
+                        fs.unlink(fileListPath, () => {
+                            resolve(outputPath);
+                        });
+                    })
+                    .on('error', (error) => {
+                        fs.unlink(fileListPath, () => {
+                            reject(error);
+                        });
+                    })
+                    .save(outputPath);
+            });
         });
-    } catch (error: any) {
+    } catch (error) {
         return Promise.reject(error);
     }
 };
@@ -131,7 +134,7 @@ export const addGraphVideoToTimelapse = async (graphVideoPath: string, timelapse
             .input(timelapseVideoPath)
             .input(graphVideoPath)
             .complexFilter([
-                '[0:v][1:v] overlay=10:10' // Přidání grafického videa do levého rohu
+                '[0:v][1:v] overlay=10:10'
             ])
             .outputOptions(['-c:v libx264', '-pix_fmt yuv420p'])
             .on('end', () => resolve(outputVideoPath))
