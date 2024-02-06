@@ -36,7 +36,9 @@ export const postPlantSettings = async (
     return response.data;
 }
 
-export const toggleWatering = async () => {
-    const response = await axiosInstance.post(`/plant-settings/toggle`);
+export const setWatering = async (waterPlant: boolean) => {
+    const response = await axiosInstance.post(`/plant-settings/watering`, {
+        waterPlant
+    });
     return response.data;
 }

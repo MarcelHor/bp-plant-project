@@ -1,10 +1,10 @@
 import {Router} from 'express';
-import {getPlantSettings, setPlantSettings, toggleWatering} from "../controllers/plantSettingsController";
+import {getPlantSettings, setPlantSettings, setWatering} from "../controllers/plantSettingsController";
 
 const plantSettingsRouter = Router();
 
 plantSettingsRouter.get('/', getPlantSettings);
 plantSettingsRouter.post('/', setPlantSettings);
-plantSettingsRouter.post('/toggle', toggleWatering);
+plantSettingsRouter.post('/watering', setWatering);
 
 export default plantSettingsRouter;

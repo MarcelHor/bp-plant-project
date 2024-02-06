@@ -15,7 +15,11 @@ export const getPlantSettings = async (req: Request, res: Response) => {
     }
 }
 
-export const toggleWatering = async (req: Request, res: Response) => {
+export const setWatering = async (req: Request, res: Response) => {
+    const {waterPlant} = req.body;
+    if (waterPlant === undefined) {
+        return res.status(400).json({message: 'Missing waterPlant'});
+    }
     try {
         const plantSettings = await prisma.plantSettings.findFirst();
         if (!plantSettings) {
@@ -27,7 +31,7 @@ export const toggleWatering = async (req: Request, res: Response) => {
                 id: plantSettings.id
             },
             data: {
-                waterPlant: !plantSettings.waterPlant
+                waterPlant: waterPlant
             }
         });
 

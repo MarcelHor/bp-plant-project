@@ -5,7 +5,7 @@ import {
     getEmailSettings,
     postPlantSettings,
     getPlantSettings,
-    toggleWatering
+    setWatering
 } from "../../api/settingsService.ts";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEnvelope, faGear, faPlantWilt, faDroplet} from "@fortawesome/free-solid-svg-icons";
@@ -19,7 +19,6 @@ export default function Settings() {
     const [plantSettings, setPlantSettings] = useState({
         captureInterval: 0,
         wateringDuration: 0,
-        waterPlant: false,
     });
     const [plantSettingsSaved, setPlantSettingsSaved] = useState(false);
     const [plantError, setPlantError] = useState(false);
@@ -27,7 +26,7 @@ export default function Settings() {
     const [emailSettingsSaved, setEmailSettingsSaved] = useState(false);
     const [emailError, setEmailError] = useState(false);
 
-    const [watering, setWatering] = useState(false);
+    const [waterPlantLoading, setWaterPlantLoading] = useState(false);
 
     useEffect(() => {
         getEmailSettings().then((response) => {
@@ -52,16 +51,15 @@ export default function Settings() {
     }
 
     const handleWaterPlant = async () => {
-        if (watering) return;
+        if (waterPlantLoading) return;
         try {
-            setWatering(true);
-            await toggleWatering();
-            setPlantSettings({...plantSettings, waterPlant: !plantSettings.waterPlant});
+            setWaterPlantLoading(true);
+            await setWatering(true);
             setTimeout(() => {
-                setWatering(false);
+                setWaterPlantLoading(false);
             }, 3000);
         } catch (error: unknown) {
-            setWatering(false);
+            setWaterPlantLoading(false);
             console.log(error);
         }
     }
@@ -87,7 +85,6 @@ export default function Settings() {
     const plantSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            console.log(plantSettings);
             await postPlantSettings(plantSettings.captureInterval, plantSettings.wateringDuration);
             setPlantSettingsSaved(true);
             setTimeout(() => {
@@ -107,15 +104,15 @@ export default function Settings() {
         <div className={"flex flex-col min-h-screen items-center w-full justify-center bg-base-200 overflow-y-auto"}>
             <Header/>
             <div className="px-8 w-full h-full my-24 flex flex-col items-center justify-center">
-                <h1 className="text-3xl text-center font-bold mb-4"><FontAwesomeIcon icon={faGear} className="mr-2"/>Settings
-                </h1>
                 <div
                     className="flex items-center justify-between rounded shadow-lg border-2 border-base-300 w-full md:max-w-6xl p-12 space-y-12  flex-col ">
-
+                    <h1 className="text-3xl text-center font-bold mb-4"><FontAwesomeIcon icon={faGear}
+                                                                                         className="mr-2"/>Settings
+                    </h1>
                     <div className="md:w-2/3 w-full">
                         <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2"><FontAwesomeIcon
                             icon={faDroplet} className="mr-2"/>Water</h2>
-                        {watering && <div className="alert alert-success my-4">
+                        {waterPlantLoading && <div className="alert alert-success my-4">
                             <div className="flex-1">
                                 <label className="mx-2">Setting saved</label>
                             </div>
@@ -126,7 +123,6 @@ export default function Settings() {
                                 onClick={handleWaterPlant}>
                                 Water plant
                             </button>
-                            <span>Watering status: {plantSettings.waterPlant ? "On" : "Off"}</span>
                         </div>
                     </div>
 
