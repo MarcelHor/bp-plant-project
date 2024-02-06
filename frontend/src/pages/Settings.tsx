@@ -1,6 +1,14 @@
 import {useEffect, useState, ChangeEvent, FormEvent} from "react";
 import Header from "../components/Header.tsx";
-import {PostEmailSettings, getEmailSettings} from "../../api/settingsService.ts";
+import {
+    PostEmailSettings,
+    getEmailSettings,
+    postPlantSettings,
+    getPlantSettings,
+    toggleWatering
+} from "../../api/settingsService.ts";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEnvelope, faGear, faPlantWilt, faDroplet} from "@fortawesome/free-solid-svg-icons";
 
 export default function Settings() {
     const [emailSettings, setEmailSettings] = useState({
@@ -8,8 +16,18 @@ export default function Settings() {
         subject: '',
         cronTime: '',
     });
+    const [plantSettings, setPlantSettings] = useState({
+        captureInterval: 0,
+        wateringDuration: 0,
+        waterPlant: false,
+    });
+    const [plantSettingsSaved, setPlantSettingsSaved] = useState(false);
+    const [plantError, setPlantError] = useState(false);
+
     const [emailSettingsSaved, setEmailSettingsSaved] = useState(false);
-    const [error, setError] = useState(false);
+    const [emailError, setEmailError] = useState(false);
+
+    const [watering, setWatering] = useState(false);
 
     useEffect(() => {
         getEmailSettings().then((response) => {
@@ -17,13 +35,38 @@ export default function Settings() {
         }).catch((error: unknown) => {
             console.log(error);
         });
+
+        getPlantSettings().then((response) => {
+            setPlantSettings(response);
+        }).catch((error: unknown) => {
+            console.log(error);
+        });
     }, []);
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
         setEmailSettings({...emailSettings, [e.target.name]: e.target.value});
     };
 
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    const handlePlantChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setPlantSettings({...plantSettings, [e.target.name]: e.target.value});
+    }
+
+    const handleWaterPlant = async () => {
+        if (watering) return;
+        try {
+            setWatering(true);
+            await toggleWatering();
+            setPlantSettings({...plantSettings, waterPlant: !plantSettings.waterPlant});
+            setTimeout(() => {
+                setWatering(false);
+            }, 3000);
+        } catch (error: unknown) {
+            setWatering(false);
+            console.log(error);
+        }
+    }
+
+    const emailSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             await PostEmailSettings(emailSettings.subject, emailSettings.recipient, emailSettings.cronTime);
@@ -33,78 +76,168 @@ export default function Settings() {
             }, 3000);
         } catch (error: unknown) {
             console.log(error);
-            setError(true);
+            setEmailError(true);
             setTimeout(() => {
                 setEmailSettingsSaved(false)
-                setError(false);
+                setEmailError(false);
             }, 3000);
         }
     };
 
+    const plantSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            console.log(plantSettings);
+            await postPlantSettings(plantSettings.captureInterval, plantSettings.wateringDuration);
+            setPlantSettingsSaved(true);
+            setTimeout(() => {
+                setPlantSettingsSaved(false);
+            }, 3000);
+        } catch (error: unknown) {
+            console.log(error);
+            setPlantError(true);
+            setTimeout(() => {
+                setPlantSettingsSaved(false)
+                setPlantError(false);
+            }, 3000);
+        }
+    }
+
     return (
-        <div className={"flex flex-col h-screen items-center w-full justify-center bg-base-200 overflow-y-auto"}>
+        <div className={"flex flex-col min-h-screen items-center w-full justify-center bg-base-200 overflow-y-auto"}>
             <Header/>
-            <div
-                className="flex-col flex items-center justify-around rounded shadow-lg border-2 border-base-300 w-full max-w-7xl p-8">
-                <h1 className="text-3xl text-center font-bold mb-4">Nastavení</h1>
-                <div className={"w-full flex flex-row items-center space-x-16"}>
-                    <form onSubmit={handleSubmit} className={"w-1/2"}>
-                        <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2">Nastavení E-mailu</h2>
-                        {emailSettingsSaved && <div className="alert alert-success my-4">
+            <div className="px-8 w-full h-full my-24 flex flex-col items-center justify-center">
+                <h1 className="text-3xl text-center font-bold mb-4"><FontAwesomeIcon icon={faGear} className="mr-2"/>Settings
+                </h1>
+                <div
+                    className="flex items-center justify-between rounded shadow-lg border-2 border-base-300 w-full md:max-w-6xl p-12 space-y-12  flex-col ">
+
+                    <div className="md:w-2/3 w-full">
+                        <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2"><FontAwesomeIcon
+                            icon={faDroplet} className="mr-2"/>Water</h2>
+                        {watering && <div className="alert alert-success my-4">
                             <div className="flex-1">
-                                <label className="mx-2">Nastavení uloženo</label>
+                                <label className="mx-2">Setting saved</label>
                             </div>
-                        </div>
-                        }
-                        {error && <div className="alert alert-error my-4">
-                            <div className="flex-1">
-                                <label className="mx-2">Nastavení se nepodařilo uložit</label>
-                            </div>
-                        </div>
-                        }
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="recipient">
-                                Příjemce E-mailu
-                            </label>
-                            <input
-                                className="input input-bordered w-full"
-                                required
-                                id="recipient" type="text" placeholder="Příjemce" name="recipient"
-                                value={emailSettings.recipient} onChange={handleChange}/>
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="subject">
-                                Předmět E-mailu
-                            </label>
-                            <input
-                                className="input input-bordered w-full"
-                                required
-                                id="subject" type="text" placeholder="Předmět" name="subject"
-                                value={emailSettings.subject}
-                                onChange={handleChange}/>
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cronTime">
-                                Čas Odeslání (HH:mm)
-                            </label>
-                            <input
-                                className="input input-bordered w-full"
-                                id="cronTime" placeholder="00:00" name="cronTime"
-                                value={emailSettings.cronTime}
-                                type="time"
-                                onChange={handleChange}/>
-                        </div>
-                        <div className="flex items-center justify-between">
+                        </div>}
+                        <div className="flex items-center space-x-8">
                             <button
                                 className="btn btn-primary"
-                                type="submit">
-                                Uložit Nastavení
+                                onClick={handleWaterPlant}>
+                                Water plant
                             </button>
+                            <span>Watering status: {plantSettings.waterPlant ? "On" : "Off"}</span>
                         </div>
-                    </form>
+                    </div>
+
+                    <div className="md:w-2/3 w-full">
+                        <form onSubmit={plantSubmit} className={"w-full"}>
+                            <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2"><FontAwesomeIcon
+                                icon={faPlantWilt} className="mr-2"/>Plant settings</h2>
+                            {plantSettingsSaved && <div className="alert alert-success my-4">
+                                <div className="flex-1">
+                                    <label className="mx-2">Settings saved</label>
+                                </div>
+                            </div>
+                            }
+                            {plantError && <div className="alert alert-error my-4">
+                                <div className="flex-1">
+                                    <label className="mx-2">Settings could not be saved</label>
+                                </div>
+                            </div>
+                            }
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="captureInterval">
+                                    Capture Interval (minutes)
+                                </label>
+                                <input
+                                    className="input input-bordered w-full"
+                                    required
+                                    id="captureInterval" type="number" placeholder="Interval" name="captureInterval"
+                                    value={plantSettings.captureInterval}
+                                    onChange={handlePlantChange}/>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2"
+                                       htmlFor="wateringDuration">
+                                    Watering Duration (seconds)
+                                </label>
+                                <input
+                                    className="input input-bordered w-full"
+                                    required
+                                    id="wateringDuration" type="number" placeholder="Duration" name="wateringDuration"
+                                    value={plantSettings.wateringDuration}
+                                    onChange={handlePlantChange}/>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <button
+                                    className="btn btn-primary"
+                                    type="submit">
+                                    Save Settings
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div className="md:w-2/3 w-full">
+                        <form onSubmit={emailSubmit} className={"w-full"}>
+                            <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2"><FontAwesomeIcon
+                                icon={faEnvelope} className="mr-2"/>Email settings</h2>
+                            {emailSettingsSaved && <div className="alert alert-success my-4">
+                                <div className="flex-1">
+                                    <label className="mx-2">Settings saved</label>
+                                </div>
+                            </div>
+                            }
+                            {emailError && <div className="alert alert-error my-4">
+                                <div className="flex-1">
+                                    <label className="mx-2">Settings could not be saved</label>
+                                </div>
+                            </div>
+                            }
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="recipient">
+                                    Email Recipient
+                                </label>
+                                <input
+                                    className="input input-bordered w-full"
+                                    required
+                                    id="recipient" type="text" placeholder="Příjemce" name="recipient"
+                                    value={emailSettings.recipient} onChange={handleEmailChange}/>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="subject">
+                                    Email Subject
+                                </label>
+                                <input
+                                    className="input input-bordered w-full"
+                                    required
+                                    id="subject" type="text" placeholder="Předmět" name="subject"
+                                    value={emailSettings.subject}
+                                    onChange={handleEmailChange}/>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cronTime">
+                                    Send Time (HH:mm)
+                                </label>
+                                <input
+                                    className="input input-bordered w-full"
+                                    id="cronTime" placeholder="00:00" name="cronTime"
+                                    value={emailSettings.cronTime}
+                                    type="time"
+                                    onChange={handleEmailChange}/>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <button
+                                    className="btn btn-primary"
+                                    type="submit">
+                                    Save Settings
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    )
-        ;
+    );
 }

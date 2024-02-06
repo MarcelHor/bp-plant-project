@@ -31,3 +31,10 @@ model emailSettings {
   subject   String
   recipient String
 }
+
+model plantSettings {
+  id               String  @id @default(uuid())
+  captureInterval  Int
+  wateringDuration Int
+  waterPlant       Boolean
+}

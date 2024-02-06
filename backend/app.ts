@@ -4,6 +4,7 @@ import sensorDataRouter from "./routes/sensorDataRoutes";
 import timelapsesRouter from "./routes/timelapsesRoutes";
 import emailSettingsRouter from "./routes/emailSettingsRoutes";
 import eventRouter from "./routes/eventRoute";
+import plantSettingsRouter from "./routes/plantSettingsRoutes";
 import {runCron} from "./utils/cronjobs/notifications";
 import cors from 'cors';
 
@@ -19,6 +20,7 @@ app.use('/thumbnails', express.static('./static/thumbnails'));
 app.use('/timelapses', timelapsesRouter);
 app.use('/email-settings', emailSettingsRouter);
 app.use('/events', eventRouter);
+app.use('/plant-settings', plantSettingsRouter);
 
 runCron();
 
