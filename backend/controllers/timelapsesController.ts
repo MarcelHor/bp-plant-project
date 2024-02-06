@@ -9,7 +9,7 @@ import {
     addGraphOverlayToTimelapse,
     createChartImage, createOverlayVideo,
     createTimelapse,
-    deleteTempFiles,
+    deleteTempDirs,
     formatDateTimeString,
     generateDateImage,
 } from "../utils/timelapseUtils";
@@ -135,6 +135,8 @@ export const createTimelapseEndpoint = async (req: Request, res: Response) => {
         return res.status(400).json({message: "Missing parameters"});
     }
 
+    let tempFiles: string[] = [];
+
     try {
         const sensorData = await prisma.sensorData.findMany({
             where: {
@@ -149,27 +151,35 @@ export const createTimelapseEndpoint = async (req: Request, res: Response) => {
         });
 
         const ids = sensorData.map((data: any) => data.id);
+        const processId = randomUUID();
         const id = randomUUID();
 
         const outputVideoPath: string = path.join(__dirname, `../static/timelapses/${id}.mp4`);
-        const chartImagesPath: string = path.join(__dirname, `../static/chart-images/`);
-        const chartVideoPath: string = path.join(__dirname, `../static/chart-videos/${id}.mp4`);
-        const dateImagesPath: string = path.join(__dirname, `../static/date-images/`);
-        const dateVideoPath: string = path.join(__dirname, `../static/date-videos/${id}.mp4`);
-        const tempVideoPath = path.join(__dirname, `../static/temp-videos/${id}_temp.mp4`);
-        const overlayTempVideoPathChart = path.join(__dirname, `../static/temp-videos/${id}_overlay_temp_chart.mp4`);
-        const overlayTempVideoPathDate = path.join(__dirname, `../static/temp-videos/${id}_overlay_temp_date.mp4`);
+
+        const chartImagesPath: string = path.join(__dirname, `../static/chart-images/${processId}`);
+        const chartVideoPath: string = path.join(__dirname, `../static/chart-videos/${processId}/${id}.mp4`);
+        const dateImagesPath: string = path.join(__dirname, `../static/date-images/${processId}`);
+        const dateVideoPath: string = path.join(__dirname, `../static/date-videos/${processId}/${id}.mp4`);
+        const tempVideoPath = path.join(__dirname, `../static/temp-videos/${processId}/${id}_temp.mp4`);
+        const overlayTempVideoPathChart = path.join(__dirname, `../static/temp-videos/${processId}/${id}_overlay_temp_chart.mp4`);
+        const overlayTempVideoPathDate = path.join(__dirname, `../static/temp-videos/${processId}/${id}_overlay_temp_date.mp4`);
+
+        fs.mkdirSync(chartImagesPath, {recursive: true});
+        fs.mkdirSync(dateImagesPath, {recursive: true});
+        fs.mkdirSync(path.join(__dirname, `../static/temp-videos/${processId}`), {recursive: true});
+        fs.mkdirSync(path.join(__dirname, `../static/chart-videos/${processId}`), {recursive: true});
+        fs.mkdirSync(path.join(__dirname, `../static/date-videos/${processId}`), {recursive: true});
+        fs.mkdirSync(path.join(__dirname, `../static/temp-videos/${processId}`), {recursive: true});
 
         let finalVideoPath: string = tempVideoPath;
 
-        const tempFiles = [
-            path.join(__dirname, `../static/temp-videos/`),
-            path.join(__dirname, `../static/chart-images/`),
-            path.join(__dirname, `../static/date-images/`),
-            path.join(__dirname, `../static/chart-videos/`),
-            path.join(__dirname, `../static/date-videos/`),
+        tempFiles = [
+            path.join(__dirname, `../static/temp-videos/${processId}/`),
+            path.join(__dirname, `../static/chart-images/${processId}/`),
+            path.join(__dirname, `../static/date-images/${processId}/`),
+            path.join(__dirname, `../static/chart-videos/${processId}/`),
+            path.join(__dirname, `../static/date-videos/${processId}/`),
         ];
-        await deleteTempFiles(tempFiles);
 
         await createTimelapse(
             ids,
@@ -224,10 +234,12 @@ export const createTimelapseEndpoint = async (req: Request, res: Response) => {
             },
         });
 
+        await deleteTempDirs(tempFiles);
 
         return res.status(200).json("Timelapse successfully created");
     } catch (error: any) {
         console.log(error);
+        await deleteTempDirs(tempFiles);
         return res.status(500).json({message: "Something went wrong"});
     }
 };

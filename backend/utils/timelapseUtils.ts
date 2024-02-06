@@ -188,19 +188,14 @@ export const addDateOverlayToTimelapse = async (timelapseVideoPath: string, date
     });
 };
 
-const deleteFilesInDirectory = async (directoryPath: string) => {
-    const files = await fs.promises.readdir(directoryPath);
-    for (const file of files) {
-        await fs.promises.unlink(path.join(directoryPath, file));
-    }
-};
 
-export const deleteTempFiles = async (Paths: string[]) => {
+export const deleteTempDirs = async (Paths: string[]) => {
     try {
-        for (const path of Paths) {
-            await deleteFilesInDirectory(path);
+        for (const tempPath of Paths) {
+            fs.rmSync(tempPath, {recursive: true});
         }
-    } catch (error: any) {
+    } catch
+        (error: any) {
         throw error;
     }
 };
