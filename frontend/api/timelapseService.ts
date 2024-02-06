@@ -1,12 +1,13 @@
 import axiosInstance from "./axiosInstance";
 
-const createTimeLapse = async (from: string, to: string, fps: string, resolution: string, createChart: boolean) => {
+const createTimeLapse = async (from: string, to: string, fps: string, resolution: string, createChart: boolean, dateOverlay: boolean) => {
     const response = await axiosInstance.post(`/timelapses`, {
         from,
         to,
         fps,
         resolution,
-        createChart
+        createChart,
+        dateOverlay
     });
     return response.data;
 

@@ -21,6 +21,7 @@ export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPa
     const [fps, setFps] = useState<number>(24)
     const [resolution, setResolution] = useState<{ width: number, height: number }>(resolutions[0])
     const [createChart, setCreateChart] = useState<boolean>(false)
+    const [createDateOverlay, setCreateDateOverlay] = useState<boolean>(false)
     const [success, setSuccess] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<string>("")
@@ -29,7 +30,7 @@ export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPa
         e.preventDefault()
         try {
             setLoading(true)
-            await createTimeLapse(from, to, fps.toString(), `${resolution.width}x${resolution.height}`, createChart)
+            await createTimeLapse(from, to, fps.toString(), `${resolution.width}x${resolution.height}`, createChart, createDateOverlay)
             await fetchTimelapses(currentPage)
             setLoading(false)
             setSuccess(true)
@@ -55,7 +56,7 @@ export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPa
 
             <form className="w-3/4 md:w-96 min-h-full bg-base-200 flex flex-col p-8 h-full"
                   onSubmit={handleCreateTimelapse}>
-                <h1 className="text-2xl font-bold mb-8">Create Timelapse</h1>
+                <h1 className="text-2xl font-bold mb-4">Create Timelapse</h1>
                 {!loading ? (
                     <div className="flex flex-col space-y-4 justify-between h-full">
                         <div className="flex flex-col space-y-4">
@@ -99,7 +100,18 @@ export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPa
                                 </select>
                             </div>
                             <div className="flex flex-row space-x-4 items-center">
-                                <label htmlFor="createChart" className="text-lg font-bold">Create chart</label>
+                                <label htmlFor="createDateOverlay" className="text-lg font-bold">Date
+                                    overlay</label>
+                                <input type="checkbox" id="createDateOverlay" name="createDateOverlay"
+                                       className="checkbox" checked={createDateOverlay}
+                                       onChange={(e) => setCreateDateOverlay(e.target.checked)}/>
+                                <div className="tooltip"
+                                     data-tip="Adds a date overlay to the timelapse video.">
+                                    <FontAwesomeIcon icon={faQuestionCircle} size={"lg"} className={" tooltip"}/>
+                                </div>
+                            </div>
+                            <div className="flex flex-row space-x-4 items-center">
+                                <label htmlFor="createChart" className="text-lg font-bold">Chart</label>
                                 <input type="checkbox" id="createChart" name="createChart"
                                        className="checkbox" checked={createChart}
                                        onChange={(e) => setCreateChart(e.target.checked)}/>
@@ -109,8 +121,6 @@ export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPa
                                 </div>
                             </div>
                         </div>
-
-
                         <div className="flex flex-col space-y-4 items-center justify-center w-full">
                             {error && (
                                 <div className="alert alert-error">
