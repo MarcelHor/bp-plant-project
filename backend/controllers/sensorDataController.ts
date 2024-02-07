@@ -16,8 +16,8 @@ export const getLatest = async (req: Request, res: Response) => {
 
         const image = await getImageById(latestData.id);
         const thumbnail = await getThumbnailById(latestData.id);
-        const imageUri = `${req.protocol}://${req.get('host')}/images/${image}`;
-        const thumbnailUri = `${req.protocol}://${req.get('host')}/thumbnails/${thumbnail}`;
+        const imageUri = `/images/${image}`;
+        const thumbnailUri = `/thumbnails/${thumbnail}`;
 
         return res.status(200).json({imageUri, thumbnailUri, ...latestData});
     } catch (error: any) {
@@ -60,8 +60,8 @@ export const getById = async (req: Request, res: Response) => {
 
         const image = await getImageById(data.id);
         const thumbnail = await getThumbnailById(data.id);
-        const imageUri = `${req.protocol}://${req.get('host')}/images/${image}`;
-        const thumbnailUri = `${req.protocol}://${req.get('host')}/thumbnails/${thumbnail}`;
+        const imageUri = `/images/${image}`;
+        const thumbnailUri = `/thumbnails/${thumbnail}`;
 
         return res.status(200).json({imageUri, thumbnailUri, ...data});
     } catch (error: any) {
@@ -84,12 +84,13 @@ export const getThumbnails = async (req: Request, res: Response) => {
             }
         });
 
-        const totalThumbnails = await prisma.sensorData.count();
-        const totalPages = Math.ceil(totalThumbnails / limit);
-
         if (sensorData.length === 0) {
             return res.status(404).json({message: 'No thumbnails found'});
         }
+
+        const totalThumbnails = await prisma.sensorData.count();
+        const totalPages = Math.ceil(totalThumbnails / limit);
+
 
         if (page > totalPages) {
             return res.status(404).json({message: 'Page not found'});
@@ -102,7 +103,7 @@ export const getThumbnails = async (req: Request, res: Response) => {
                 return {
                     id: data.id,
                     createdAt: data.createdAt,
-                    thumbnailUri: `${req.protocol}://${req.get('host')}/thumbnails/${thumbnail}`
+                    thumbnailUri: `/thumbnails/${thumbnail}`
                 };
             })
         );
@@ -217,7 +218,7 @@ export const getClosestThumbnails = async (req: Request, res: Response) => {
                 return {
                     id: data.id,
                     createdAt: data.createdAt,
-                    thumbnailUri: `${req.protocol}://${req.get('host')}/thumbnails/${thumbnail}`
+                    thumbnailUri: `/thumbnails/${thumbnail}`
                 };
             })
         );

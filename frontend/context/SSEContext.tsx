@@ -1,8 +1,9 @@
-import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
+import {ReactNode, createContext, useContext, useEffect, useState} from 'react';
 import axiosInstance from "../api/axiosInstance";
+
 const SSEContext = createContext<any>(null);
 
-export const SSEProvider = ({ children }: { children: ReactNode }) => {
+export const SSEProvider = ({children}: { children: ReactNode }) => {
     const [data, setData] = useState(null);
 
     useEffect(() => {
@@ -10,9 +11,16 @@ export const SSEProvider = ({ children }: { children: ReactNode }) => {
 
         eventSource.onmessage = (event) => {
             const parsedData = JSON.parse(event.data);
+
+            if (parsedData.message === 'heartbeat') {
+                console.log('Received heartbeat');
+                return;
+            }
+
             console.log('EventSource message:', parsedData);
             setData(parsedData);
         };
+
 
         eventSource.onerror = (error) => {
             console.error('EventSource failed:', error);

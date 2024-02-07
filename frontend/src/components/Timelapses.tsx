@@ -12,11 +12,13 @@ export default function Timelapses({timelapsesData, currentPage, totalPages, han
     fetchTimelapses: (page: number, limit?: number) => void
 }) {
     const [selectedTimelapseID, setSelectedTimelapseID] = useState<number | null>(null);
+    const [lastClickTime, setLastClickTime] = useState<number>(Date.now());
     const videoRef = createRef<HTMLVideoElement>();
     const modalRef = createRef<HTMLDialogElement>();
 
     const handlePlay = (id: number) => {
         setSelectedTimelapseID(id);
+        setLastClickTime(Date.now());
     }
 
     useEffect(() => {
@@ -24,7 +26,7 @@ export default function Timelapses({timelapsesData, currentPage, totalPages, han
             videoRef.current?.load();
             modalRef.current?.showModal();
         }
-    }, [selectedTimelapseID]);
+    }, [selectedTimelapseID, lastClickTime]);
 
     return (
         <>
@@ -49,7 +51,7 @@ export default function Timelapses({timelapsesData, currentPage, totalPages, han
                             <div className="modal-box w-11/12 max-w-5xl bg-transparent shadow-none">
                                 <div className="modal-body">
                                     <video className="h-auto" controls ref={videoRef}>
-                                        <source src={"http://localhost:3000/timelapses/" + selectedTimelapseID + ".mp4"}
+                                        <source src={import.meta.env.VITE_BACKEND_URL+"/timelapses/" + selectedTimelapseID + ".mp4"}
                                                 type="video/mp4"/>
                                     </video>
                                 </div>

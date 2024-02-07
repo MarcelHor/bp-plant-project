@@ -1,15 +1,14 @@
 # Fáze 1: Sestavení aplikace
 FROM node:16 as builder
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-RUN apt-get update && apt-get install -y openssl libssl1.1
-
-COPY package.json package-lock.json ./
+COPY package*.json ./
 
 RUN npm install
 
 COPY prisma ./prisma
+
 RUN npx prisma generate
 
 COPY . .
@@ -17,24 +16,21 @@ COPY . .
 RUN npm run build
 
 # Fáze 2: Běhové prostředí
-FROM node:16-slim
+FROM node:16
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-RUN apt-get update && apt-get install -y openssl libssl1.1
+COPY package*.json ./
 
-# Kopírujte sestavené soubory a node_modules z builder fáze
-COPY --from=builder /usr/src/app/dist ./dist
-COPY --from=builder /usr/src/app/node_modules ./node_modules
+RUN apt-get update && apt-get install -y ffmpeg
 
-# Pokud potřebujete Prisma soubory v běhové fázi, kopírujte je
-COPY --from=builder /usr/src/app/prisma ./prisma
+COPY --from=builder /app/.env ./.env
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/static ./static
 
-#create folder for images maybe in future in js
-COPY ./static/images ./static/images
-COPY ./static/thumbnails ./static/thumbnails
-COPY .env ./
+
 EXPOSE 3000
-
 
 CMD ["node", "dist/app.js"]

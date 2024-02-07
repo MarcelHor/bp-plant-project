@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import {Response} from 'express';
 
 type EventClient = {
     id: number;
@@ -9,7 +9,7 @@ let clients: EventClient[] = [];
 
 export const addClient = (res: Response) => {
     const clientId = Date.now();
-    const newClient: EventClient = { id: clientId, res };
+    const newClient: EventClient = {id: clientId, res};
     clients.push(newClient);
     console.log(`Added new client ${clientId}`);
 
@@ -23,4 +23,12 @@ export const sendEventMessage = (data: any) => {
     clients.forEach(client =>
         client.res.write(`data: ${JSON.stringify(data)}\n\n`)
     );
+};
+
+export const heartbeat = () => {
+    setInterval(() => {
+        clients.forEach(client =>
+            client.res.write(`data: ${JSON.stringify({type: 'heartbeat'})}\n\n`)
+        );
+    }, 10000);
 };

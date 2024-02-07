@@ -3,7 +3,7 @@ import path from "path";
 import {extractSensorIdFromFileName} from "./imageUtils";
 import prisma from "./db";
 
-const staticPath = path.join(__dirname, '..', 'static');
+const staticPath = path.join('./', 'static');
 const sizeLimit = 1024 * 1024 * 1024; // 1GB
 
 const checkAndCleanStorage = async () => {

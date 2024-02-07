@@ -192,7 +192,9 @@ export const addDateOverlayToTimelapse = async (timelapseVideoPath: string, date
 export const deleteTempDirs = async (Paths: string[]) => {
     try {
         for (const tempPath of Paths) {
-            fs.rmSync(tempPath, {recursive: true});
+            if (fs.existsSync(tempPath)){
+                fs.rmSync(tempPath, {recursive: true});
+            }
         }
     } catch
         (error: any) {

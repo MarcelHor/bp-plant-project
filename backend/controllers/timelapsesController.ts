@@ -15,11 +15,7 @@ import {
 } from "../utils/timelapseUtils";
 
 export const streamTimelapseEndpoint = async (req: Request, res: Response) => {
-    const videoPath = path.join(
-        __dirname,
-        "../static/timelapses",
-        req.params.name
-    );
+    const videoPath = path.join('./', "static/timelapses", req.params.name);
     const stat = fs.statSync(videoPath);
     const fileSize = stat.size;
     const range = req.headers.range;
@@ -52,9 +48,7 @@ export const streamTimelapseEndpoint = async (req: Request, res: Response) => {
         res.writeHead(206, head);
         file.pipe(res);
     } else {
-        console.log("not streaming");
         if (isDownload) {
-            console.log("downloading");
             res.setHeader(
                 "Content-disposition",
                 "attachment; filename=" + req.params.name
@@ -83,6 +77,9 @@ export const getTimelapses = async (req: Request, res: Response) => {
                 createdAt: "desc",
             },
         });
+        if (timelapses.length === 0) {
+            return res.status(404).json({message: "No timelapses found"});
+        }
         const totalPages = Math.ceil((await prisma.timelapseData.count()) / limit);
         return res
             .status(200)
@@ -114,11 +111,7 @@ export const deleteTimelapse = async (req: Request, res: Response) => {
             },
         });
 
-        const timelapsePath = path.join(
-            __dirname,
-            "../static/timelapses",
-            timelapse.id + ".mp4"
-        );
+        const timelapsePath = path.join('./', "static/timelapses", timelapse.id + ".mp4");
         fs.unlink(timelapsePath, () => {
         });
 
@@ -150,35 +143,38 @@ export const createTimelapseEndpoint = async (req: Request, res: Response) => {
             },
         });
 
+        if (sensorData.length === 0) {
+            return res.status(404).json({message: "No data found"});
+        }
+
         const ids = sensorData.map((data: any) => data.id);
         const processId = randomUUID();
         const id = randomUUID();
 
-        const outputVideoPath: string = path.join(__dirname, `../static/timelapses/${id}.mp4`);
 
-        const chartImagesPath: string = path.join(__dirname, `../static/chart-images/${processId}`);
-        const chartVideoPath: string = path.join(__dirname, `../static/chart-videos/${processId}/${id}.mp4`);
-        const dateImagesPath: string = path.join(__dirname, `../static/date-images/${processId}`);
-        const dateVideoPath: string = path.join(__dirname, `../static/date-videos/${processId}/${id}.mp4`);
-        const tempVideoPath = path.join(__dirname, `../static/temp-videos/${processId}/${id}_temp.mp4`);
-        const overlayTempVideoPathChart = path.join(__dirname, `../static/temp-videos/${processId}/${id}_overlay_temp_chart.mp4`);
-        const overlayTempVideoPathDate = path.join(__dirname, `../static/temp-videos/${processId}/${id}_overlay_temp_date.mp4`);
+        const outputVideoPath: string = path.join('./', 'static', 'timelapses', `${id}.mp4`);
+        const chartImagesPath: string = path.join('./', 'static', 'chart-images', processId);
+        const chartVideoPath: string = path.join('./', 'static', 'chart-videos', processId, `${id}.mp4`);
+        const dateImagesPath: string = path.join('./', 'static', 'date-images', processId);
+        const dateVideoPath: string = path.join('./', 'static', 'date-videos', processId, `${id}.mp4`);
+        const tempVideoPath = path.join('./', 'static', 'temp-videos', processId, `${id}_temp.mp4`);
+        const overlayTempVideoPathChart = path.join('./', 'static', 'temp-videos', processId, `${id}_overlay_temp_chart.mp4`)
+        const overlayTempVideoPathDate = path.join('./', 'static', 'temp-videos', processId, `${id}_overlay_temp_date.mp4`);
 
-        fs.mkdirSync(chartImagesPath, {recursive: true});
-        fs.mkdirSync(dateImagesPath, {recursive: true});
-        fs.mkdirSync(path.join(__dirname, `../static/temp-videos/${processId}`), {recursive: true});
-        fs.mkdirSync(path.join(__dirname, `../static/chart-videos/${processId}`), {recursive: true});
-        fs.mkdirSync(path.join(__dirname, `../static/date-videos/${processId}`), {recursive: true});
-        fs.mkdirSync(path.join(__dirname, `../static/temp-videos/${processId}`), {recursive: true});
+        fs.mkdirSync(path.join('./', 'static', 'chart-images', processId), {recursive: true});
+        fs.mkdirSync(path.join('./', 'static', 'date-images', processId), {recursive: true});
+        fs.mkdirSync(path.join('./', 'static', 'chart-videos', processId), {recursive: true});
+        fs.mkdirSync(path.join('./', 'static', 'date-videos', processId), {recursive: true});
+        fs.mkdirSync(path.join('./', 'static', 'temp-videos', processId), {recursive: true});
 
         let finalVideoPath: string = tempVideoPath;
 
         tempFiles = [
-            path.join(__dirname, `../static/temp-videos/${processId}/`),
-            path.join(__dirname, `../static/chart-images/${processId}/`),
-            path.join(__dirname, `../static/date-images/${processId}/`),
-            path.join(__dirname, `../static/chart-videos/${processId}/`),
-            path.join(__dirname, `../static/date-videos/${processId}/`),
+            path.join('./', `static/temp-videos/${processId}/`),
+            path.join('./', `static/chart-images/${processId}/`),
+            path.join('./', `static/date-images/${processId}/`),
+            path.join('./', `static/chart-videos/${processId}/`),
+            path.join('./', `static/date-videos/${processId}/`),
         ];
 
         await createTimelapse(

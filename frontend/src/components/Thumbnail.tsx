@@ -16,7 +16,7 @@ export default function Thumbnail({thumbnail, setMainImage, isSelected}: {
                 <span>{time}</span>
                 <div>{date}</div>
             </div>
-            <img src={thumbnail.thumbnailUri} alt="Thumbnail" className={"rounded object-scale-down"}/>
+            <img src={`${import.meta.env.VITE_BACKEND_URL}${thumbnail.thumbnailUri}`} alt="Thumbnail" className={"rounded object-scale-down"}/>
         </div>
         </li>
     );

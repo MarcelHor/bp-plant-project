@@ -4,13 +4,11 @@ services:
   backend:
     build:
       context: ./backend
-
-
+    env_file:
+      - backend/.env
   frontend:
     build:
       context: ./frontend
-
-
   nginx:
     image: nginx:stable-alpine
     ports:

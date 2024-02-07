@@ -6,6 +6,8 @@ import emailSettingsRouter from "./routes/emailSettingsRoutes";
 import eventRouter from "./routes/eventRoute";
 import plantSettingsRouter from "./routes/plantSettingsRoutes";
 import {runCron} from "./utils/cronjobs/notifications";
+import {heartbeat} from "./controllers/eventController";
+import {checkStaticFolder} from "./utils/utils";
 import cors from 'cors';
 
 const app = express();
@@ -23,6 +25,8 @@ app.use('/events', eventRouter);
 app.use('/plant-settings', plantSettingsRouter);
 
 runCron();
+heartbeat();
+checkStaticFolder();
 
 app.listen(PORT, HOST, () => {
     console.log(`Server is running at http://${HOST}:${PORT}`);

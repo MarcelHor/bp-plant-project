@@ -50,6 +50,15 @@ export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPa
         }
     }, [success])
 
+    useEffect(() => {
+        if (error) {
+            const timeout = setTimeout(() => {
+                setError("")
+            }, 3000)
+            return () => clearTimeout(timeout)
+        }
+    }, [error])
+
     return (
         <div className="drawer-side h-full md:h-[calc(100vh-64px)] border-r-2 border-base-300 z-20">
             <label htmlFor="my-drawer-2" className="drawer-overlay "></label>

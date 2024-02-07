@@ -28,7 +28,7 @@ export default function ImageDisplay({mainImageData}: { mainImageData: imageData
         <div
             className="flex-col lg:flex-row flex items-center justify-around rounded shadow-lg border-2 border-base-300">
             <figure>
-                <img src={mainImageData?.imageUri} className={"md:rounded"} alt="Image"/>
+                <img src={`${import.meta.env.VITE_BACKEND_URL}${mainImageData?.imageUri}`} className={"md:rounded"} alt="Image"/>
             </figure>
             <div className="flex flex-col w-full p-4 h-full justify-around">
                 <div className={""}>

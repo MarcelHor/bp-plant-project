@@ -10,14 +10,20 @@ export const runCron = async () => {
     }
 
     const emailSettings = await prisma.emailSettings.findFirst();
+
+    if (!emailSettings) {
+        console.log('No email settings');
+        return;
+    }
+
     const emailText = await prisma.sensorData.findFirst({
         orderBy: {
             createdAt: 'desc'
         }
     });
 
-    if(!emailSettings || !emailText) {
-        console.log('No email settings or no email text');
+    if (!emailText) {
+        console.log('No sensor data');
         return;
     }
 

@@ -19,8 +19,8 @@ export default function Home() {
             const data = await getTimelapses(page, limit);
             setTotalPages(data.totalPages);
             setTimelapsesData(data);
-        } catch (error: any) {
-            console.error("Failed to fetch timelapses:", error.message);
+        } catch (error: unknown) {
+            console.error("Failed to fetch timelapses:", error);
         }
     };
 

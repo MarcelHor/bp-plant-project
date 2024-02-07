@@ -1,0 +1,22 @@
+### Example user template template
+### Example user template
+
+# IntelliJ project files
+.idea
+out
+gen
+
+node_modules
+logs
+*.log
+npm-debug.log*
+
+coverage
+lib-cov
+*.seed
+*.pid
+
+.DS_Store
+Thumbs.db
+
+
