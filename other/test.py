@@ -2,7 +2,7 @@ import requests
 from mimetypes import MimeTypes
 from datetime import datetime
 
-url = 'http://localhost/api/upload'
+url = 'http://localhost:8085/api/upload'
 image_path = '92269810.jpeg'
 
 sensors = {

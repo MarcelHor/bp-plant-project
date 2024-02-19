@@ -6,6 +6,9 @@ services:
       context: ./backend
     env_file:
       - backend/.env
+    volumes:
+      - static:/app/static
+      - prisma:/app/prisma
   frontend:
     build:
       context: ./frontend
@@ -18,3 +21,6 @@ services:
     depends_on:
       - backend
       - frontend
+volumes:
+  static:
+  prisma:
