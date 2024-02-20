@@ -1,3 +1,4 @@
+from apscheduler.schedulers.background import BackgroundScheduler
 from camera import Camera
 from sensors import GroveMoistureSensor, LightSensor
 from display import Display
@@ -5,12 +6,13 @@ from rele import RelayControl
 from datetime import datetime
 import requests
 import seeed_dht
-import schedule
 import time
 import os
 
+scheduler = BackgroundScheduler()
+
 settingsUrl = 'http://192.168.137.1:3000/plant-settings'
-wateringUrl = 'http://192.168.137.1:3000/watering'
+wateringUrl = 'http://192.168.137.1:3000/plant-settings/watering'
 url = 'http://192.168.137.1:3000/upload'
 watering_duration = 2
 capture_interval = 1
@@ -32,7 +34,8 @@ def readSensors():
         return moist, humi, temp, light
     except Exception as e:
         print("Chyba při čtení senzorů:", str(e))
-        return None
+        return None, None, None, None
+
 
 def fetch_and_apply_settings():
     global watering_duration, capture_interval
@@ -45,19 +48,15 @@ def fetch_and_apply_settings():
             relay.turn_on_for(watering_duration)
             requests.post(wateringUrl, json={'waterPlant': False})
         if settings['captureInterval']:
-            capture_interval = settings['captureInterval']
+            if settings['captureInterval'] != capture_interval:
+                capture_interval = settings['captureInterval']
+                jobs = scheduler.get_jobs()
+                for job in jobs:
+                    if job.name == 'job_capture_and_send':
+                        scheduler.remove_job(job.id)
+                        scheduler.add_job(job_capture_and_send, 'interval', minutes=capture_interval)
     except Exception as e:
         print("Chyba při načítání nastavení:", str(e))
-
-def job_read_and_update_display():
-    moist, humi, temp, light = readSensors()
-    if None not in [moist, humi, temp, light]:
-        display_data = "T:{}C H:{}%\nM:{}% L:{}".format(temp, humi, round(moist, 1), round(light, 1))
-        display.setText_norefresh(display_data)
-        if moist < 50:
-            relay.turn_on_for(watering_duration)
-    else:
-        display.setText_norefresh("Chyba při čtení\nsenzorů")
 
 
 def job_capture_and_send():
@@ -70,6 +69,13 @@ def job_capture_and_send():
             "light": light,
         }
         camera.capture_and_send_image(sensors)
+        display_data = "T:{}C H:{}%\nM:{}% L:{}".format(temp, humi, round(moist, 1), round(light, 1))
+        display.setText_norefresh(display_data)
+        if moist < 50:
+            relay.turn_on_for(watering_duration)
+    else:
+        print("Chyba při čtení senzorů")
+        display.setText_norefresh("Chyba při čtení senzorů")
 
 
 def main():
@@ -78,13 +84,12 @@ def main():
     camera.setup_camera()
     display.clear()
 
-    schedule.every(0.1).minutes.do(job_read_and_update_display)
-    schedule.every(capture_interval).minutes.do(job_capture_and_send)
-    schedule.every(1).minutes.do(fetch_and_apply_settings)
+    scheduler.add_job(fetch_and_apply_settings, 'interval', seconds=38)
+    scheduler.add_job(job_capture_and_send, 'interval', minutes=capture_interval)
+    scheduler.start()
 
     try:
         while True:
-            schedule.run_pending()
             time.sleep(1)
     except KeyboardInterrupt:
         print("Program ukončen uživatelem")
@@ -95,7 +100,7 @@ def main():
             camera.stop_camera()
         if relay.is_on():
             relay.turn_off()
-
+        scheduler.shutdown()
 
 
 if __name__ == '__main__':

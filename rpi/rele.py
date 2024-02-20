@@ -4,7 +4,6 @@ import time
 class RelayControl:
     def __init__(self, pin):
         self.pin = pin
-        GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.pin, GPIO.OUT)
 
     def turn_on(self):
