@@ -9,6 +9,7 @@ import {runCron} from "./utils/cronjobs/notifications";
 import {heartbeat} from "./controllers/eventController";
 import {checkStaticFolder} from "./utils/utils";
 import cors from 'cors';
+import plantAi from "./utils/plantAi";
 
 const app = express();
 const PORT = 3000;
@@ -23,6 +24,7 @@ app.use('/timelapses', timelapsesRouter);
 app.use('/email-settings', emailSettingsRouter);
 app.use('/events', eventRouter);
 app.use('/plant-settings', plantSettingsRouter);
+app.use('/', plantAi);
 
 runCron();
 heartbeat();

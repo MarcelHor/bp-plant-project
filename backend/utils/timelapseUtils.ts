@@ -150,7 +150,7 @@ export const createOverlayVideo = async (id: string, fps: string, imagesPath: st
         ffmpeg()
             .input(imagesPath)
             .inputFPS(parseFloat(fps))
-            .outputOptions(["-c:v libx264", "-r " + fps, "-pix_fmt rgba"])
+            .outputOptions(["-c:v libx264", "-r " + fps, "-pix_fmt yuv420p"])
             .on("end", () => resolve(videoPath))
             .on("error", (error) => reject(error))
             .save(videoPath);
@@ -165,7 +165,7 @@ export const addGraphOverlayToTimelapse = async (timelapseVideoPath: string, gra
             .complexFilter([
                 "[0:v][1:v] overlay=10:10"
             ])
-            .outputOptions(["-c:v libx264", "-pix_fmt rgba"])
+            .outputOptions(["-c:v libx264", "-pix_fmt yuv420p"])
             .on("end", () => resolve(outputVideoPath))
             .on("error", (error) => reject(error))
             .save(outputVideoPath);
@@ -181,7 +181,7 @@ export const addDateOverlayToTimelapse = async (timelapseVideoPath: string, date
             .complexFilter([
                 "[0:v][1:v] overlay=main_w-overlay_w-10:10"
             ])
-            .outputOptions(["-c:v libx264", "-pix_fmt rgba"])
+            .outputOptions(["-c:v libx264", "-pix_fmt yuv420p"])
             .on("end", () => resolve(outputVideoPath))
             .on("error", (error) => reject(error))
             .save(outputVideoPath);

@@ -173,3 +173,8 @@ sketch
 static
 
 venv
+
+backend/model2.h5
+model.h5
+model2.h5
+!/backend/model2.h5
