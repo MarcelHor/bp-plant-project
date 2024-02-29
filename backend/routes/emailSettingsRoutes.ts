@@ -1,6 +1,7 @@
 import {setEmailSettings,getEmailSettings} from "../controllers/emailSettingsController";
+import {Router} from 'express';
 
-const emailSettingsRouter = require('express').Router();
+const emailSettingsRouter = Router();
 
 emailSettingsRouter.post('/', setEmailSettings);
 emailSettingsRouter.get('/', getEmailSettings);

@@ -3,10 +3,12 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBars, faPlantWilt} from "@fortawesome/free-solid-svg-icons";
 import {Link, useLocation} from "react-router-dom";
 import ThemeModeSwitcher from "./ThemeModeSwitcher.tsx";
+import {useAuth} from "../../context/AuthProvider.tsx";
 
 export default function Header() {
     const location = useLocation();
     const [currentTime, setCurrentTime] = useState(new Date());
+    const {currentUser, logout} = useAuth();
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -57,6 +59,9 @@ export default function Header() {
                     )}
                     {location.pathname !== "/settings" && (
                         <Link to={"/settings"} className="btn btn-ghost">Settings</Link>
+                    )}
+                    {currentUser && (
+                        <button onClick={logout} className="btn btn-ghost">Logout</button>
                     )}
                 </>
                 <ThemeModeSwitcher/>
