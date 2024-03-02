@@ -9,9 +9,7 @@ export const SSEProvider = ({children}: { children: ReactNode }) => {
     const {currentUser} = useAuth();
 
     useEffect(() => {
-        console.log('SSEProvider useEffect', currentUser);
         if (!currentUser) {
-
             console.log('No user, not connecting to SSE');
             return;
         }

@@ -1,9 +1,8 @@
 import {createContext, useContext, useState, ReactNode, useEffect} from "react";
-import axiosInstance from "../api/axiosInstance";
+import {loginService, logoutService, getUserService} from "../api/authService.ts";
 
 interface user {
     username: string;
-    password: string;
 }
 
 interface AuthContextType {
@@ -31,8 +30,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
 
     const login = async (username: string, password: string): Promise<boolean> => {
         try {
-            const response = await axiosInstance.post("/auth/login", {username, password});
-            setCurrentUser(response.data);
+            setCurrentUser(await loginService(username, password));
             return true;
         } catch (error) {
             console.error("Login failed:", error);
@@ -42,7 +40,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
 
     const logout = async () => {
         try {
-            await axiosInstance.get("/auth/logout");
+            await logoutService();
             setCurrentUser(null);
         } catch (error) {
             console.error("Logout failed:", error);
@@ -51,8 +49,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
 
     const checkAuth = async () => {
         try {
-            const response = await axiosInstance.get("/auth/user");
-            setCurrentUser(response.data);
+            setCurrentUser(await getUserService());
         } catch (error) {
             console.error("Check auth failed:", error);
         }

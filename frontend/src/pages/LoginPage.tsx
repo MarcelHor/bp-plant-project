@@ -22,6 +22,9 @@ export default function LoginPage() {
             navigate("/");
         } else {
             setError(true);
+            setTimeout(() => {
+                setError(false);
+            }, 3000); 
         }
     };
 

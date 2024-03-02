@@ -38,3 +38,9 @@ model plantSettings {
   wateringDuration Int
   waterPlant       Boolean
 }
+
+model user {
+  id       String @id @default(uuid())
+  username String @unique
+  password String
+}

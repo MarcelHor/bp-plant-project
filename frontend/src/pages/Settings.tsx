@@ -7,6 +7,7 @@ import {
     getPlantSettings,
     setWatering
 } from "../../api/settingsService.ts";
+import {changeCredentialsService} from "../../api/authService.ts";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEnvelope, faGear, faPlantWilt, faDroplet} from "@fortawesome/free-solid-svg-icons";
 
@@ -27,6 +28,11 @@ export default function Settings() {
     const [emailError, setEmailError] = useState(false);
 
     const [waterPlantLoading, setWaterPlantLoading] = useState(false);
+
+    const [newUsername, setNewUsername] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [changeError, setChangeError] = useState(false);
+    const [changeSuccess, setChangeSuccess] = useState(false);
 
     useEffect(() => {
         getEmailSettings().then((response) => {
@@ -99,6 +105,26 @@ export default function Settings() {
             }, 3000);
         }
     }
+
+    const handleChangeCredentials = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            await changeCredentialsService(newUsername, newPassword);
+            setChangeSuccess(true);
+            setTimeout(() => {
+                setChangeSuccess(false);
+            }, 3000);
+            setNewUsername('');
+            setNewPassword('');
+        } catch (error: unknown) {
+            console.log(error);
+            setChangeError(true);
+            setTimeout(() => {
+                setChangeError(false);
+            }, 3000);
+        }
+    };
+
 
     return (
         <div className={"flex flex-col min-h-screen items-center w-full justify-center bg-base-200 overflow-y-auto"}>
@@ -232,6 +258,50 @@ export default function Settings() {
                             </div>
                         </form>
                     </div>
+
+                    <div className="md:w-2/3 w-full">
+                        <form onSubmit={handleChangeCredentials} className={"w-full"}>
+                            <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2">Change Credentials</h2>
+                            {changeSuccess && <div className="alert alert-success my-4">
+                                <div className="flex-1">
+                                    <label className="mx-2">Credentials changed successfully</label>
+                                </div>
+                            </div>}
+                            {changeError && <div className="alert alert-error my-4">
+                                <div className="flex-1">
+                                    <label className="mx-2">Failed to change credentials</label>
+                                </div>
+                            </div>}
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="newUsername">
+                                    New Username
+                                </label>
+                                <input
+                                    className="input input-bordered w-full"
+                                    id="newUsername" type="text" placeholder="New username" name="newUsername"
+                                    value={newUsername}
+                                    onChange={(e) => setNewUsername(e.target.value)}/>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="newPassword">
+                                    New Password
+                                </label>
+                                <input
+                                    className="input input-bordered w-full"
+                                    id="newPassword" type="password" placeholder="New password" name="newPassword"
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}/>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <button
+                                    className="btn btn-primary"
+                                    type="submit">
+                                    Change Credentials
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
                 </div>
             </div>
         </div>
