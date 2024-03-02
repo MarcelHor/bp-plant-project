@@ -3,6 +3,7 @@ import {faChevronLeft, faChevronRight, faTriangleExclamation} from "@fortawesome
 import Timelapse from "./Timelapse.tsx";
 import {timelapse, timelapseResponse} from "../../types/image-types";
 import {createRef, useEffect, useState} from "react";
+import {useTranslation} from "react-i18next";
 
 export default function Timelapses({timelapsesData, currentPage, totalPages, handlePageChange, fetchTimelapses}: {
     timelapsesData: timelapseResponse | undefined,
@@ -15,7 +16,7 @@ export default function Timelapses({timelapsesData, currentPage, totalPages, han
     const [lastClickTime, setLastClickTime] = useState<number>(Date.now());
     const videoRef = createRef<HTMLVideoElement>();
     const modalRef = createRef<HTMLDialogElement>();
-
+    const {t} = useTranslation();
     const handlePlay = (id: number) => {
         setSelectedTimelapseID(id);
         setLastClickTime(Date.now());
@@ -33,12 +34,12 @@ export default function Timelapses({timelapsesData, currentPage, totalPages, han
             {timelapsesData?.timelapses.length === 0 ? (
                 <div className="w-full h-full flex flex-col justify-center items-center space-y-2">
                     <FontAwesomeIcon icon={faTriangleExclamation} className="text-9xl text-gray-400"/>
-                    <h1 className="text-2xl font-bold mb-8">No timelapses created yet.</h1>
+                    <h1 className="text-2xl font-bold mb-8">{t("timelapses.noTimelapses")}</h1>
                 </div>
             ) : (
                 <div className="w-full h-full flex flex-col justify-between items-center ">
                     <div className={"w-full"}>
-                        <h1 className="text-2xl font-bold mb-8">Timelapses</h1>
+                        <h1 className="text-2xl font-bold mb-8">{t("timelapses.title")}</h1>
                         <ul className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
                             {timelapsesData?.timelapses.map((timelapse: timelapse) => (
                                 <Timelapse key={timelapse.id} timelapse={timelapse} fetchTimelapses={fetchTimelapses}

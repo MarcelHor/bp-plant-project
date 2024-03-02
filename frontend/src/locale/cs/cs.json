@@ -1,0 +1,81 @@
+{
+  "header": {
+    "home": "Domů",
+    "settings": "Nastavení",
+    "logout": "Odhlásit se",
+    "timelapses": "Časosběry"
+  },
+  "chart": {
+    "tooltip": "Graf zobrazuje data ze zvoleného časového období. Pokud jsou data od sebe více než 24 hodin, bude graf clustrovaný. Automatická aktualizace aktualizuje graf při nahrání nových dat.",
+    "from": "od",
+    "autoUpdate": "Automatická aktualizace",
+    "to": "do",
+    "light": "Světlo",
+    "temperature": "Teplota",
+    "humidity": "Vlhkost",
+    "soilMoisture": "Vlhkost půdy"
+  },
+  "mainDrawer": {
+    "search": "Hledat",
+    "reset": "Reset"
+  },
+  "main": {
+    "header": "Data senzorů",
+    "soilMoisture": "Vlhkost půdy",
+    "lightIntensity": "Intenzita světla",
+    "temperature": "Teplota",
+    "humidity": "Vlhkost",
+    "out": {
+      "soilMoisture": "Vlhkost půdy je mimo rozsah",
+      "lightIntensity": "Intenzita světla je mimo rozsah",
+      "temperature": "Teplota je mimo rozsah",
+      "humidity": "Vlhkost je mimo rozsah"
+    },
+    "warning": "Varování",
+    "noWarning": "Vše je v pořádku a normálu"
+  },
+  "timelapses": {
+    "title": "Časosběry",
+    "noTimelapses": "Nejsou vytvořeny žádné časosběry"
+  },
+  "timelapsesDrawer": {
+    "title": "Vytvořit časosběr",
+    "from": "Od",
+    "to": "Do",
+    "resolution": "Rozlišení",
+    "dateOverlay": "Datum",
+    "dateOverlayTooltip": "Zobrazuje datum v časosběru.",
+    "chart": "Graf",
+    "chartTooltip": "Zobrazuje graf v časosběru.",
+    "create": "Vytvořit",
+    "success": "Úspěch! Váš časosběr byl vytvořen.",
+    "error": "Došlo k chybě. Prosím zkuste to znovu."
+  },
+  "settings": {
+    "title": "Nastavení",
+    "watering": "Zalévání",
+    "saved": "Nastavení uloženo",
+    "error": "Nastavení se nepodařilo uložit",
+    "water": "Zalij rostlinu",
+    "plant": "Nastavení rostliny",
+    "wateringDuration": "Doba zalévání (sekundy)",
+    "save": "Uložit nastavení",
+    "email": "Nastavení emailu",
+    "recipient": "Příjemce emailu",
+    "subject": "Předmět emailu",
+    "cronTime": "Čas odeslání (HH:mm)",
+    "changed": "Přihlašovací údaje byly úspěšně změněny",
+    "newUsername": "Nové uživatelské jméno",
+    "newPassword": "Nové heslo",
+    "captureInterval": "Interval časosběrů (sekundy)",
+    "changeCredentials": "Změnit přihlašovací údaje"
+  },
+  "login": {
+    "title": "Přihlášení",
+    "username": "Uživatelské jméno",
+    "password": "Heslo",
+    "login": "Přihlásit se",
+    "error": "Přihlášení se nezdařilo"
+  }
+}
+

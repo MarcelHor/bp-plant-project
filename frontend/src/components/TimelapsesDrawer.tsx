@@ -3,6 +3,7 @@ import {createTimeLapse} from "../../api/timelapseService.ts";
 import {getInitialDates} from "../../utils/utils.ts";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons/faQuestionCircle";
+import {useTranslation} from "react-i18next";
 
 const resolutions = [
     {width: 1920, height: 1080},
@@ -25,6 +26,8 @@ export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPa
     const [success, setSuccess] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<string>("")
+
+    const {t} = useTranslation()
 
     const handleCreateTimelapse = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -65,22 +68,22 @@ export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPa
 
             <form className="w-3/4 md:w-96 min-h-full bg-base-200 flex flex-col p-8 h-full"
                   onSubmit={handleCreateTimelapse}>
-                <h1 className="text-2xl font-bold mb-4">Create Timelapse</h1>
+                <h1 className="text-2xl font-bold mb-4">{t("timelapsesDrawer.title")}</h1>
                 {!loading ? (
                     <div className="flex flex-col space-y-4 justify-between h-full">
                         <div className="flex flex-col space-y-4">
                             <div className="flex flex-col">
-                                <label htmlFor="from" className="text-lg font-bold">From</label>
+                                <label htmlFor="from" className="text-lg font-bold">{t("timelapsesDrawer.from")}</label>
                                 <input type="datetime-local" id="from" name="from" className="input input-bordered"
                                        value={from} onChange={(e) => setFrom(e.target.value)}/>
                             </div>
                             <div className="flex flex-col">
-                                <label htmlFor="to" className="text-lg font-bold">To</label>
+                                <label htmlFor="to" className="text-lg font-bold">{t("timelapsesDrawer.to")}</label>
                                 <input type="datetime-local" id="to" name="to" className="input input-bordered"
                                        value={to} onChange={(e) => setTo(e.target.value)}/>
                             </div>
                             <div className="flex flex-col">
-                                <label htmlFor="resolution" className="text-lg font-bold">Resolution</label>
+                                <label htmlFor="resolution" className="text-lg font-bold">{t("timelapsesDrawer.resolution")}</label>
                                 <select id="resolution" name="resolution" className="select select-bordered"
                                         value={resolution.width + "x" + resolution.height}
                                         onChange={(e) => {
@@ -109,23 +112,22 @@ export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPa
                                 </select>
                             </div>
                             <div className="flex flex-row space-x-4 items-center">
-                                <label htmlFor="createDateOverlay" className="text-lg font-bold">Date
-                                    overlay</label>
+                                <label htmlFor="createDateOverlay" className="text-lg font-bold">{t("timelapsesDrawer.dateOverlay")}</label>
                                 <input type="checkbox" id="createDateOverlay" name="createDateOverlay"
                                        className="checkbox" checked={createDateOverlay}
                                        onChange={(e) => setCreateDateOverlay(e.target.checked)}/>
                                 <div className="tooltip"
-                                     data-tip="Adds a date overlay to the timelapse video.">
+                                     data-tip={t("timelapsesDrawer.dateOverlayTooltip")} >
                                     <FontAwesomeIcon icon={faQuestionCircle} size={"lg"} className={" tooltip"}/>
                                 </div>
                             </div>
                             <div className="flex flex-row space-x-4 items-center">
-                                <label htmlFor="createChart" className="text-lg font-bold">Chart</label>
+                                <label htmlFor="createChart" className="text-lg font-bold">{t("timelapsesDrawer.chart")}</label>
                                 <input type="checkbox" id="createChart" name="createChart"
                                        className="checkbox" checked={createChart}
                                        onChange={(e) => setCreateChart(e.target.checked)}/>
                                 <div className="tooltip"
-                                     data-tip="Adds a chart overlay to the timelapse video. Might take a while to generate.">
+                                     data-tip={t("timelapsesDrawer.chartTooltip")} >
                                     <FontAwesomeIcon icon={faQuestionCircle} size={"lg"} className={" tooltip"}/>
                                 </div>
                             </div>
@@ -141,11 +143,11 @@ export default function TimelapsesDrawer({latestDate, fetchTimelapses, currentPa
                             {success && (
                                 <div className="alert alert-success">
                                     <div className="flex-1">
-                                        <label>Timelapse created successfully</label>
+                                        <label>{t("timelapsesDrawer.success")}</label>
                                     </div>
                                 </div>
                             )}
-                            <button type="submit" className="btn btn-primary w-full">Create</button>
+                            <button type="submit" className="btn btn-primary w-full">{t("timelapsesDrawer.create")}</button>
                         </div>
                     </div>
                 ) : (

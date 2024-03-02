@@ -9,9 +9,11 @@ import {
 } from "../../api/settingsService.ts";
 import {changeCredentialsService} from "../../api/authService.ts";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEnvelope, faGear, faPlantWilt, faDroplet} from "@fortawesome/free-solid-svg-icons";
+import {faEnvelope, faGear, faPlantWilt, faDroplet, faUser} from "@fortawesome/free-solid-svg-icons";
+import {useTranslation} from "react-i18next";
 
 export default function Settings() {
+    const [t] = useTranslation();
     const [emailSettings, setEmailSettings] = useState({
         recipient: '',
         subject: '',
@@ -133,21 +135,22 @@ export default function Settings() {
                 <div
                     className="flex items-center justify-between rounded shadow-lg border-2 border-base-300 w-full md:max-w-6xl p-12 space-y-12  flex-col ">
                     <h1 className="text-3xl text-center font-bold mb-4"><FontAwesomeIcon icon={faGear}
-                                                                                         className="mr-2"/>Settings
+                                                                                         className="mr-2"/>
+                        {t("settings.title")}
                     </h1>
                     <div className="md:w-2/3 w-full">
                         <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2"><FontAwesomeIcon
-                            icon={faDroplet} className="mr-2"/>Water</h2>
+                            icon={faDroplet} className="mr-2"/>{t("settings.watering")}</h2>
                         {waterPlantLoading && <div className="alert alert-success my-4">
                             <div className="flex-1">
-                                <label className="mx-2">Setting saved</label>
+                                <label className="mx-2">{t("settings.saved")}</label>
                             </div>
                         </div>}
                         <div className="flex items-center space-x-8">
                             <button
                                 className="btn btn-primary"
                                 onClick={handleWaterPlant}>
-                                Water plant
+                                {t("settings.water")}
                             </button>
                         </div>
                     </div>
@@ -155,22 +158,22 @@ export default function Settings() {
                     <div className="md:w-2/3 w-full">
                         <form onSubmit={plantSubmit} className={"w-full"}>
                             <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2"><FontAwesomeIcon
-                                icon={faPlantWilt} className="mr-2"/>Plant settings</h2>
+                                icon={faPlantWilt} className="mr-2"/>{t("settings.plant")}</h2>
                             {plantSettingsSaved && <div className="alert alert-success my-4">
                                 <div className="flex-1">
-                                    <label className="mx-2">Settings saved</label>
+                                    <label className="mx-2">{t("settings.saved")}</label>
                                 </div>
                             </div>
                             }
                             {plantError && <div className="alert alert-error my-4">
                                 <div className="flex-1">
-                                    <label className="mx-2">Settings could not be saved</label>
+                                    <label className="mx-2">{t("settings.error")}</label>
                                 </div>
                             </div>
                             }
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="captureInterval">
-                                    Capture Interval (minutes)
+                                    {t("settings.captureInterval")}
                                 </label>
                                 <input
                                     className="input input-bordered w-full"
@@ -182,7 +185,7 @@ export default function Settings() {
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2"
                                        htmlFor="wateringDuration">
-                                    Watering Duration (seconds)
+                                    {t("settings.wateringDuration")}
                                 </label>
                                 <input
                                     className="input input-bordered w-full"
@@ -195,7 +198,7 @@ export default function Settings() {
                                 <button
                                     className="btn btn-primary"
                                     type="submit">
-                                    Save Settings
+                                    {t("settings.save")}
                                 </button>
                             </div>
                         </form>
@@ -204,22 +207,22 @@ export default function Settings() {
                     <div className="md:w-2/3 w-full">
                         <form onSubmit={emailSubmit} className={"w-full"}>
                             <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2"><FontAwesomeIcon
-                                icon={faEnvelope} className="mr-2"/>Email settings</h2>
+                                icon={faEnvelope} className="mr-2"/>{t("settings.email")}</h2>
                             {emailSettingsSaved && <div className="alert alert-success my-4">
                                 <div className="flex-1">
-                                    <label className="mx-2">Settings saved</label>
+                                    <label className="mx-2">{t("settings.saved")}</label>
                                 </div>
                             </div>
                             }
                             {emailError && <div className="alert alert-error my-4">
                                 <div className="flex-1">
-                                    <label className="mx-2">Settings could not be saved</label>
+                                    <label className="mx-2">{t("settings.error")}</label>
                                 </div>
                             </div>
                             }
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="recipient">
-                                    Email Recipient
+                                    {t("settings.recipient")}
                                 </label>
                                 <input
                                     className="input input-bordered w-full"
@@ -229,7 +232,7 @@ export default function Settings() {
                             </div>
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="subject">
-                                    Email Subject
+                                    {t("settings.subject")}
                                 </label>
                                 <input
                                     className="input input-bordered w-full"
@@ -240,7 +243,7 @@ export default function Settings() {
                             </div>
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cronTime">
-                                    Send Time (HH:mm)
+                                    {t("settings.cronTime")}
                                 </label>
                                 <input
                                     className="input input-bordered w-full"
@@ -253,7 +256,7 @@ export default function Settings() {
                                 <button
                                     className="btn btn-primary"
                                     type="submit">
-                                    Save Settings
+                                    {t("settings.save")}
                                 </button>
                             </div>
                         </form>
@@ -261,34 +264,36 @@ export default function Settings() {
 
                     <div className="md:w-2/3 w-full">
                         <form onSubmit={handleChangeCredentials} className={"w-full"}>
-                            <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2">Change Credentials</h2>
+                            <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2"><FontAwesomeIcon icon={faUser} className="mr-2"/>{t("settings.changeCredentials")}</h2>
                             {changeSuccess && <div className="alert alert-success my-4">
                                 <div className="flex-1">
-                                    <label className="mx-2">Credentials changed successfully</label>
+                                    <label className="mx-2">{t("settings.changed")}</label>
                                 </div>
                             </div>}
                             {changeError && <div className="alert alert-error my-4">
                                 <div className="flex-1">
-                                    <label className="mx-2">Failed to change credentials</label>
+                                    <label className="mx-2">{t("settings.error")}</label>
                                 </div>
                             </div>}
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="newUsername">
-                                    New Username
+                                    {t("settings.newUsername")}
                                 </label>
                                 <input
                                     className="input input-bordered w-full"
-                                    id="newUsername" type="text" placeholder="New username" name="newUsername"
+                                    id="newUsername" type="text" placeholder={t("settings.newUsername")}
+                                    name="newUsername"
                                     value={newUsername}
                                     onChange={(e) => setNewUsername(e.target.value)}/>
                             </div>
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="newPassword">
-                                    New Password
+                                    {t("settings.newPassword")}
                                 </label>
                                 <input
                                     className="input input-bordered w-full"
-                                    id="newPassword" type="password" placeholder="New password" name="newPassword"
+                                    id="newPassword" type="password" placeholder={t("settings.newPassword")}
+                                    name="newPassword"
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}/>
                             </div>
@@ -296,7 +301,7 @@ export default function Settings() {
                                 <button
                                     className="btn btn-primary"
                                     type="submit">
-                                    Change Credentials
+                                    {t("settings.save")}
                                 </button>
                             </div>
                         </form>

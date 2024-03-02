@@ -5,6 +5,7 @@ import {useEffect, useRef, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft, faChevronRight, faSearch, faXmark} from "@fortawesome/free-solid-svg-icons";
 import {useSSE} from "../../context/SSEContext.tsx";
+import {useTranslation} from "react-i18next";
 
 export default function Drawer({setMainImage, selectedThumbnailId}: {
     setMainImage: (id: string) => void,
@@ -15,6 +16,7 @@ export default function Drawer({setMainImage, selectedThumbnailId}: {
     const [searchDate, setSearchDate] = useState("");
     const pageRef = useRef(page);
     const sseData = useSSE();
+    const {t} = useTranslation();
     const limit = 10;
 
     const getThumbnailData = async (page: number) => {
@@ -87,12 +89,12 @@ export default function Drawer({setMainImage, selectedThumbnailId}: {
                                className="input input-bordered w-2/3" value={searchDate} onChange={(e) => {
                             setSearchDate(e.target.value);
                         }}/>
-                        <div className="tooltip tooltip-bottom" data-tip="Search">
+                        <div className="tooltip tooltip-bottom" data-tip={t("mainDrawer.search")}>
                             <button type="button" className="btn btn-primary w-14" onClick={handleSearch}>
                                 <FontAwesomeIcon icon={faSearch}/>
                             </button>
                         </div>
-                        <div className="tooltip tooltip-bottom" data-tip="Reset">
+                        <div className="tooltip tooltip-bottom" data-tip={t("mainDrawer.reset")}>
                             <button type="button" className="btn btn-primary w-14" onClick={resetSearch}>
                                 <FontAwesomeIcon icon={faXmark}/>
                             </button>

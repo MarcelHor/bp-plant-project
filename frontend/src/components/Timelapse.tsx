@@ -5,7 +5,6 @@ import {deleteTimelapse} from "../../api/timelapseService.ts";
 
 export default function Timelapse({timelapse, fetchTimelapses, currentPage, handlePlay}: any) {
     const [time, date] = formatDate(timelapse.createdAt);
-
     const handleDelete = async () => {
         const confirm = window.confirm("Are you sure you want to delete this timelapse?");
         if (!confirm) return;
@@ -18,7 +17,7 @@ export default function Timelapse({timelapse, fetchTimelapses, currentPage, hand
     }
     return (
         <li key={timelapse.id} className="flex flex-col items-center m-2 p-2 col-span-1">
-            <img src={import.meta.env.VITE_BACKEND_URL + '/thumbnails/'+ timelapse.thumbnail} alt=""
+            <img src={import.meta.env.VITE_BACKEND_URL + '/thumbnails/' + timelapse.thumbnail} alt=""
                  className="w-full h-auto rounded"/>
             <div className="flex justify-between items-center w-full">
                 <div className="flex flex-col items-start mt-2">
@@ -26,7 +25,8 @@ export default function Timelapse({timelapse, fetchTimelapses, currentPage, hand
                     <span className="text-sm md:text-xs">{time}</span>
                 </div>
                 <div className="flex space-x-1 items-center ">
-                    <button className="btn btn-primary btn-sm" onClick={() => handlePlay(timelapse.id)}><FontAwesomeIcon icon={faPlay}/>
+                    <button className="btn btn-primary btn-sm" onClick={() => handlePlay(timelapse.id)}><FontAwesomeIcon
+                        icon={faPlay}/>
                     </button>
                     <a href={`${import.meta.env.VITE_BACKEND_URL}/timelapses/${timelapse.id}.mp4?download=true`}
                        download={`timelapse_${timelapse.id}.mp4`}

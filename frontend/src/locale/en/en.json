@@ -1,0 +1,79 @@
+{
+  "header": {
+    "home": "Home",
+    "settings": "Settings",
+    "logout": "Logout",
+    "timelapses": "Timelapses"
+  },
+  "chart": {
+    "tooltip": "The chart shows data from the selected time period. If the dates are more than 24 hours apart, the chart will be clustered. Auto-update will update the chart when new data is uploaded.",
+    "autoUpdate": "Auto update",
+    "from": "From",
+    "to": "To",
+    "light": "Light",
+    "temperature": "Temperature",
+    "humidity": "Humidity",
+    "soilMoisture": "Soil Moisture"
+  },
+  "mainDrawer": {
+    "search": "Search",
+    "reset": "Reset"
+  },
+  "main": {
+    "header": "Sensor data",
+    "soilMoisture": "Soil Moisture",
+    "lightIntensity": "Light Intensity",
+    "temperature": "Temperature",
+    "humidity": "Humidity",
+    "out": {
+      "soilMoisture": "Soil Moisture is out of range",
+      "lightIntensity": "Light Intensity is out of range",
+      "temperature": "Temperature is out of range",
+      "humidity": "Humidity is out of range"
+    },
+    "warning": "Warning",
+    "noWarning": "Everything is fine and healthy"
+  },
+  "timelapses": {
+    "title": "Timelapses",
+    "noTimelapses": "No timelapses created"
+  },
+  "timelapsesDrawer": {
+    "title": "Create a timelapse",
+    "from": "From",
+    "to": "To",
+    "resolution": "Resolution",
+    "dateOverlay": "Date Overlay",
+    "dateOverlayTooltip": "Displays the date in the timelapse.",
+    "chart": "Chart Overlay",
+    "chartTooltip": "Displays a chart in the timelapse.",
+    "create": "Create",
+    "success": "Success! Your timelapse has been created.",
+    "error": "An error occurred. Please try again."
+  },
+  "settings": {
+    "title": "Settings",
+    "watering": "Watering",
+    "saved": "Setting saved",
+    "error": "Settings could not be saved",
+    "water": "Water plant",
+    "plant": "Plant settings",
+    "wateringDuration": "Watering Duration (seconds)",
+    "save": "Save Settings",
+    "email": "Email settings",
+    "recipient": "Email Recipient",
+    "subject": "Email Subject",
+    "cronTime": "Send Time (HH:mm)",
+    "changed": "Credentials changed successfully",
+    "newUsername": "New Username",
+    "newPassword": "New Password",
+    "captureInterval": "Capture Interval (seconds)",
+    "changeCredentials": "Change Credentials"
+  },
+  "login": {
+    "username": "Username",
+    "password": "Password",
+    "login": "Login",
+    "error": "Invalid credentials"
+  }
+}

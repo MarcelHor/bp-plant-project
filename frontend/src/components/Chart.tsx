@@ -18,6 +18,7 @@ import {
 import {getLatestDate} from "../../api/imageService.ts";
 import {getInitialDates} from "../../utils/utils.ts";
 import {useSSE} from "../../context/SSEContext.tsx";
+import {useTranslation} from "react-i18next";
 
 ChartJS.register(
     CategoryScale,
@@ -36,6 +37,8 @@ export default function Chart({setMainImage}: { setMainImage: (id: string) => vo
     const [notFound, setNotFound] = useState<boolean>(false);
     const [autoUpdate, setAutoUpdate] = useState<boolean>(true);
     const sseData = useSSE();
+    const {t} = useTranslation();
+
 
     const handleChartClick = (event: any, elements: any) => {
         if (event && typeof event.preventDefault === 'function') {
@@ -83,25 +86,25 @@ export default function Chart({setMainImage}: { setMainImage: (id: string) => vo
         labels: fetchedChartData?.labels || [],
         datasets: fetchedChartData ? [
             {
-                label: 'Temperature',
+                label: t("chart.temperature"),
                 data: fetchedChartData.temperatureData,
                 fill: false,
                 borderColor: 'rgb(234,165,0)',
             },
             {
-                label: 'Humidity',
+                label: t("chart.humidity"),
                 data: fetchedChartData.humidityData,
                 fill: false,
                 borderColor: 'rgb(79,159,240)',
             },
             {
-                label: 'Soil Moisture',
+                label: t("chart.soilMoisture"),
                 data: fetchedChartData.soilMoistureData,
                 fill: false,
                 borderColor: 'rgb(0,126,0)',
             },
             {
-                label: 'Light',
+                label: t("chart.light"),
                 data: fetchedChartData.lightData,
                 fill: false,
                 borderColor: 'rgb(255,255,0)',
@@ -154,7 +157,7 @@ export default function Chart({setMainImage}: { setMainImage: (id: string) => vo
         <div className="rounded shadow-lg border-2 border-base-300 w-full p-4 flex flex-col justify-between">
             <form className="flex gap-4 flex-wrap items-center mx-4">
                 <div className="flex flex-col space-y-1">
-                    <label htmlFor="fromDateTime">From</label>
+                    <label htmlFor="fromDateTime">{t("chart.from")}</label>
                     <input type="datetime-local" id="fromDateTime" name="fromDateTime"
                            className={"input input-bordered"}
                            value={fromDateTime}
@@ -162,7 +165,7 @@ export default function Chart({setMainImage}: { setMainImage: (id: string) => vo
                     />
                 </div>
                 <div className="flex flex-col space-y-1">
-                    <label htmlFor="toDateTime">To</label>
+                    <label htmlFor="toDateTime">{t("chart.to")}</label>
                     <input type="datetime-local" id="toDateTime" name="toDateTime"
                            className={"input input-bordered"}
                            value={toDateTime}
@@ -172,7 +175,7 @@ export default function Chart({setMainImage}: { setMainImage: (id: string) => vo
                 <div className={"flex flex-1"}/>
                 <div className="form-control">
                     <label className="label cursor-pointer space-x-2">
-                        <span className="label-text">Auto-update</span>
+                        <span className="label-text">{t("chart.autoUpdate")}</span>
                         <input
                             type="checkbox"
                             className="toggle toggle-primary"
@@ -182,7 +185,7 @@ export default function Chart({setMainImage}: { setMainImage: (id: string) => vo
                     </label>
                 </div>
                 <div className="tooltip"
-                     data-tip="The chart shows data from the selected time period. If the dates are more than 24 hours apart, the chart will be clustered. Auto-update will update the chart when new data is uploaded.">
+                     data-tip={t("chart.tooltip")}>
                     <FontAwesomeIcon icon={faQuestionCircle} size={"lg"} className={" tooltip"}/>
                 </div>
             </form>
