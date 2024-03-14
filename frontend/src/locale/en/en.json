@@ -68,7 +68,8 @@
     "newUsername": "New Username",
     "newPassword": "New Password",
     "captureInterval": "Capture Interval (seconds)",
-    "changeCredentials": "Change Credentials"
+    "changeCredentials": "Change Credentials",
+    "apiKeys": "API Keys"
   },
   "login": {
     "username": "Username",

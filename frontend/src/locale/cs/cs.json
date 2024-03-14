@@ -68,7 +68,8 @@
     "newUsername": "Nové uživatelské jméno",
     "newPassword": "Nové heslo",
     "captureInterval": "Interval časosběrů (sekundy)",
-    "changeCredentials": "Změnit přihlašovací údaje"
+    "changeCredentials": "Změnit přihlašovací údaje",
+    "apiKeys": "API klíče"
   },
   "login": {
     "title": "Přihlášení",

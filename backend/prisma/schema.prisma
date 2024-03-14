@@ -44,3 +44,11 @@ model user {
   username String @unique
   password String
 }
+
+model ApiKey {
+  id         Int      @id @default(autoincrement())
+  key        String   @unique
+  usageCount Int      @default(0)
+  lastUsed   DateTime @default(now())
+  createdAt  DateTime @default(now())
+}

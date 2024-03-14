@@ -6,8 +6,9 @@ import emailSettingsRouter from "./routes/emailSettingsRoutes";
 import eventRouter from "./routes/eventRoute";
 import plantSettingsRouter from "./routes/plantSettingsRoutes";
 import authRouter from "./routes/authRoute";
+import apiKeyRouter from "./routes/apiKeyRoutes";
 import {ensureAdminUser} from "./utils/auth";
-import {ensureAuthenticated} from "./middleware/authMiddleware";
+import {ensureAuthenticated, ensureApiKey} from "./middleware/authMiddleware";
 import {runCron} from "./utils/cronjobs/notifications";
 import {heartbeat} from "./controllers/eventController";
 import {checkStaticFolder} from "./utils/utils";
@@ -34,7 +35,7 @@ checkStaticFolder();
 ensureAdminUser();
 
 app.use(express.json());
-app.use('/upload', ensureAuthenticated, uploadRoute);
+app.use('/upload', ensureApiKey, uploadRoute);
 app.use('/sensor-data', ensureAuthenticated, sensorDataRouter);
 app.use('/images', ensureAuthenticated, express.static('./static/images'));
 app.use('/thumbnails', ensureAuthenticated, express.static('./static/thumbnails'));
@@ -42,6 +43,7 @@ app.use('/timelapses', ensureAuthenticated, timelapsesRouter);
 app.use('/email-settings', ensureAuthenticated, emailSettingsRouter);
 app.use('/events', ensureAuthenticated, eventRouter);
 app.use('/plant-settings', ensureAuthenticated, plantSettingsRouter);
+app.use('/api-keys', ensureAuthenticated, apiKeyRouter);
 app.use('/auth', authRouter);
 
 runCron();
