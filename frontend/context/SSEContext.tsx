@@ -10,11 +10,10 @@ export const SSEProvider = ({children}: { children: ReactNode }) => {
 
     useEffect(() => {
         if (!currentUser) {
-            console.log('No user, not connecting to SSE');
             return;
         }
 
-        const eventSource = new EventSource(axiosInstance.defaults.baseURL + '/events', { withCredentials: true });
+        const eventSource = new EventSource(axiosInstance.defaults.baseURL + '/events', {withCredentials: true});
 
         eventSource.onmessage = (event) => {
             const parsedData = JSON.parse(event.data);
@@ -24,7 +23,6 @@ export const SSEProvider = ({children}: { children: ReactNode }) => {
                 return;
             }
 
-            console.log('EventSource message:', parsedData);
             setData(parsedData);
         };
 

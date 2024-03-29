@@ -76,5 +76,63 @@
     "password": "Password",
     "login": "Login",
     "error": "Invalid credentials"
+  },
+  "aiModel": {
+    "title": "AI Models (Experimental)",
+    "description": "This section uses the selected image to predict health and sickness of the plant. The models are experimental and may not be accurate.",
+    "healthModel": {
+      "title": "Health model",
+      "description": "This model predicts the health of the plant."
+    },
+    "sicknessModel": {
+      "title": "Sickness model",
+      "description": "This model predicts multiple types of sickness that the plant may have."
+    },
+    "runButton": "Run",
+    "loading": "Loading...",
+    "noResults": "No results",
+    "error": "An error occurred while predicting.",
+    "label": "Label",
+    "probability": "Probability %",
+    "labels": {
+      "healthy": "Healthy",
+      "sick": "Sick",
+      "unhealthy": "Unhealthy",
+      "corn (maize) cercospora leaf spot gray leaf spot": "Corn (Maize) Cercospora Leaf Spot Gray Leaf Spot",
+      "grape healthy": "Grape Healthy",
+      "orange haunglongbing (citrus greening)": "Orange Huanglongbing (Citrus Greening)",
+      "cherry (including sour) powdery mildew": "Cherry (Including Sour) Powdery Mildew",
+      "apple cedar rust": "Apple Cedar Rust",
+      "corn (maize) common rust": "Corn (Maize) Common Rust",
+      "apple black rot": "Apple Black Rot",
+      "blueberry healthy": "Blueberry Healthy",
+      "peach bacterial spot": "Peach Bacterial Spot",
+      "apple scab": "Apple Scab",
+      "apple healthy": "Apple Healthy",
+      "cherry (including sour) healthy": "Cherry (Including Sour) Healthy",
+      "corn (maize) northern leaf blight": "Corn (Maize) Northern Leaf Blight",
+      "corn (maize) healthy": "Corn (Maize) Healthy",
+      "grape black rot": "Grape Black Rot",
+      "grape esca (black measles)": "Grape Esca (Black Measles)",
+      "grape leaf blight (isariopsis leaf spot)": "Grape Leaf Blight (Isariopsis Leaf Spot)",
+      "peach healthy": "Peach Healthy",
+      "pepper bell bacterial spot": "Pepper Bell Bacterial Spot",
+      "pepper bell healthy": "Pepper Bell Healthy",
+      "potato early blight": "Potato Early Blight",
+      "potato late blight": "Potato Late Blight",
+      "potato healthy": "Potato Healthy",
+      "raspberry healthy": "Raspberry Healthy",
+      "soybean healthy": "Soybean Healthy",
+      "squash powdery mildew": "Squash Powdery Mildew",
+      "strawberry leaf scorch": "Strawberry Leaf Scorch",
+      "strawberry healthy": "Strawberry Healthy",
+      "tomato bacterial spot": "Tomato Bacterial Spot",
+      "tomato early blight": "Tomato Early Blight",
+      "tomato late blight": "Tomato Late Blight",
+      "tomato leaf mold": "Tomato Leaf Mold",
+      "tomato septoria leaf spot": "Tomato Septoria Leaf Spot",
+      "tomato spider mites two spotted spider mite": "Tomato Spider Mites Two Spotted Spider Mite",
+      "tomato healthy": "Tomato Healthy"
+    }
   }
 }

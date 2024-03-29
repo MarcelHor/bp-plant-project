@@ -7,6 +7,7 @@ import eventRouter from "./routes/eventRoute";
 import plantSettingsRouter from "./routes/plantSettingsRoutes";
 import authRouter from "./routes/authRoute";
 import apiKeyRouter from "./routes/apiKeyRoutes";
+import plantAi from "./plantDetection/plantAi";
 import {ensureAdminUser} from "./utils/auth";
 import {ensureAuthenticated, ensureApiKey} from "./middleware/authMiddleware";
 import {runCron} from "./utils/cronjobs/notifications";
@@ -45,6 +46,7 @@ app.use('/events', ensureAuthenticated, eventRouter);
 app.use('/plant-settings', ensureAuthenticated, plantSettingsRouter);
 app.use('/api-keys', ensureAuthenticated, apiKeyRouter);
 app.use('/auth', authRouter);
+app.use('/ai', plantAi);
 
 runCron();
 heartbeat();

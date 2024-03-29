@@ -4,7 +4,7 @@ import tensorflow as tf
 import json
 import sys
 
-model = tf.keras.models.load_model('./model_bazalka_vahovany.h5')
+model = tf.keras.models.load_model('./plantDetection/healthDetection.h5')
 tf.get_logger().setLevel('ERROR')
 
 img_path = sys.argv[1]

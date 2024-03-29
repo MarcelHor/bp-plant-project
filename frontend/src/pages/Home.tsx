@@ -6,6 +6,7 @@ import Chart from "../components/Chart.tsx";
 import Drawer from "../components/Drawer.tsx";
 import LayoutComponent from "../components/PageLayout.tsx";
 import {useSSE} from "../../context/SSEContext.tsx";
+import AIModel from "../components/AIModel.tsx";
 
 export default function Home() {
     const [mainImageData, setMainImageData] = useState<imageData>();
@@ -45,10 +46,11 @@ export default function Home() {
             mainContent={<>
                 <ImageDisplay mainImageData={mainImageData}/>
                 <Chart setMainImage={setMainImage}/>
+                <AIModel mainImageData={mainImageData}/>
             </>}
             sidebar={<Drawer setMainImage={setMainImage}
                              selectedThumbnailId={selectedThumbnailId}
-                             />}
+            />}
         />
     );
 }

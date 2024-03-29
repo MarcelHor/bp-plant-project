@@ -240,7 +240,7 @@ export default function Settings() {
                                 <div className="mb-4">
                                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="captureInterval">
                                         {t("settings.captureInterval")}
-                                    </label>]
+                                    </label>
                                     <input
                                         className="input input-bordered w-full"
                                         required

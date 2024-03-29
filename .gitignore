@@ -174,8 +174,8 @@ static
 
 venv
 
-backend/model2.h5
-backend/model.h5
+backend/plantDetection/healthDetection.h5
+backend/plantDetection/sicknessDetection.h5
 model.h5
 model2.h5
 

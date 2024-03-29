@@ -77,6 +77,64 @@
     "password": "Heslo",
     "login": "Přihlásit se",
     "error": "Přihlášení se nezdařilo"
+  },
+  "aiModel": {
+    "title": "AI Modely (Experimentální)",
+    "description": "Tato sekce používá vybraný obrázek k predikci zdraví a nemocí rostliny. Modely jsou experimentální a nemusí být přesné.",
+    "healthModel": {
+      "title": "Model zdraví",
+      "description": "Tento model predikuje zdraví rostliny."
+    },
+    "sicknessModel": {
+      "title": "Model nemocí",
+      "description": "Tento model predikuje různé typy nemocí, které může rostlina mít."
+    },
+    "runButton": "Spustit",
+    "loading": "Načítání...",
+    "noResults": "Žádné výsledky",
+    "error": "Při predikci došlo k chybě.",
+    "label": "Název",
+    "probability": "Pravděpodobnost %",
+    "labels": {
+      "healthy": "Zdravá",
+      "sick": "Nemocná",
+      "unhealthy": "Nezdravá",
+      "corn (maize) cercospora leaf spot gray leaf spot": "Kukuřice - Cercosporóza šedá skvrnitost listů",
+      "grape healthy": "Réva vinná zdravá",
+      "orange haunglongbing (citrus greening)": "Pomeranč - Huanglongbing (zelenání citrusů)",
+      "cherry (including sour) powdery mildew": "Třešeň - Prášková plíseň",
+      "apple cedar rust": "Jabloň - Cedrová rez",
+      "corn (maize) common rust": "Kukuřice - Obecná rez",
+      "apple black rot": "Jabloň - Černá hniloba",
+      "blueberry healthy": "Borůvka zdravá",
+      "peach bacterial spot": "Broskev - Bakteriální skvrnitost",
+      "apple scab": "Jabloň - Strupovitost",
+      "apple healthy": "Jabloň zdravá",
+      "cherry (including sour) healthy": "Třešeň zdravá",
+      "corn (maize) northern leaf blight": "Kukuřice - Severní listová pálivost",
+      "corn (maize) healthy": "Kukuřice zdravá",
+      "grape black rot": "Réva vinná - Černá hniloba",
+      "grape esca (black measles)": "Réva vinná - Esca (černé neštovice)",
+      "grape leaf blight (isariopsis leaf spot)": "Réva vinná - Listová pálivost (skvrnitost listů Isariopsis)",
+      "peach healthy": "Broskev zdravá",
+      "pepper bell bacterial spot": "Paprika - Bakteriální skvrnitost",
+      "pepper bell healthy": "Paprika zdravá",
+      "potato early blight": "Brambory - Ranní plíseň",
+      "potato late blight": "Brambory - Pozdní plíseň",
+      "potato healthy": "Brambory zdravé",
+      "raspberry healthy": "Malina zdravá",
+      "soybean healthy": "Sója zdravá",
+      "squash powdery mildew": "Dýně - Prášková plíseň",
+      "strawberry leaf scorch": "Jahoda - Listové spálení",
+      "strawberry healthy": "Jahoda zdravá",
+      "tomato bacterial spot": "Rajče - Bakteriální skvrnitost",
+      "tomato early blight": "Rajče - Ranní plíseň",
+      "tomato late blight": "Rajče - Pozdní plíseň",
+      "tomato leaf mold": "Rajče - Listová plíseň",
+      "tomato septoria leaf spot": "Rajče - Septorióza",
+      "tomato spider mites two spotted spider mite": "Rajče - Pavoučí roztoči",
+      "tomato healthy": "Rajče zdravé"
+    }
   }
 }
 

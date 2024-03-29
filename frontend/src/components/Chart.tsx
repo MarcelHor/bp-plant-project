@@ -184,7 +184,7 @@ export default function Chart({setMainImage}: { setMainImage: (id: string) => vo
                         />
                     </label>
                 </div>
-                <div className="tooltip"
+                <div className="tooltip tooltip-left"
                      data-tip={t("chart.tooltip")}>
                     <FontAwesomeIcon icon={faQuestionCircle} size={"lg"} className={" tooltip"}/>
                 </div>
