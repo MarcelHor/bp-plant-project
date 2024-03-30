@@ -5,7 +5,7 @@ type EventClient = {
     res: Response;
 };
 
-let clients: EventClient[] = [];
+export let clients: EventClient[] = [];
 
 export const addClient = (res: Response) => {
     const clientId = Date.now();

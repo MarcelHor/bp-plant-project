@@ -3,12 +3,26 @@
     "target": "ES2020",
     "module": "commonjs",
     "strict": true,
+    "strictNullChecks": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
     "noImplicitAny": false,
+    "types": [
+      "node",
+      "jest"
+    ]
   },
-  "include": ["./*"],
-  "exclude": ["node_modules"]
+  "paths": {
+    "@/controllers/*": ["controllers/*"],
+    "@/utils/*": ["utils/*"]
+  },
+  "include": [
+    "./*",
+    "**/*.test.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
