@@ -17,6 +17,8 @@ plantAi.get('/predict', async (req, res) => {
         const imagePath = `./static/images/${image}`;
         const scriptPath = useSicknessModel ? './plantDetection/sicknessDetection.py' : './plantDetection/healthDetection.py';
 
+
+        //SET TO PYTHON3 FOR LINUX
         const pythonProcess = spawn('python', [scriptPath, imagePath]);
         let dataString = '';
 

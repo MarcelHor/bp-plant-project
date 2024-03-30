@@ -124,7 +124,7 @@ export default function Chart({setMainImage}: { setMainImage: (id: string) => vo
                 display: true,
                 title: {
                     display: true,
-                    text: 'Time'
+                    text: t("chart.time"),
                 },
                 ticks: {
                     display: false,

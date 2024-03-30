@@ -7,7 +7,7 @@ import {
     getPlantSettings,
     setWatering
 } from "../../api/settingsService.ts";
-import {getApiKeys,createApiKey,deleteApiKey,getApiKey} from "../../api/apiKeyService.ts";
+import {getApiKeys, createApiKey, deleteApiKey, getApiKey} from "../../api/apiKeyService.ts";
 import {changeCredentialsService} from "../../api/authService.ts";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEnvelope, faGear, faPlantWilt, faDroplet, faUser, faKey} from "@fortawesome/free-solid-svg-icons";
@@ -135,44 +135,44 @@ export default function Settings() {
         }
     };
 
-        const [apiKeys, setApiKeys] = useState<apiKeyFiltered[]>([]);
-        const [loadingApiKeys, setLoadingApiKeys] = useState(true);
-        const [showedKeyId, setShowedKeyId] = useState('');
-        const [displayedKeyValue, setDisplayedKeyValue] = useState('');
-        const [loadingKey, setLoadingKey] = useState(false);
+    const [apiKeys, setApiKeys] = useState<apiKeyFiltered[]>([]);
+    const [loadingApiKeys, setLoadingApiKeys] = useState(true);
+    const [showedKeyId, setShowedKeyId] = useState('');
+    const [displayedKeyValue, setDisplayedKeyValue] = useState('');
+    const [loadingKey, setLoadingKey] = useState(false);
 
-        useEffect(() => {
-            const fetchApiKeys = async () => {
-                try {
-                    const fetchedApiKeys = await getApiKeys();
-                    setApiKeys(fetchedApiKeys);
-                    setLoadingApiKeys(false);
-                } catch (error) {
-                    console.error("Failed to fetch API keys:", error);
-                    setLoadingApiKeys(false);
-                }
-            };
-
-            fetchApiKeys();
-        }, []);
-
-        const handleCreateApiKey = async () => {
+    useEffect(() => {
+        const fetchApiKeys = async () => {
             try {
-                const newKey = await createApiKey();
-                setApiKeys([...apiKeys, newKey]);
+                const fetchedApiKeys = await getApiKeys();
+                setApiKeys(fetchedApiKeys);
+                setLoadingApiKeys(false);
             } catch (error) {
-                console.error("Error creating API key:", error);
+                console.error("Failed to fetch API keys:", error);
+                setLoadingApiKeys(false);
             }
         };
 
-        const handleDeleteApiKey = async (id: string) => {
-            try {
-                await deleteApiKey(id);
-                setApiKeys(apiKeys.filter((key) => key.id !== id));
-            } catch (error) {
-                console.error("Error deleting API key:", error);
-            }
-        };
+        fetchApiKeys();
+    }, []);
+
+    const handleCreateApiKey = async () => {
+        try {
+            const newKey = await createApiKey();
+            setApiKeys([...apiKeys, newKey]);
+        } catch (error) {
+            console.error("Error creating API key:", error);
+        }
+    };
+
+    const handleDeleteApiKey = async (id: string) => {
+        try {
+            await deleteApiKey(id);
+            setApiKeys(apiKeys.filter((key) => key.id !== id));
+        } catch (error) {
+            console.error("Error deleting API key:", error);
+        }
+    };
 
     const handleShowApiKey = async (id: string) => {
         if (showedKeyId === id) {
@@ -192,232 +192,232 @@ export default function Settings() {
     };
 
 
-
-
     return (
-            <div className={"flex flex-col min-h-screen items-center w-full justify-center bg-base-200 overflow-y-auto"}>
-                <Header/>
-                <div className="px-8 w-full h-full my-24 flex flex-col items-center justify-center">
-                    <div
-                        className="flex items-center justify-between rounded shadow-lg border-2 border-base-300 w-full md:max-w-6xl p-12 space-y-12  flex-col ">
-                        <h1 className="text-3xl text-center font-bold mb-4"><FontAwesomeIcon icon={faGear}
-                                                                                             className="mr-2"/>
-                            {t("settings.title")}
-                        </h1>
-                        <div className="md:w-2/3 w-full">
+        <div className={"flex flex-col min-h-screen items-center w-full justify-center bg-base-200 overflow-y-auto"}>
+            <Header/>
+            <div className="px-8 w-full h-full my-24 flex flex-col items-center justify-center">
+                <div
+                    className="flex items-center justify-between rounded shadow-lg border-2 border-base-300 w-full md:max-w-6xl p-12 space-y-12  flex-col ">
+                    <h1 className="text-3xl text-center font-bold mb-4"><FontAwesomeIcon icon={faGear}
+                                                                                         className="mr-2"/>
+                        {t("settings.title")}
+                    </h1>
+                    <div className="md:w-2/3 w-full">
+                        <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2"><FontAwesomeIcon
+                            icon={faDroplet} className="mr-2"/>{t("settings.watering")}</h2>
+                        {waterPlantLoading && <div className="alert alert-success my-4">
+                            <div className="flex-1">
+                                <label className="mx-2">{t("settings.saved")}</label>
+                            </div>
+                        </div>}
+                        <div className="flex items-center space-x-8">
+                            <button
+                                className="btn btn-primary"
+                                onClick={handleWaterPlant}>
+                                {t("settings.water")}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="md:w-2/3 w-full">
+                        <form onSubmit={plantSubmit} className={"w-full"}>
                             <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2"><FontAwesomeIcon
-                                icon={faDroplet} className="mr-2"/>{t("settings.watering")}</h2>
-                            {waterPlantLoading && <div className="alert alert-success my-4">
+                                icon={faPlantWilt} className="mr-2"/>{t("settings.plant")}</h2>
+                            {plantSettingsSaved && <div className="alert alert-success my-4">
                                 <div className="flex-1">
                                     <label className="mx-2">{t("settings.saved")}</label>
                                 </div>
-                            </div>}
-                            <div className="flex items-center space-x-8">
+                            </div>
+                            }
+                            {plantError && <div className="alert alert-error my-4">
+                                <div className="flex-1">
+                                    <label className="mx-2">{t("settings.error")}</label>
+                                </div>
+                            </div>
+                            }
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="captureInterval">
+                                    {t("settings.captureInterval")}
+                                </label>
+                                <input
+                                    className="input input-bordered w-full"
+                                    required
+                                    id="captureInterval" type="number" placeholder="Interval" name="captureInterval"
+                                    value={plantSettings.captureInterval}
+                                    onChange={handlePlantChange}/>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2"
+                                       htmlFor="wateringDuration">
+                                    {t("settings.wateringDuration")}
+                                </label>
+                                <input
+                                    className="input input-bordered w-full"
+                                    required
+                                    id="wateringDuration" type="number" placeholder="Duration" name="wateringDuration"
+                                    value={plantSettings.wateringDuration}
+                                    onChange={handlePlantChange}/>
+                            </div>
+                            <div className="flex items-center justify-between">
                                 <button
                                     className="btn btn-primary"
-                                    onClick={handleWaterPlant}>
-                                    {t("settings.water")}
+                                    type="submit">
+                                    {t("settings.save")}
                                 </button>
                             </div>
-                        </div>
+                        </form>
+                    </div>
 
-                        <div className="md:w-2/3 w-full">
-                            <form onSubmit={plantSubmit} className={"w-full"}>
-                                <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2"><FontAwesomeIcon
-                                    icon={faPlantWilt} className="mr-2"/>{t("settings.plant")}</h2>
-                                {plantSettingsSaved && <div className="alert alert-success my-4">
-                                    <div className="flex-1">
-                                        <label className="mx-2">{t("settings.saved")}</label>
-                                    </div>
+                    <div className="md:w-2/3 w-full">
+                        <form onSubmit={emailSubmit} className={"w-full"}>
+                            <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2"><FontAwesomeIcon
+                                icon={faEnvelope} className="mr-2"/>{t("settings.email")}</h2>
+                            {emailSettingsSaved && <div className="alert alert-success my-4">
+                                <div className="flex-1">
+                                    <label className="mx-2">{t("settings.saved")}</label>
                                 </div>
-                                }
-                                {plantError && <div className="alert alert-error my-4">
-                                    <div className="flex-1">
-                                        <label className="mx-2">{t("settings.error")}</label>
-                                    </div>
+                            </div>
+                            }
+                            {emailError && <div className="alert alert-error my-4">
+                                <div className="flex-1">
+                                    <label className="mx-2">{t("settings.error")}</label>
                                 </div>
-                                }
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="captureInterval">
-                                        {t("settings.captureInterval")}
-                                    </label>
-                                    <input
-                                        className="input input-bordered w-full"
-                                        required
-                                        id="captureInterval" type="number" placeholder="Interval" name="captureInterval"
-                                        value={plantSettings.captureInterval}
-                                        onChange={handlePlantChange}/>
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2"
-                                           htmlFor="wateringDuration">
-                                        {t("settings.wateringDuration")}
-                                    </label>
-                                    <input
-                                        className="input input-bordered w-full"
-                                        required
-                                        id="wateringDuration" type="number" placeholder="Duration" name="wateringDuration"
-                                        value={plantSettings.wateringDuration}
-                                        onChange={handlePlantChange}/>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <button
-                                        className="btn btn-primary"
-                                        type="submit">
-                                        {t("settings.save")}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+                            </div>
+                            }
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="recipient">
+                                    {t("settings.recipient")}
+                                </label>
+                                <input
+                                    className="input input-bordered w-full"
+                                    required
+                                    id="recipient" type="text" placeholder="Příjemce" name="recipient"
+                                    value={emailSettings.recipient} onChange={handleEmailChange}/>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="subject">
+                                    {t("settings.subject")}
+                                </label>
+                                <input
+                                    className="input input-bordered w-full"
+                                    required
+                                    id="subject" type="text" placeholder="Předmět" name="subject"
+                                    value={emailSettings.subject}
+                                    onChange={handleEmailChange}/>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cronTime">
+                                    {t("settings.cronTime")}
+                                </label>
+                                <input
+                                    className="input input-bordered w-full"
+                                    id="cronTime" placeholder="00:00" name="cronTime"
+                                    value={emailSettings.cronTime}
+                                    type="time"
+                                    onChange={handleEmailChange}/>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <button
+                                    className="btn btn-primary"
+                                    type="submit">
+                                    {t("settings.save")}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
 
-                        <div className="md:w-2/3 w-full">
-                            <form onSubmit={emailSubmit} className={"w-full"}>
-                                <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2"><FontAwesomeIcon
-                                    icon={faEnvelope} className="mr-2"/>{t("settings.email")}</h2>
-                                {emailSettingsSaved && <div className="alert alert-success my-4">
-                                    <div className="flex-1">
-                                        <label className="mx-2">{t("settings.saved")}</label>
-                                    </div>
+                    <div className="md:w-2/3 w-full">
+                        <form onSubmit={handleChangeCredentials} className={"w-full"}>
+                            <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2"><FontAwesomeIcon
+                                icon={faUser} className="mr-2"/>{t("settings.changeCredentials")}</h2>
+                            {changeSuccess && <div className="alert alert-success my-4">
+                                <div className="flex-1">
+                                    <label className="mx-2">{t("settings.changed")}</label>
                                 </div>
-                                }
-                                {emailError && <div className="alert alert-error my-4">
-                                    <div className="flex-1">
-                                        <label className="mx-2">{t("settings.error")}</label>
-                                    </div>
+                            </div>}
+                            {changeError && <div className="alert alert-error my-4">
+                                <div className="flex-1">
+                                    <label className="mx-2">{t("settings.error")}</label>
                                 </div>
-                                }
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="recipient">
-                                        {t("settings.recipient")}
-                                    </label>
-                                    <input
-                                        className="input input-bordered w-full"
-                                        required
-                                        id="recipient" type="text" placeholder="Příjemce" name="recipient"
-                                        value={emailSettings.recipient} onChange={handleEmailChange}/>
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="subject">
-                                        {t("settings.subject")}
-                                    </label>
-                                    <input
-                                        className="input input-bordered w-full"
-                                        required
-                                        id="subject" type="text" placeholder="Předmět" name="subject"
-                                        value={emailSettings.subject}
-                                        onChange={handleEmailChange}/>
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cronTime">
-                                        {t("settings.cronTime")}
-                                    </label>
-                                    <input
-                                        className="input input-bordered w-full"
-                                        id="cronTime" placeholder="00:00" name="cronTime"
-                                        value={emailSettings.cronTime}
-                                        type="time"
-                                        onChange={handleEmailChange}/>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <button
-                                        className="btn btn-primary"
-                                        type="submit">
-                                        {t("settings.save")}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+                            </div>}
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="newUsername">
+                                    {t("settings.newUsername")}
+                                </label>
+                                <input
+                                    className="input input-bordered w-full"
+                                    id="newUsername" type="text" placeholder={t("settings.newUsername")}
+                                    name="newUsername"
+                                    value={newUsername}
+                                    onChange={(e) => setNewUsername(e.target.value)}/>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="newPassword">
+                                    {t("settings.newPassword")}
+                                </label>
+                                <input
+                                    className="input input-bordered w-full"
+                                    id="newPassword" type="password" placeholder={t("settings.newPassword")}
+                                    name="newPassword"
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}/>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <button
+                                    className="btn btn-primary"
+                                    type="submit">
+                                    {t("settings.save")}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
 
-                        <div className="md:w-2/3 w-full">
-                            <form onSubmit={handleChangeCredentials} className={"w-full"}>
-                                <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2"><FontAwesomeIcon icon={faUser} className="mr-2"/>{t("settings.changeCredentials")}</h2>
-                                {changeSuccess && <div className="alert alert-success my-4">
-                                    <div className="flex-1">
-                                        <label className="mx-2">{t("settings.changed")}</label>
-                                    </div>
-                                </div>}
-                                {changeError && <div className="alert alert-error my-4">
-                                    <div className="flex-1">
-                                        <label className="mx-2">{t("settings.error")}</label>
-                                    </div>
-                                </div>}
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="newUsername">
-                                        {t("settings.newUsername")}
-                                    </label>
-                                    <input
-                                        className="input input-bordered w-full"
-                                        id="newUsername" type="text" placeholder={t("settings.newUsername")}
-                                        name="newUsername"
-                                        value={newUsername}
-                                        onChange={(e) => setNewUsername(e.target.value)}/>
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="newPassword">
-                                        {t("settings.newPassword")}
-                                    </label>
-                                    <input
-                                        className="input input-bordered w-full"
-                                        id="newPassword" type="password" placeholder={t("settings.newPassword")}
-                                        name="newPassword"
-                                        value={newPassword}
-                                        onChange={(e) => setNewPassword(e.target.value)}/>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <button
-                                        className="btn btn-primary"
-                                        type="submit">
-                                        {t("settings.save")}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <div className="md:w-2/3 w-full mb-4">
-                            <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2"><FontAwesomeIcon icon={faKey} className="mr-2"/>{t("settings.apiKeys")}</h2>
-                            {loadingApiKeys ? (
-                                <p>Loading...</p>
-                            ) : (
-                                <table className="table table-zebra w-full">
-                                    <thead>
-                                    <tr>
-                                        <th>Key</th>
-                                        <th>Actions</th>
+                    <div className="md:w-2/3 w-full mb-4">
+                        <h2 className="text-xl font-bold mb-4 border-base-300 border-b-2">
+                            <FontAwesomeIcon icon={faKey} className="mr-2"/>{t("settings.apiKeys")}
+                        </h2>
+                        {loadingApiKeys ? (
+                            <p>{t("settings.loading")}</p>
+                        ) : (
+                            <table className="table table-zebra w-full">
+                                <thead>
+                                <tr>
+                                    <th>{t("settings.key")}</th>
+                                    <th>{t("settings.actions")}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {apiKeys.map((apiKey) => (
+                                    <tr key={apiKey.id}>
+                                        <td>
+                                            {loadingKey && showedKeyId === apiKey.id ? t("settings.loading") :
+                                                showedKeyId === apiKey.id ? displayedKeyValue : '****'}
+                                        </td>
+                                        <td>
+                                            <button
+                                                className="btn btn-xs mr-2"
+                                                onClick={() => handleShowApiKey(apiKey.id)}
+                                            >
+                                                {showedKeyId === apiKey.id ? t("settings.hide") : t("settings.show")}
+                                            </button>
+                                            <button
+                                                className="btn btn-error btn-xs"
+                                                onClick={() => handleDeleteApiKey(apiKey.id)}
+                                            >
+                                                {t("settings.delete")}
+                                            </button>
+                                        </td>
                                     </tr>
-                                    </thead>
-                                    <tbody className="">
-                                    {apiKeys.map((apiKey) => (
-                                        <tr key={apiKey.id}>
-                                            <td>
-                                                {loadingKey && showedKeyId === apiKey.id ? 'Loading...' :
-                                                    showedKeyId === apiKey.id ? displayedKeyValue : '****'}
-                                            </td>
-                                            <td>
-                                                <button
-                                                    className="btn btn-xs mr-2"
-                                                    onClick={() => handleShowApiKey(apiKey.id)}
-                                                >
-                                                    {showedKeyId === apiKey.id ? 'Hide' : 'Show'}
-                                                </button>
-                                                <button
-                                                    className="btn btn-error btn-xs"
-                                                    onClick={() => handleDeleteApiKey(apiKey.id)}
-                                                >
-                                                    Delete
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    </tbody>
-                                </table>
-                            )}
-                            <button className="btn btn-primary mt-4" onClick={handleCreateApiKey}>
-                                Create New Key
-                            </button>
-                        </div>
-
+                                ))}
+                                </tbody>
+                            </table>
+                        )}
+                        <button className="btn btn-primary mt-4" onClick={handleCreateApiKey}>
+                            {t("settings.createNewKey")}
+                        </button>
                     </div>
                 </div>
             </div>
-        );
-    }
+        </div>
+    );
+}

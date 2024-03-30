@@ -13,7 +13,8 @@
     "light": "Světlo",
     "temperature": "Teplota",
     "humidity": "Vlhkost",
-    "soilMoisture": "Vlhkost půdy"
+    "soilMoisture": "Vlhkost půdy",
+    "time": "Čas"
   },
   "mainDrawer": {
     "search": "Hledat",
@@ -69,7 +70,14 @@
     "newPassword": "Nové heslo",
     "captureInterval": "Interval časosběrů (sekundy)",
     "changeCredentials": "Změnit přihlašovací údaje",
-    "apiKeys": "API klíče"
+    "apiKeys": "API klíče",
+    "loading": "Načítání...",
+    "show": "Zobrazit",
+    "hide": "Skrýt",
+    "delete": "Smazat",
+    "createNewKey": "Vytvořit nový klíč",
+    "actions": "Akce",
+    "key": "Klíč"
   },
   "login": {
     "title": "Přihlášení",

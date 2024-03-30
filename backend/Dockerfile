@@ -22,18 +22,21 @@ WORKDIR /app
 
 COPY package*.json ./
 
+
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     python3 \
     python3-pip \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && pip3 install --upgrade pip setuptools wheel
 
-RUN pip3 install tensorflow numpy
+RUN pip3 install tensorflow numpy Pillow
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/static ./static
+COPY --from=builder /app/plantDetection ./plantDetection
 
 EXPOSE 3000
 

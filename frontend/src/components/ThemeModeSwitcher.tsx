@@ -11,6 +11,8 @@ const ThemeModeSwitcher = () => {
         const storedTheme = localStorage.getItem('theme');
         if (!storedTheme) {
             localStorage.setItem('theme', 'emerald');
+            setAppTheme({theme: 'emerald'});
+            document.querySelector('html')?.setAttribute('data-theme', 'emerald');
         }
         return {
             theme: storedTheme === 'emerald' ? 'emerald' : 'dark'
@@ -33,9 +35,9 @@ const ThemeModeSwitcher = () => {
             className="flex items-center cursor-pointer transition duration-500 ease-in-out transform space-x-2 btn btn-ghost"
             onClick={toggleTheme}>
             {appTheme.theme === 'emerald' ? (
-                <FontAwesomeIcon icon={faSun} size="xl"/>
-            ) : (
                 <FontAwesomeIcon icon={faMoon} size="xl"/>
+            ) : (
+                <FontAwesomeIcon icon={faSun} size="xl"/>
             )}
             {/*<span className="text-base-content mr-2">{appTheme.theme === 'emerald' ? 'Light' : 'Dark'}</span>*/}
         </div>

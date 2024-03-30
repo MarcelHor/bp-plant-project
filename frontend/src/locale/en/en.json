@@ -13,7 +13,8 @@
     "light": "Light",
     "temperature": "Temperature",
     "humidity": "Humidity",
-    "soilMoisture": "Soil Moisture"
+    "soilMoisture": "Soil Moisture",
+    "time": "Time"
   },
   "mainDrawer": {
     "search": "Search",
@@ -69,7 +70,14 @@
     "newPassword": "New Password",
     "captureInterval": "Capture Interval (seconds)",
     "changeCredentials": "Change Credentials",
-    "apiKeys": "API Keys"
+    "apiKeys": "API Keys",
+    "loading": "Loading...",
+    "show": "Show",
+    "hide": "Hide",
+    "delete": "Delete",
+    "createNewKey": "Create New Key",
+    "actions": "Actions",
+    "key": "Key"
   },
   "login": {
     "username": "Username",
