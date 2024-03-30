@@ -18,7 +18,7 @@ import session from 'express-session';
 
 const app = express();
 const PORT = 3000;
-const HOST = 'localhost';
+const HOST = 'localhost'; //change to 0.0.0.0 for production
 
 app.use(cors({
     origin: ['http://127.0.0.1:5173', 'http://localhost/', 'https://127.0.0.1:5173, https://localhost', 'https://bp.marcel-horvath.com'],
