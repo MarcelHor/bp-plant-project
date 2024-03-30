@@ -15,52 +15,57 @@ import {
 } from "../utils/timelapseUtils";
 
 export const streamTimelapseEndpoint = async (req: Request, res: Response) => {
-    const videoPath = path.join('./', "static/timelapses", req.params.name);
-    const stat = fs.statSync(videoPath);
-    const fileSize = stat.size;
-    const range = req.headers.range;
-    const isDownload = req.query.download === "true";
+    try {
+        const videoPath = path.join('./', "static/timelapses", req.params.name);
+        const stat = fs.statSync(videoPath);
+        const fileSize = stat.size;
+        const range = req.headers.range;
+        const isDownload = req.query.download === "true";
 
-    if (range && !isDownload) {
-        const parts = range.replace(/bytes=/, "").split("-");
-        const start = parseInt(parts[0], 10);
-        const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+        if (range && !isDownload) {
+            const parts = range.replace(/bytes=/, "").split("-");
+            const start = parseInt(parts[0], 10);
+            const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
 
-        if (start >= fileSize || end >= fileSize) {
-            return res
-                .status(416)
-                .send("Requested range not satisfiable\n" + start + " >= " + fileSize);
-        } else if (start < 0 || end < 0) {
-            return res
-                .status(416)
-                .send("Requested range not satisfiable\n" + start + " < 0");
+            if (start >= fileSize || end >= fileSize) {
+                return res
+                    .status(416)
+                    .send("Requested range not satisfiable\n" + start + " >= " + fileSize);
+            } else if (start < 0 || end < 0) {
+                return res
+                    .status(416)
+                    .send("Requested range not satisfiable\n" + start + " < 0");
+            }
+
+            const chunksize = end - start + 1;
+            const file = fs.createReadStream(videoPath, {start, end});
+            const head = {
+                "Content-Range": `bytes ${start}-${end}/${fileSize}`,
+                "Accept-Ranges": "bytes",
+                "Content-Length": chunksize,
+                "Content-Type": "video/mp4",
+            };
+
+            res.writeHead(206, head);
+            file.pipe(res);
+        } else {
+            if (isDownload) {
+                res.setHeader(
+                    "Content-disposition",
+                    "attachment; filename=" + req.params.name
+                );
+            }
+
+            const head = {
+                "Content-Length": fileSize,
+                "Content-Type": "video/mp4",
+            };
+            res.writeHead(200, head);
+            fs.createReadStream(videoPath).pipe(res);
         }
-
-        const chunksize = end - start + 1;
-        const file = fs.createReadStream(videoPath, {start, end});
-        const head = {
-            "Content-Range": `bytes ${start}-${end}/${fileSize}`,
-            "Accept-Ranges": "bytes",
-            "Content-Length": chunksize,
-            "Content-Type": "video/mp4",
-        };
-
-        res.writeHead(206, head);
-        file.pipe(res);
-    } else {
-        if (isDownload) {
-            res.setHeader(
-                "Content-disposition",
-                "attachment; filename=" + req.params.name
-            );
-        }
-
-        const head = {
-            "Content-Length": fileSize,
-            "Content-Type": "video/mp4",
-        };
-        res.writeHead(200, head);
-        fs.createReadStream(videoPath).pipe(res);
+    } catch (error: any) {
+        console.log(error);
+        return res.status(500).json({message: "Something went wrong"});
     }
 };
 
@@ -92,6 +97,7 @@ export const getTimelapses = async (req: Request, res: Response) => {
 
 export const deleteTimelapse = async (req: Request, res: Response) => {
     const id = req.params.id;
+    console.log(id);
     if (!id) {
         return res.status(400).json({message: "Missing parameters"});
     }
@@ -102,9 +108,12 @@ export const deleteTimelapse = async (req: Request, res: Response) => {
                 id: id,
             },
         });
+
         if (!timelapse) {
             return res.status(404).json({message: "Timelapse not found"});
         }
+
+        console.log(timelapse);
         await prisma.timelapseData.delete({
             where: {
                 id: id,

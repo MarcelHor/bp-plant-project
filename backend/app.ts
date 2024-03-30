@@ -18,10 +18,10 @@ import session from 'express-session';
 
 const app = express();
 const PORT = 3000;
-const HOST = '127.0.0.1';
+const HOST = 'localhost';
 
 app.use(cors({
-    origin: 'http://127.0.0.1:5173',
+    origin: ['http://127.0.0.1:5173', 'http://localhost/', 'https://127.0.0.1:5173, https://localhost', 'https://marcel-horvath.com', 'https://www.marcel-horvath.com'],
     credentials: true
 }));
 

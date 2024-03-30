@@ -1,44 +1,32 @@
 import requests
 from mimetypes import MimeTypes
-import json
 
-username = 'marcel'
-password = 'marcel'
+api_key = '7125a322-3e95-4cb8-ab1e-392858e7f53a'
+upload_url = 'https://marcel-horvath.com/api/upload'
+image_path = 'image-fff7804c-a642-4a66-8bd8-aac7e68eace5-1701348153665.jpeg'
 
-login_url = 'http://localhost:3000/auth/login'
-upload_url = 'http://localhost:3000/upload'
-image_path = '92269810.jpeg'
-
-login_data = {
-    'username': username,
-    'password': password
+sensors = {
+    "temperature": 20,
+    "humidity": 50,
+    "soilMoisture": 30,
+    'light': 100,
 }
 
-session = requests.Session()
+mime = MimeTypes()
+mime_type = mime.guess_type(image_path)[0]
 
-login_response = session.post(login_url, data=json.dumps(login_data), headers={'Content-Type': 'application/json'})
-print(login_response.text)
-if login_response.status_code == 200:
-    print("Úspěšně přihlášeno")
-    sensors = {
-        "temperature": 20,
-        "humidity": 50,
-        "soilMoisture": 30,
-        'light': 100,
+# Otevření souboru v binárním módu
+with open(image_path, 'rb') as file:
+    files = {'image': (image_path, file, mime_type)}
+
+    # Definování hlavičky pro API klíč, ale ponechání 'Content-Type' na automatické nastavení knihovnou 'requests'
+    headers = {
+        'x-api-key': api_key,
     }
 
-    mime = MimeTypes()
-    mime_type = mime.guess_type(image_path)[0]
+    response = requests.post(upload_url, files=files, data=sensors, headers=headers)
 
-    files = {'image': (image_path, open(image_path, 'rb'), mime_type)}
-
-    response = session.post(upload_url, files=files, data=sensors)
-
-    files['image'][1].close()
-
-    if response.status_code == 200:
-        print("Úspěšně odesláno")
-    else:
-        print("Chyba při odesílání:", response.text)
+if response.status_code == 200:
+    print("Úspěšně odesláno")
 else:
-    print("Chyba při přihlašování:", login_response.text)
+    print("Chyba při odesílání:", response.text)

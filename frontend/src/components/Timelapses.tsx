@@ -1,26 +1,29 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft, faChevronRight, faTriangleExclamation} from "@fortawesome/free-solid-svg-icons";
 import Timelapse from "./Timelapse.tsx";
-import {timelapse, timelapseResponse} from "../../types/image-types";
+import {timelapseData, timelapseResponse} from "../../types/image-types";
 import {createRef, useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 
-export default function Timelapses({timelapsesData, currentPage, totalPages, handlePageChange, fetchTimelapses}: {
+export default function Timelapses({timelapsesData, currentPage, totalPages, handlePageChange, handleDelete}: {
     timelapsesData: timelapseResponse | undefined,
     currentPage: number,
     totalPages: number,
     handlePageChange: (newPage: number) => void,
-    fetchTimelapses: (page: number, limit?: number) => void
+    handleDelete: (timelapse: timelapseData) => void
 }) {
     const [selectedTimelapseID, setSelectedTimelapseID] = useState<number | null>(null);
     const [lastClickTime, setLastClickTime] = useState<number>(Date.now());
     const videoRef = createRef<HTMLVideoElement>();
     const modalRef = createRef<HTMLDialogElement>();
     const {t} = useTranslation();
+
     const handlePlay = (id: number) => {
         setSelectedTimelapseID(id);
         setLastClickTime(Date.now());
     }
+
+
 
     useEffect(() => {
         if (selectedTimelapseID) {
@@ -28,6 +31,7 @@ export default function Timelapses({timelapsesData, currentPage, totalPages, han
             modalRef.current?.showModal();
         }
     }, [selectedTimelapseID, lastClickTime]);
+
 
     return (
         <>
@@ -41,9 +45,9 @@ export default function Timelapses({timelapsesData, currentPage, totalPages, han
                     <div className={"w-full"}>
                         <h1 className="text-2xl font-bold mb-8">{t("timelapses.title")}</h1>
                         <ul className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
-                            {timelapsesData?.timelapses.map((timelapse: timelapse) => (
-                                <Timelapse key={timelapse.id} timelapse={timelapse} fetchTimelapses={fetchTimelapses}
-                                           currentPage={currentPage} handlePlay={handlePlay}/>
+                            {timelapsesData?.timelapses.map((data: timelapseData) => (
+                                <Timelapse key={data.id} data={data} handlePlay={handlePlay}
+                                            handleDelete={() => handleDelete(data)}/>
                             ))}
                         </ul>
                     </div>
@@ -52,8 +56,9 @@ export default function Timelapses({timelapsesData, currentPage, totalPages, han
                             <div className="modal-box w-11/12 max-w-5xl bg-transparent shadow-none">
                                 <div className="modal-body">
                                     <video className="h-auto" controls ref={videoRef}>
-                                        <source src={import.meta.env.VITE_BACKEND_URL+"/timelapses/" + selectedTimelapseID + ".mp4"}
-                                                type="video/mp4"/>
+                                        <source
+                                            src={import.meta.env.VITE_BACKEND_URL + "/timelapses/" + selectedTimelapseID + ".mp4"}
+                                            type="video/mp4"/>
                                     </video>
                                 </div>
                             </div>

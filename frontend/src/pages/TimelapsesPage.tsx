@@ -2,10 +2,9 @@ import TimelapsesDrawer from "../components/TimelapsesDrawer.tsx";
 import Timelapses from "../components/Timelapses.tsx";
 import LayoutComponent from "../components/PageLayout.tsx";
 import {useEffect, useState} from "react";
-import {imageData, timelapseResponse} from "../../types/image-types";
+import {imageData, timelapseData, timelapseResponse} from "../../types/image-types";
 import {getLatest} from "../../api/imageService.ts";
-import {getTimelapses} from "../../api/timelapseService.ts";
-
+import {deleteTimelapse, getTimelapses} from "../../api/timelapseService.ts";
 
 
 export default function Home() {
@@ -20,9 +19,27 @@ export default function Home() {
             setTotalPages(data.totalPages);
             setTimelapsesData(data);
         } catch (error: unknown) {
-            console.error("Failed to fetch timelapses:", error);
+            const emptyData: timelapseResponse = {timelapses: [], totalPages: 0};
+            setTimelapsesData(emptyData);
         }
     };
+
+    const handleDelete = async (timelapse: timelapseData) => {
+        const confirm = window.confirm("Are you sure you want to delete this timelapse?");
+        if (!confirm) return;
+        try {
+            await deleteTimelapse(timelapse.id);
+            const newTimelapses = timelapsesData?.timelapses.filter((t) => t.id !== timelapse.id) || [];
+            if (newTimelapses.length === 0 && currentPage > 1) {
+                setCurrentPage(currentPage - 1); // Move to the previous page
+                await fetchTimelapses(currentPage - 1);
+            } else {
+                setTimelapsesData({timelapses: newTimelapses, totalPages: totalPages});
+            }
+        } catch (error: any) {
+            console.error("Failed to delete timelapse:", error.message);
+        }
+    }
 
     const handlePageChange = (newPage: number) => {
         if (newPage < 1 || newPage > totalPages) {
@@ -46,7 +63,7 @@ export default function Home() {
         <LayoutComponent
             mainContent={<>
                 <Timelapses timelapsesData={timelapsesData} currentPage={currentPage} totalPages={totalPages}
-                            handlePageChange={handlePageChange} fetchTimelapses={fetchTimelapses}/>
+                            handlePageChange={handlePageChange} handleDelete={handleDelete}/>
             </>}
 
             sidebar={latestData && <TimelapsesDrawer latestDate={latestData.createdAt} fetchTimelapses={fetchTimelapses}
