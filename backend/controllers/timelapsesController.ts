@@ -13,6 +13,7 @@ import {
     formatDateTimeString,
     generateDateImage,
 } from "../utils/timelapseUtils";
+import {prismaMock} from "../utils/prismaMock";
 
 export const streamTimelapseEndpoint = async (req: Request, res: Response) => {
     try {
