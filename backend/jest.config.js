@@ -8,5 +8,5 @@ module.exports = {
         '^@/controllers/(.*)$': '<rootDir>/controllers/$1',
         '^@/utils/(.*)$': '<rootDir>/utils/$1',
     },
-    coveragePathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/dist/', '<rootDir>/utils/cronjobs', '<rootDir>/utils/cleanStorage.ts'],
+    coveragePathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/dist/', '<rootDir>/utils/cronjobs', '<rootDir>/utils/cleanStorage.ts', '<rootDir>/utils/timelapseUtils.ts'],
 };
