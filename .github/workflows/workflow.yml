@@ -15,7 +15,7 @@ jobs:
         working-directory: ./backend
 
       - name: Run code coverage test
-        run: npm test -- --coverage
+        run: npm run test -- --silent --coverage
         working-directory: ./backend
 
       - name: Upload coverage reports to Codecov
