@@ -27,11 +27,17 @@ export const getPlantSettings = async () => {
 
 export const postPlantSettings = async (
     captureInterval: number,
-    wateringDuration: number
+    wateringDuration: number,
+    automaticWatering: boolean,
+    wateringStartMoisture: number,
+    stopLight: number,
 ) => {
     const response = await axiosInstance.post(`/plant-settings`, {
         captureInterval,
-        wateringDuration
+        wateringDuration,
+        automaticWatering,
+        wateringStartMoisture,
+        stopLight,
     });
     return response.data;
 }

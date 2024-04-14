@@ -30,6 +30,9 @@ export default function Settings() {
     const [plantSettings, setPlantSettings] = useState({
         captureInterval: 0,
         wateringDuration: 0,
+        automaticWatering: false,
+        wateringStartMoisture: 0,
+        stopLight: 0,
     });
     const [plantSettingsSaved, setPlantSettingsSaved] = useState(false);
     const [plantError, setPlantError] = useState(false);
@@ -63,8 +66,12 @@ export default function Settings() {
     };
 
     const handlePlantChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setPlantSettings({...plantSettings, [e.target.name]: e.target.value});
+        setPlantSettings({
+            ...plantSettings,
+            [e.target.name]: e.target.type === 'checkbox' ? e.target.checked : e.target.value
+        });
     }
+
 
     const handleWaterPlant = async () => {
         if (waterPlantLoading) return;
@@ -101,7 +108,7 @@ export default function Settings() {
     const plantSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            await postPlantSettings(plantSettings.captureInterval, plantSettings.wateringDuration);
+            await postPlantSettings(plantSettings.captureInterval, plantSettings.wateringDuration, plantSettings.automaticWatering, plantSettings.wateringStartMoisture, plantSettings.stopLight);
             setPlantSettingsSaved(true);
             setTimeout(() => {
                 setPlantSettingsSaved(false);
@@ -246,6 +253,7 @@ export default function Settings() {
                                     value={plantSettings.captureInterval}
                                     onChange={handlePlantChange}/>
                             </div>
+
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2"
                                        htmlFor="wateringDuration">
@@ -258,6 +266,45 @@ export default function Settings() {
                                     value={plantSettings.wateringDuration}
                                     onChange={handlePlantChange}/>
                             </div>
+
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2"
+                                       htmlFor="wateringStartMoisture">
+                                    {t("settings.wateringStartMoisture")}
+                                </label>
+                                <input
+                                    className="input input-bordered w-full"
+                                    required
+                                    id="wateringStartMoisture" type="number" placeholder="Moisture"
+                                    name="wateringStartMoisture"
+                                    value={plantSettings.wateringStartMoisture}
+                                    onChange={handlePlantChange}/>
+                            </div>
+
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2"
+                                       htmlFor="stopLight">
+                                    {t("settings.stopLight")}
+                                </label>
+                                <input
+                                    className="input input-bordered w-full"
+                                    required
+                                    id="stopLight" type="number" placeholder="Light" name="stopLight"
+                                    value={plantSettings.stopLight}
+                                    onChange={handlePlantChange}/>
+                            </div>
+
+                            <div className="mb-4 flex items-center">
+                                <input
+                                    className="input checkbox checkbox-lg"
+                                    id="automaticWatering" type="checkbox" name="automaticWatering"
+                                    checked={plantSettings.automaticWatering}
+                                    onChange={handlePlantChange}/>
+                                <label className="text-gray-700 text-sm font-bold ml-2" htmlFor="automaticWatering">
+                                    {t("settings.automaticWatering")}
+                                </label>
+                            </div>
+
                             <div className="flex items-center justify-between">
                                 <button
                                     className="btn btn-primary"
