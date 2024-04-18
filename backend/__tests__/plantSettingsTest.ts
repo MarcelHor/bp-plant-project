@@ -141,7 +141,7 @@ describe('setPlantSettings', () => {
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({ message: 'Plant settings updated' });
     });
-    it('should return 400 if missing captureInterval or wateringDuration', async () => {
+    it('should return 400 if missing required fields', async () => {
         const req = {
             body: {},
         } as Request;
@@ -153,7 +153,7 @@ describe('setPlantSettings', () => {
         await setPlantSettings(req, res);
 
         expect(res.status).toHaveBeenCalledWith(400);
-        expect(res.json).toHaveBeenCalledWith({ message: 'Missing captureInterval or wateringDuration' });
+        expect(res.json).toHaveBeenCalledWith({ message: 'Missing required fields' });
     });
 });
 
