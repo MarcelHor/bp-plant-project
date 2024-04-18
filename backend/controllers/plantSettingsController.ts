@@ -43,15 +43,17 @@ export const setWatering = async (req: Request, res: Response) => {
 }
 
 export const setPlantSettings = async (req: Request, res: Response) => {
-    const {captureInterval, wateringDuration} = req.body;
+    const {captureInterval, wateringDuration, automaticWatering, wateringStartMoisture, stopLight} = req.body;
 
-    if (captureInterval === undefined || wateringDuration === undefined) {
-        return res.status(400).json({message: 'Missing captureInterval or wateringDuration'});
+    if (captureInterval === undefined || wateringDuration === undefined || automaticWatering === undefined || wateringStartMoisture === undefined || stopLight === undefined) {
+        return res.status(400).json({message: 'Missing required fields'});
     }
 
     const captureIntervalNumber = Number(captureInterval);
     const wateringDurationNumber = Number(wateringDuration);
-
+    const automaticWateringBoolean = Boolean(automaticWatering);
+    const wateringStartMoistureNumber = Number(wateringStartMoisture);
+    const stopLightNumber = Number(stopLight);
 
     try {
         const plantSettings = await prisma.plantSettings.findFirst();
@@ -62,7 +64,10 @@ export const setPlantSettings = async (req: Request, res: Response) => {
                 },
                 data: {
                     captureInterval: captureIntervalNumber,
-                    wateringDuration: wateringDurationNumber
+                    wateringDuration: wateringDurationNumber,
+                    automaticWatering: automaticWateringBoolean,
+                    wateringStartMoisture: wateringStartMoistureNumber,
+                    stopLight: stopLightNumber
                 }
             });
         } else {
@@ -70,6 +75,9 @@ export const setPlantSettings = async (req: Request, res: Response) => {
                 data: {
                     captureInterval: captureInterval,
                     wateringDuration: wateringDuration,
+                    automaticWatering: automaticWatering,
+                    wateringStartMoisture: wateringStartMoisture,
+                    stopLight: stopLight,
                     waterPlant: false
                 }
             });

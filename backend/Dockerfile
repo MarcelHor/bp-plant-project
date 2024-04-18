@@ -18,6 +18,9 @@ RUN npm run build
 # Fáze 2: Běhové prostředí
 FROM node:16
 
+ENV TZ=Europe/Prague
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 WORKDIR /app
 
 COPY package*.json ./

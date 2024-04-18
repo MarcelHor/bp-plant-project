@@ -11,6 +11,9 @@ COPY . .
 RUN npm run build
 FROM nginx:stable-alpine as production-stage
 
+ENV TZ=Europe/Prague
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf

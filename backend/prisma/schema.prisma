@@ -33,10 +33,13 @@ model emailSettings {
 }
 
 model plantSettings {
-  id               String  @id @default(uuid())
-  captureInterval  Int
-  wateringDuration Int
-  waterPlant       Boolean
+  id                    String  @id @default(uuid())
+  captureInterval       Int
+  wateringDuration      Int
+  waterPlant            Boolean
+  automaticWatering     Boolean
+  wateringStartMoisture Int
+  stopLight             Int
 }
 
 model user {

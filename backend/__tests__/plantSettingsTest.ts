@@ -5,7 +5,7 @@ import {Request, Response} from "express";
 
 describe('getPlantSettings', () => {
     it('should return plant settings if found', async () => {
-        const mockSettings = { captureInterval: 10, wateringDuration: 5, waterPlant: false };
+        const mockSettings = { captureInterval: 10, wateringDuration: 5, waterPlant: false, automaticWatering: false, wateringStartMoisture: 0, stopLight: 0 };
         (prismaMock.plantSettings as any).findFirst.mockResolvedValue(mockSettings);
 
         const req = {} as Request;
@@ -106,11 +106,11 @@ describe('setWatering', () => {
 describe('setPlantSettings', () => {
     it('should create new plant settings if none exist', async () => {
         (prismaMock.plantSettings as any).findFirst.mockResolvedValue(null)
-        const mockSettings = { captureInterval: 10, wateringDuration: 5 };
+        const mockSettings = { captureInterval: 10, wateringDuration: 5 , automaticWatering: false, wateringStartMoisture: 0, stopLight: 0, waterPlant: false};
         (prismaMock.plantSettings as any).create.mockResolvedValue(mockSettings);
 
         const req = {
-            body: { captureInterval: '10', wateringDuration: '5' },
+            body: { captureInterval: '10', wateringDuration: '5' , automaticWatering: 'false', wateringStartMoisture: '0', stopLight: '0'},
         } as Request;
         const res = {
             status: jest.fn().mockReturnThis(),
@@ -124,12 +124,12 @@ describe('setPlantSettings', () => {
     });
 
     it('should update existing plant settings', async () => {
-        const mockSettings = { id: 1, captureInterval: 10, wateringDuration: 5 };
+        const mockSettings = { id: 1, captureInterval: 10, wateringDuration: 5 , automaticWatering: false, wateringStartMoisture: 0, stopLight: 0, waterPlant: false};
         (prismaMock.plantSettings as any).findFirst.mockResolvedValue(mockSettings);
         (prismaMock.plantSettings as any).update.mockResolvedValue(mockSettings);
 
         const req = {
-            body: { captureInterval: '10', wateringDuration: '5' },
+            body: { captureInterval: '10', wateringDuration: '5' , automaticWatering: 'false', wateringStartMoisture: '0', stopLight: '0'},
         } as Request;
         const res = {
             status: jest.fn().mockReturnThis(),

@@ -9,7 +9,7 @@ import authRouter from "./routes/authRoute";
 import apiKeyRouter from "./routes/apiKeyRoutes";
 import plantAi from "./plantDetection/plantAi";
 import {ensureAdminUser} from "./utils/auth";
-import {ensureAuthenticated, ensureApiKey} from "./middleware/authMiddleware";
+import {ensureAuthenticated, ensureApiKey, ensureAuthenticatedOrApiKey} from "./middleware/authMiddleware";
 import {runCron} from "./utils/cronjobs/notifications";
 import {heartbeat} from "./controllers/eventController";
 import {checkStaticFolder} from "./utils/utils";
@@ -43,7 +43,7 @@ app.use('/thumbnails', ensureAuthenticated, express.static('./static/thumbnails'
 app.use('/timelapses', ensureAuthenticated, timelapsesRouter);
 app.use('/email-settings', ensureAuthenticated, emailSettingsRouter);
 app.use('/events', ensureAuthenticated, eventRouter);
-app.use('/plant-settings', ensureAuthenticated, plantSettingsRouter);
+app.use('/plant-settings', ensureAuthenticatedOrApiKey, plantSettingsRouter);
 app.use('/api-keys', ensureAuthenticated, apiKeyRouter);
 app.use('/auth', authRouter);
 app.use('/ai', plantAi);
