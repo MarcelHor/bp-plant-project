@@ -79,8 +79,8 @@
     "actions": "Actions",
     "key": "Key",
       "automaticWatering": "Automatic Watering",
-      "stopLight": "Stop system when light is below",
-      "wateringStartMoisture": "Automatic watering start moisture"
+      "stopLight": "Stop system when light is below (%)",
+      "wateringStartMoisture": "Automatic watering start moisture (%)"
   },
   "login": {
     "username": "Username",

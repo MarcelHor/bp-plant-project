@@ -248,6 +248,7 @@ export default function Settings() {
                                 </label>
                                 <input
                                     className="input input-bordered w-full"
+                                    min={0}
                                     required
                                     id="captureInterval" type="number" placeholder="Interval" name="captureInterval"
                                     value={plantSettings.captureInterval}
@@ -261,6 +262,7 @@ export default function Settings() {
                                 </label>
                                 <input
                                     className="input input-bordered w-full"
+                                    min={0}
                                     required
                                     id="wateringDuration" type="number" placeholder="Duration" name="wateringDuration"
                                     value={plantSettings.wateringDuration}
@@ -274,6 +276,7 @@ export default function Settings() {
                                 </label>
                                 <input
                                     className="input input-bordered w-full"
+                                    min={0}
                                     required
                                     id="wateringStartMoisture" type="number" placeholder="Moisture"
                                     name="wateringStartMoisture"
@@ -288,6 +291,7 @@ export default function Settings() {
                                 </label>
                                 <input
                                     className="input input-bordered w-full"
+                                    min={0}
                                     required
                                     id="stopLight" type="number" placeholder="Light" name="stopLight"
                                     value={plantSettings.stopLight}
@@ -395,6 +399,7 @@ export default function Settings() {
                                     className="input input-bordered w-full"
                                     id="newUsername" type="text" placeholder={t("settings.newUsername")}
                                     name="newUsername"
+                                    minLength={3}
                                     value={newUsername}
                                     onChange={(e) => setNewUsername(e.target.value)}/>
                             </div>
@@ -406,6 +411,7 @@ export default function Settings() {
                                     className="input input-bordered w-full"
                                     id="newPassword" type="password" placeholder={t("settings.newPassword")}
                                     name="newPassword"
+                                    minLength={6}
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}/>
                             </div>

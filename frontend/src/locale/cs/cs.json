@@ -79,8 +79,8 @@
     "actions": "Akce",
     "key": "Klíč",
     "automaticWatering": "Automatické zalévání",
-    "stopLight": "Zastavení systému při nedostatku světla pod",
-    "wateringStartMoisture": "Automatické zalévání při vlhkosti půdy"
+    "stopLight": "Zastavení systému při nedostatku světla pod (%)",
+    "wateringStartMoisture": "Automatické zalévání při vlhkosti půdy pod (%)"
   },
   "login": {
     "title": "Přihlášení",

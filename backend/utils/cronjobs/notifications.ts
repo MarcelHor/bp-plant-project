@@ -16,6 +16,11 @@ export const runCron = async () => {
         return;
     }
 
+    if (!emailSettings.recipient || !emailSettings.cronTime) {
+        console.log('Email settings are not complete');
+        return;
+    }
+
     const emailText = await prisma.sensorData.findFirst({
         orderBy: {
             createdAt: 'desc'
