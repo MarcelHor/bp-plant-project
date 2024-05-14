@@ -12,7 +12,7 @@ export default function ImageDisplay({mainImageData}: { mainImageData: imageData
         soilMoisture: {low: 30, high: 101},
         light: {low: 10, high: 101},
         temperature: {low: 15, high: 28},
-        humidity: {low: 40, high: 60}
+        humidity: {low: 30, high: 60}
     };
 
     const isValueOutOfRange = (value: number | undefined, threshold: { low: number, high: number }) => {
